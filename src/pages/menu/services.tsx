@@ -160,6 +160,7 @@ export default function ServicesPage() {
                         src={service.image}
                         alt={service.title}
                         fill
+                        priority={idx <= 2}
                         className="object-cover transition-transform duration-700 group-hover:scale-110"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       />
