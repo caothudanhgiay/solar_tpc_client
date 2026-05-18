@@ -17,6 +17,12 @@ export class ApiException extends Error {
 
   public static handle(error: ApiException) {
     if (typeof window !== 'undefined') {
+      // Prevent infinite redirect loop
+      if (window.location.pathname === '/error-pages') {
+        console.error("API error occurred while already on error page:", error);
+        return;
+      }
+
       if (error.statusCode === 404) {
         window.location.href = `/error-pages?type=not-found`;
       } else if (error.statusCode >= 500 && error.statusCode <= 506) {
