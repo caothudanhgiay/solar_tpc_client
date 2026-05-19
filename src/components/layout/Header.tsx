@@ -9,50 +9,76 @@ import { Menu, X, ChevronDown } from "lucide-react";
 import { apiClient } from "@/lib/apiClient";
 import { API_MENUS } from "@/lib/utils/constants";
 
+interface SubMenu {
+  menuName: string;
+  menuUrl: string;
+}
+
+interface MenuItem {
+  menuName: string;
+  menuUrl: string;
+  subMenus?: SubMenu[];
+}
+
+interface NavigationItem {
+  name: string;
+  href: string;
+  submenu?: {
+    name: string;
+    href: string;
+  }[];
+}
+
 // Giữ lại menu mặc định làm fallback khi API lỗi hoặc đang load
-const initialNavigation = [
-  { name: "Trang Chủ", href: "/" },
-  { name: "Lắp Đặt", href: "/menu/installation" },
+const initialNavigation: NavigationItem[] = [
+  { name: "TRANG CHỦ", href: "/" },
   {
-    name: "Dịch Vụ",
+    name: "DỊCH VỤ",
     href: "/menu/services",
     submenu: [
-      { name: "Dịch Vụ Lắp Đặt Hệ Thống Năng lượng Mặt Trời", href: "/menu/services?category=lap-dat" },
-      { name: "Dịch Vụ O&M (Vận Hành & Bảo Trì) Trọn Gói", href: "/menu/services?category=om" },
-      { name: "Dịch Vụ Vệ Sinh Tấm Pin NLMT", href: "/menu/services?category=ve-sinh" },
-      { name: "Dịch vụ Giám Sát & Vận Hành Hệ Thống NLMT bằng Phần mềm SCADA", href: "/menu/services?category=scada" },
+      { name: "DỊCH VỤ LẮP ĐẶT HỆ THỐNG NĂNG LƯỢNG MẶT TRỜI", href: "/menu/services?category=lap-dat" },
+      { name: "DỊCH VỤ O&M (VẬN HÀNH & BẢO TRÌ) TRỌN GÓI", href: "/menu/services?category=om" },
+      { name: "DỊCH VỤ VỆ SINH TẤM PIN NLMT", href: "/menu/services?category=ve-sinh" },
+      { name: "DỊCH VỤ GIÁM SÁT & VẬN HÀNH HỆ THỐNG NLMT BẰNG PHẦN MỀM SCADA", href: "/menu/services?category=scada" },
     ]
   },
-  { name: "Dự Án", href: "/menu/projects" },
-  { name: "Bảng Giá Nhanh", href: "/menu/quick-pricing" },
-  { name: "Liên Hệ", href: "/menu/contact" },
+  { name: "DỰ ÁN", href: "/menu/projects" },
+  { name: "BẢNG GIÁ NHANH", href: "/menu/quick-pricing" },
+  { name: "LIÊN HỆ", href: "/menu/contact" },
 ];
 
-export default function Header({ initialMenus }: { initialMenus?: { name: string; href: string; }[] }) {
+export default function Header({ initialMenus }: { initialMenus?: NavigationItem[] }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [navigation, setNavigation] = useState(initialMenus && initialMenus.length > 0 ? initialMenus : initialNavigation);
+  const [navigation, setNavigation] = useState<NavigationItem[]>(
+    initialMenus && initialMenus.length > 0 ? initialMenus : initialNavigation
+  );
 
   useEffect(() => {
     const fetchMenus = async () => {
       if (initialMenus && initialMenus.length > 0) return;
       try {
-        const data: any[] = await apiClient.get(API_MENUS);
+        const data = await apiClient.get(API_MENUS) as MenuItem[];
         if (data && data.length > 0) {
-          const fetchedMenus = data.map((item: any) => ({
-            name: item.menuName,
-            href: item.menuUrl,
-            submenu: item.subMenus && item.subMenus.length > 0 
-              ? item.subMenus.map((sub: any) => ({
-                  name: sub.menuName,
-                  href: sub.menuUrl
-                }))
-              : undefined
-          }));
+          const fetchedMenus: NavigationItem[] = data
+            .filter((item) => item.menuUrl !== "/menu/installation")
+            .map((item) => ({
+              name: item.menuName.toUpperCase(),
+              href: item.menuUrl,
+              submenu: item.subMenus && item.subMenus.length > 0 
+                ? item.subMenus
+                    .filter((sub) => sub.menuUrl !== "/menu/installation")
+                    .map((sub) => ({
+                      name: sub.menuName.toUpperCase(),
+                      href: sub.menuUrl
+                    }))
+                : undefined
+            }));
           setNavigation(fetchedMenus);
         }
-      } catch (error: any) {
-        console.warn("Failed to fetch menus from API in Header:", error.message);
+      } catch (error) {
+        const err = error as Error;
+        console.warn("Failed to fetch menus from API in Header:", err.message);
       }
     };
     fetchMenus();
@@ -106,23 +132,23 @@ export default function Header({ initialMenus }: { initialMenus?: { name: string
 
         {/* Desktop Navigation */}
         <nav className="hidden lg:flex items-center gap-10">
-          {navigation.map((item: any) => (
+          {navigation.map((item) => (
             item.submenu ? (
               <div key={item.name} className="relative group">
                 <Link
                   href={item.href}
-                  className="text-base font-semibold transition-colors hover:text-orange-500 text-white/90 hover:text-white flex items-center gap-1"
+                  className="text-sm font-bold transition-colors hover:text-orange-500 text-white/90 hover:text-white flex items-center gap-1 uppercase tracking-wider"
                 >
                   {item.name}
                   <ChevronDown className="w-4 h-4 transition-transform group-hover:rotate-180" />
                 </Link>
                 <div className="absolute top-full left-0 pt-6 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                   <div className="w-64 bg-slate-900 border border-white/10 rounded-xl shadow-2xl overflow-hidden py-1">
-                    {item.submenu.map((sub: any) => (
+                    {item.submenu.map((sub) => (
                       <Link
                         key={sub.name}
                         href={sub.href}
-                        className="block px-4 py-3 text-sm text-gray-300 hover:text-orange-400 hover:bg-white/5 border-b border-white/5 last:border-0 transition-colors"
+                        className="block px-4 py-3 text-xs text-gray-300 hover:text-orange-400 hover:bg-white/5 border-b border-white/5 last:border-0 transition-colors uppercase tracking-wide"
                       >
                         {sub.name}
                       </Link>
@@ -134,7 +160,7 @@ export default function Header({ initialMenus }: { initialMenus?: { name: string
               <Link
                 key={item.name}
                 href={item.href}
-                className="text-base font-semibold transition-colors hover:text-orange-500 text-white/90 hover:text-white"
+                className="text-sm font-bold transition-colors hover:text-orange-500 text-white/90 hover:text-white uppercase tracking-wider"
               >
                 {item.name}
               </Link>
@@ -147,7 +173,7 @@ export default function Header({ initialMenus }: { initialMenus?: { name: string
           <Link
             href="/menu/contact#ho-va-ten"
             onClick={handleQuoteClick}
-            className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2.5 rounded-full text-sm font-bold transition-all shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 hover:-translate-y-0.5"
+            className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2.5 rounded-full text-xs font-bold transition-all shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 hover:-translate-y-0.5 uppercase tracking-wider"
           >
             Nhận Báo Giá
           </Link>
@@ -171,23 +197,23 @@ export default function Header({ initialMenus }: { initialMenus?: { name: string
       {mobileMenuOpen && (
         <div className="lg:hidden absolute top-full left-0 w-full bg-slate-900 shadow-2xl border-t border-white/10 py-4 animate-in slide-in-from-top-2 duration-200">
           <div className="flex flex-col space-y-1 px-4">
-            {navigation.map((item: any) => (
+            {navigation.map((item) => (
               <div key={item.name}>
                 <Link
                   href={item.href}
                   onClick={() => !item.submenu && setMobileMenuOpen(false)}
-                  className="block text-white hover:text-orange-500 hover:bg-white/5 px-4 py-3 rounded-lg text-base font-semibold transition-colors"
+                  className="block text-white hover:text-orange-500 hover:bg-white/5 px-4 py-3 rounded-lg text-sm font-semibold transition-colors uppercase tracking-wider"
                 >
                   {item.name}
                 </Link>
                 {item.submenu && (
                   <div className="pl-6 flex flex-col space-y-1 pb-2">
-                    {item.submenu.map((sub: any) => (
+                    {item.submenu.map((sub) => (
                       <Link
                         key={sub.name}
                         href={sub.href}
                         onClick={() => setMobileMenuOpen(false)}
-                        className="block text-gray-300 hover:text-orange-500 hover:bg-white/5 px-4 py-2 rounded-lg text-sm transition-colors"
+                        className="block text-gray-300 hover:text-orange-500 hover:bg-white/5 px-4 py-2 rounded-lg text-xs transition-colors uppercase tracking-wide"
                       >
                         - {sub.name}
                       </Link>
@@ -200,7 +226,7 @@ export default function Header({ initialMenus }: { initialMenus?: { name: string
               <Link
                 href="/menu/contact#ho-va-ten"
                 onClick={(e) => { handleQuoteClick(e); setMobileMenuOpen(false); }}
-                className="block w-full text-center bg-orange-500 hover:bg-orange-600 text-white px-5 py-3.5 rounded-xl text-base font-bold transition-colors shadow-lg shadow-orange-500/30"
+                className="block w-full text-center bg-orange-500 hover:bg-orange-600 text-white px-5 py-3.5 rounded-xl text-sm font-bold transition-colors shadow-lg shadow-orange-500/30 uppercase tracking-wider"
               >
                 Nhận Báo Giá
               </Link>

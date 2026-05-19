@@ -112,7 +112,7 @@ export default function AboutSection() { return (<section id="about" className="
           <div className="absolute inset-0 bg-gradient-to-r from-slate-900/95 to-slate-900/75 z-10" />
           <div
             className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-            style={{ backgroundImage: "url('https://images.unsplash.com/photo-1509391366360-2e959784a276?q=80&w=2072&auto=format&fit=crop')" }}
+            style={{ backgroundImage: "url('/images/bg_page.avif')" }}
           />
         </motion.div>
 

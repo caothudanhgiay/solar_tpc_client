@@ -20,7 +20,7 @@ export default function HeroSection() {
         {/* Placeholder for background image - using a reliable unspash source */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1509391366360-2e959784a276?q=80&w=2072&auto=format&fit=crop')" }}
+          style={{ backgroundImage: "url('/images/bg_page.avif')" }}
         />
       </div>
 

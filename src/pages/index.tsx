@@ -1,6 +1,8 @@
 import Head from "next/head";
 import HeroSection from "@/components/sections/HeroSection";
 import AboutSection from "@/components/sections/AboutSection";
+import ServicesSection from "@/components/sections/ServicesSection";
+import ProjectsSection from "@/components/sections/ProjectsSection";
 
 export default function Home() {
   return (
@@ -15,7 +17,8 @@ export default function Home() {
       <div className="flex flex-col min-h-screen">
         <HeroSection />
         <AboutSection />
-        {/* Other sections like CoreValues, Services, Projects can be added here later */}
+        <ProjectsSection />
+        <ServicesSection />
       </div>
     </>
   );

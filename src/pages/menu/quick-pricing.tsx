@@ -1,6 +1,7 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Head from "next/head";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Calculator, Zap, DollarSign, Settings, Home, Building2, Factory, ArrowRight, AlertCircle, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -10,19 +11,25 @@ const formatVND = (value: number) => {
   return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
 };
 
+// Helper to format raw number as currency display string
+const formatNumberString = (value: number) => {
+  if (value === 0) return "";
+  return new Intl.NumberFormat('vi-VN').format(value);
+};
+
 export default function QuickPricingPage() {
   const [purpose, setPurpose] = useState("sinh-hoat");
   const [roofType, setRoofType] = useState("mai-ton");
-  const [bill, setBill] = useState<number>(3000000); // Default 3 million
+  const [bill, setBill] = useState<number>(500000); // Default 500k
 
   // Calculations
-  const isEffective = bill >= 1500000;
-  
+  const isEffective = bill >= 500000;
+
   // Estimate: 1 kWp generates ~120 kWh/month. Avg electricity price = ~3000 VND/kWh
   // 1 kWp saves ~ 360,000 VND/month
   const estimatedPower = isEffective ? bill / 360000 : 0;
   const roundedPower = Math.round(estimatedPower * 10) / 10;
-  
+
   // Tiết kiệm khoảng 85-90% tiền điện
   const estimatedSavings = isEffective ? bill * 0.85 : 0;
 
@@ -45,9 +52,9 @@ export default function QuickPricingPage() {
         </div>
 
         <div className="container mx-auto px-4 md:px-6 max-w-6xl relative z-20">
-          
+
           {/* Header */}
-          <motion.div 
+          <motion.div
             className="text-center mb-16"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -65,9 +72,9 @@ export default function QuickPricingPage() {
           </motion.div>
 
           <div className="grid lg:grid-cols-12 gap-8 items-start">
-            
+
             {/* LEFT COLUMN: Input Form */}
-            <motion.div 
+            <motion.div
               className="lg:col-span-5 bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-6 md:p-8 shadow-2xl"
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
@@ -93,8 +100,8 @@ export default function QuickPricingPage() {
                         onClick={() => setPurpose(item.id)}
                         className={cn(
                           "flex flex-col items-center justify-center p-3 rounded-xl border transition-all duration-200 gap-2",
-                          purpose === item.id 
-                            ? "bg-orange-500/20 border-orange-500 text-orange-400 shadow-[0_0_15px_rgba(249,115,22,0.2)]" 
+                          purpose === item.id
+                            ? "bg-orange-500/20 border-orange-500 text-orange-400 shadow-[0_0_15px_rgba(249,115,22,0.2)]"
                             : "bg-white/5 border-white/10 text-gray-400 hover:bg-white/10 hover:border-white/20"
                         )}
                       >
@@ -117,8 +124,8 @@ export default function QuickPricingPage() {
                           onClick={() => setRoofType(id)}
                           className={cn(
                             "py-2.5 px-2 rounded-xl border transition-all duration-200 text-sm font-medium",
-                            roofType === id 
-                              ? "bg-blue-500/20 border-blue-500 text-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.2)]" 
+                            roofType === id
+                              ? "bg-blue-500/20 border-blue-500 text-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.2)]"
                               : "bg-white/5 border-white/10 text-gray-400 hover:bg-white/10 hover:border-white/20"
                           )}
                         >
@@ -131,37 +138,43 @@ export default function QuickPricingPage() {
 
                 {/* 3. Tiền điện */}
                 <div className="space-y-4">
-                  <div className="flex justify-between items-end">
-                    <label className="text-sm font-semibold text-gray-300 block">Tiền điện hiện tại/tháng (*)</label>
-                    <span className="text-lg font-bold text-white bg-white/10 px-3 py-1 rounded-lg">
-                      {formatVND(bill)}
-                    </span>
-                  </div>
-                  
-                  <div className="relative pt-2">
+                  <label className="text-sm font-semibold text-gray-300 block">Tiền điện hiện tại/tháng (*)</label>
+
+                  <div className="relative">
                     <input
-                      type="range"
-                      min="500000"
-                      max="50000000"
-                      step="500000"
-                      value={bill}
-                      onChange={(e) => setBill(Number(e.target.value))}
-                      className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-orange-500"
+                      type="text"
+                      inputMode="numeric"
+                      value={formatNumberString(bill)}
+                      onChange={(e) => {
+                        const rawValue = e.target.value.replace(/\D/g, "");
+                        const numericValue = rawValue ? Number(rawValue) : 0;
+                        setBill(numericValue);
+                      }}
+                      placeholder="Nhập số tiền điện (VND)"
+                      className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 pl-5 pr-16 text-lg font-bold text-white placeholder-gray-500 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 transition-all"
                     />
-                    <div className="flex justify-between text-xs text-gray-500 mt-2 font-medium">
-                      <span>500K</span>
-                      <span>10M</span>
-                      <span>25M</span>
-                      <span>50M+</span>
+                    <div className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 font-bold text-sm pointer-events-none">
+                      VNĐ
                     </div>
                   </div>
+
+                  {!isEffective && bill > 0 && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="flex items-start gap-2 text-amber-500 text-sm mt-3 bg-amber-500/10 border border-amber-500/20 p-4 rounded-2xl leading-relaxed"
+                    >
+                      <AlertCircle className="w-5 h-5 shrink-0 text-amber-500 mt-0.5" />
+                      <span>Số tiền điện tiêu thụ của bạn còn thấp, việc lắp đặt hệ thống năng lượng mặt trời chưa hiệu quả</span>
+                    </motion.div>
+                  )}
                 </div>
 
               </div>
             </motion.div>
 
             {/* RIGHT COLUMN: Results */}
-            <motion.div 
+            <motion.div
               className="lg:col-span-7 flex flex-col h-full"
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
@@ -169,7 +182,7 @@ export default function QuickPricingPage() {
             >
               <AnimatePresence mode="wait">
                 {!isEffective ? (
-                  <motion.div 
+                  <motion.div
                     key="not-effective"
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -181,7 +194,7 @@ export default function QuickPricingPage() {
                     </div>
                     <h3 className="text-xl font-bold text-amber-500">Tiêu thụ điện còn thấp</h3>
                     <p className="text-gray-300 max-w-sm leading-relaxed">
-                      Số điện tiêu thụ của bạn hiện tại tương đối thấp nên việc đầu tư hệ thống điện mặt trời sẽ <strong>chưa tối ưu về mặt kinh tế</strong>.
+                      Số tiền điện tiêu thụ của bạn còn thấp, việc lắp đặt hệ thống năng lượng mặt trời chưa hiệu quả.
                     </p>
                     <div className="bg-white/5 border border-white/10 rounded-xl p-4 mt-4 inline-flex items-start gap-3 text-left">
                       <Info className="w-5 h-5 text-blue-400 shrink-0 mt-0.5" />
@@ -191,7 +204,7 @@ export default function QuickPricingPage() {
                     </div>
                   </motion.div>
                 ) : (
-                  <motion.div 
+                  <motion.div
                     key="results"
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
@@ -235,7 +248,7 @@ export default function QuickPricingPage() {
                         <div className="w-1.5 h-6 bg-orange-500 rounded-full" />
                         Phương án đầu tư đề xuất
                       </h3>
-                      
+
                       <div className="space-y-4">
                         {[
                           {
@@ -260,12 +273,12 @@ export default function QuickPricingPage() {
                             color: "teal"
                           }
                         ].map((option, idx) => (
-                          <div 
-                            key={idx} 
+                          <div
+                            key={idx}
                             className={cn(
                               "p-5 rounded-2xl border transition-all hover:-translate-y-1 duration-300",
-                              option.highlight 
-                                ? "bg-gradient-to-r from-orange-500/10 to-transparent border-orange-500/50 shadow-[0_4px_20px_rgba(249,115,22,0.1)]" 
+                              option.highlight
+                                ? "bg-gradient-to-r from-orange-500/10 to-transparent border-orange-500/50 shadow-[0_4px_20px_rgba(249,115,22,0.1)]"
                                 : "bg-white/5 border-white/10 hover:border-white/30"
                             )}
                           >
@@ -291,12 +304,12 @@ export default function QuickPricingPage() {
                       </div>
 
                       <div className="mt-8 text-center">
-                        <a 
-                          href="/menu/contact" 
-                          className="inline-flex items-center justify-center gap-2 bg-white text-slate-900 hover:bg-gray-100 px-8 py-3.5 rounded-full font-bold text-sm transition-transform hover:scale-105"
+                        <Link
+                          href="/menu/contact"
+                          className="inline-flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-8 py-3.5 rounded-full font-bold text-sm transition-all shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 hover:-translate-y-0.5 uppercase tracking-wider"
                         >
                           Nhận Tư Vấn Chi Tiết <ArrowRight className="w-4 h-4" />
-                        </a>
+                        </Link>
                       </div>
                     </div>
 
