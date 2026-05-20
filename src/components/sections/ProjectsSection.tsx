@@ -3,38 +3,41 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Zap, MapPin, ArrowRight } from "lucide-react";
-
-const projects = [
-  {
-    id: "du-an-a",
-    name: "DỰ ÁN A",
-    power: "12 kWp",
-    location: "Đồng Nai",
-    desc: "Dự án A, Công suất 12 kWp, địa điểm Đồng Nai",
-    image: "/images/demo1.jpg",
-    isReverse: false, // Text left, Image right
-  },
-  {
-    id: "du-an-b",
-    name: "DỰ ÁN B",
-    power: "12 kWp",
-    location: "Đồng Nai",
-    desc: "Dự án B, Công suất 12 kWp, địa điểm Đồng Nai",
-    image: "/images/demo3.jpg", // Tightening tool image
-    isReverse: true, // Image left, Text right
-  },
-  {
-    id: "du-an-c",
-    name: "DỰ ÁN C",
-    power: "12 kWp",
-    location: "Đồng Nai",
-    desc: "Dự án C, Công suất 12 kWp, địa điểm Đồng Nai",
-    image: "/images/demo2.jpg", // Solar arrays rooftop image
-    isReverse: false, // Text left, Image right
-  },
-];
+import { useTranslation } from "next-i18next/pages";
 
 export default function ProjectsSection() {
+  const { t } = useTranslation("common");
+
+  const projects = [
+    {
+      id: "du-an-a",
+      name: t("projects.project_a.name"),
+      power: "12 kWp",
+      location: t("projects.project_a.location"),
+      desc: t("projects.project_a.desc"),
+      image: "/images/demo1.jpg",
+      isReverse: false,
+    },
+    {
+      id: "du-an-b",
+      name: t("projects.project_b.name"),
+      power: "12 kWp",
+      location: t("projects.project_b.location"),
+      desc: t("projects.project_b.desc"),
+      image: "/images/demo3.jpg",
+      isReverse: true,
+    },
+    {
+      id: "du-an-c",
+      name: t("projects.project_c.name"),
+      power: "12 kWp",
+      location: t("projects.project_c.location"),
+      desc: t("projects.project_c.desc"),
+      image: "/images/demo2.jpg",
+      isReverse: false,
+    },
+  ];
+
   return (
     <section id="featured-projects" className="relative py-24 overflow-hidden">
       {/* Separator Lines */}
@@ -66,7 +69,7 @@ export default function ProjectsSection() {
             transition={{ duration: 0.5 }}
             className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-500/15 border border-orange-500/30 text-orange-400 text-xs font-bold uppercase tracking-wider mb-4"
           >
-            <Zap className="w-3.5 h-3.5 animate-pulse" /> Danh Mục Công Trình
+            <Zap className="w-3.5 h-3.5 animate-pulse" /> {t("projects.badge")}
           </motion.div>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -75,7 +78,7 @@ export default function ProjectsSection() {
             transition={{ duration: 0.6 }}
             className="text-3xl md:text-5xl font-black text-white uppercase tracking-tight mb-4"
           >
-            DỰ ÁN <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-yellow-500">TIÊU BIỂU</span>
+            {t("projects.title")}<span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-yellow-500">{t("projects.highlight")}</span>
           </motion.h2>
           <motion.div
             initial={{ opacity: 0, scaleX: 0 }}
@@ -119,7 +122,7 @@ export default function ProjectsSection() {
                           {project.name}
                         </h3>
                         <span className="flex items-center gap-1 text-[10px] md:text-xs font-black bg-orange-500/20 text-orange-400 px-3 py-1 rounded-full border border-orange-500/30">
-                          <Zap className="w-3.5 h-3.5" /> HOÀN THÀNH
+                          <Zap className="w-3.5 h-3.5" /> {t("projects.completed")}
                         </span>
                       </div>
 
@@ -134,13 +137,13 @@ export default function ProjectsSection() {
                       {/* Structural Details */}
                       <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/10">
                         <div className="space-y-1">
-                          <span className="text-xs text-gray-400 font-semibold uppercase tracking-wider block">Công suất</span>
+                          <span className="text-xs text-gray-400 font-semibold uppercase tracking-wider block">{t("projects.capacity")}</span>
                           <span className="text-lg font-extrabold text-orange-400 flex items-center gap-1">
                             <Zap className="w-4 h-4 text-orange-500" /> {project.power}
                           </span>
                         </div>
                         <div className="space-y-1">
-                          <span className="text-xs text-gray-400 font-semibold uppercase tracking-wider block">Địa điểm</span>
+                          <span className="text-xs text-gray-400 font-semibold uppercase tracking-wider block">{t("projects.locationLabel")}</span>
                           <span className="text-lg font-extrabold text-white flex items-center gap-1">
                             <MapPin className="w-4 h-4 text-orange-500" /> {project.location}
                           </span>
@@ -149,7 +152,7 @@ export default function ProjectsSection() {
 
                       <div className="pt-2">
                         <span className="inline-flex items-center gap-2 text-xs font-extrabold text-orange-400 group-hover:translate-x-2 transition-transform duration-300">
-                          Chi tiết công trình <ArrowRight className="w-4 h-4" />
+                          {t("projects.details")} <ArrowRight className="w-4 h-4" />
                         </span>
                       </div>
                     </div>

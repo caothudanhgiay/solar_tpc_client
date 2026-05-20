@@ -38,7 +38,7 @@ export class ApiException extends Error {
 
 export const handleApiResponse = async (response: Response) => {
   const status = response.status;
-  
+
   let responseData: any = null;
   let serverMessage = '';
 
@@ -61,12 +61,12 @@ export const handleApiResponse = async (response: Response) => {
       data: responseData,
       message: serverMessage || 'Thành công'
     };
-  } 
-  
+  }
+
   else if (status >= 300 && status <= 305) {
     throw new ApiException(status, serverMessage || `Tài nguyên đã được chuyển hướng (HTTP ${status})`, responseData);
-  } 
-  
+  }
+
   else if (status >= 400 && status <= 408) {
     let defaultMsg = 'Yêu cầu không hợp lệ';
     switch (status) {
@@ -78,8 +78,8 @@ export const handleApiResponse = async (response: Response) => {
     }
     const finalMessage = serverMessage || defaultMsg;
     throw new ApiException(status, finalMessage, responseData);
-  } 
-  
+  }
+
   else if (status >= 500 && status <= 506) {
     let defaultMsg = 'Lỗi máy chủ nội bộ';
     switch (status) {
@@ -90,8 +90,8 @@ export const handleApiResponse = async (response: Response) => {
     }
     const finalMessage = serverMessage || defaultMsg;
     throw new ApiException(status, finalMessage, responseData);
-  } 
-  
+  }
+
   else {
     throw new ApiException(status, serverMessage || `Lỗi không xác định (HTTP ${status})`, responseData);
   }

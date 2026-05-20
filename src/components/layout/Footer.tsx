@@ -1,8 +1,19 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Mail, Phone, MapPin, Globe, MessageCircle, ChevronRight } from "lucide-react";
+import { Mail, Phone, MapPin, Globe, ChevronRight } from "lucide-react";
+import { useTranslation } from "next-i18next/pages";
 
 export default function Footer() {
+  const { t } = useTranslation("common");
+
+  const supportItems = [
+    { label: t("footer.commit"), href: "#" },
+    { label: t("footer.warranty"), href: "#" },
+    { label: t("footer.delivery"), href: "#" },
+    { label: t("footer.privacy"), href: "#" },
+    { label: t("footer.career"), href: "#" }
+  ];
+
   return (
     <footer className="bg-slate-950 pt-16 border-t border-white/10">
       <div className="container mx-auto px-4 md:px-6">
@@ -22,7 +33,7 @@ export default function Footer() {
                 />
               </div>
               <span className="text-white font-bold text-lg mt-4 uppercase tracking-wide">
-                ĐIỆN MẶT TRỜI TPC SOLAR
+                {t("footer.brandName")}
               </span>
             </Link>
             <div className="flex space-x-4 pt-2">
@@ -50,19 +61,18 @@ export default function Footer() {
           {/* Column 2: Contact Info */}
           <div>
             <h3 className="text-white font-bold text-lg mb-8 uppercase relative before:content-[''] before:absolute before:-bottom-3 before:left-0 before:w-10 before:h-1 before:bg-orange-500">
-              LIÊN HỆ
+              {t("footer.contactTitle")}
             </h3>
 
             <div className="space-y-4">
               <h4 className="text-gray-300 font-bold text-sm uppercase">
-                CÔNG TY TNHH DỊCH VỤ NĂNG LƯỢNG MẶT TRỜI TPC
+                {t("footer.companyName")}
               </h4>
-              {/* <p className="text-sm text-gray-500 font-medium">MST: [Mã số thuế của bạn]</p> */}
 
               <ul className="space-y-3 text-sm text-gray-400">
                 <li className="flex items-start gap-3">
                   <MapPin className="h-5 w-5 text-orange-500 mt-0.5 shrink-0" />
-                  <span className="leading-relaxed">Khu phố Long Đức 1, Phường Tam Phước, Thành Phố Đồng Nai</span>
+                  <span className="leading-relaxed">{t("footer.addressValue")}</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Phone className="h-5 w-5 text-orange-500 shrink-0" />
@@ -83,20 +93,14 @@ export default function Footer() {
           {/* Column 3: Policies */}
           <div>
             <h3 className="text-white font-bold text-lg mb-8 uppercase relative before:content-[''] before:absolute before:-bottom-3 before:left-0 before:w-10 before:h-1 before:bg-orange-500">
-              HỖ TRỢ
+              {t("footer.supportTitle")}
             </h3>
             <ul className="space-y-3.5">
-              {[
-                'Cam kết bán hàng',
-                'Chính sách bảo hành',
-                'Giao hàng & thanh toán',
-                'Bảo mật thông tin',
-                'Tuyển dụng'
-              ].map((item) => (
-                <li key={item}>
-                  <a href="#" className="flex items-center text-sm text-gray-400 hover:text-orange-500 transition-colors">
+              {supportItems.map((item) => (
+                <li key={item.label}>
+                  <a href={item.href} className="flex items-center text-sm text-gray-400 hover:text-orange-500 transition-colors">
                     <ChevronRight className="h-4 w-4 mr-2 text-orange-500" />
-                    {item}
+                    {item.label}
                   </a>
                 </li>
               ))}
@@ -106,7 +110,7 @@ export default function Footer() {
           {/* Column 4: Map */}
           <div>
             <h3 className="text-white font-bold text-lg mb-8 uppercase relative before:content-[''] before:absolute before:-bottom-3 before:left-0 before:w-10 before:h-1 before:bg-orange-500">
-              BẢN ĐỒ
+              {t("footer.mapTitle")}
             </h3>
             <div className="rounded-lg h-[200px] w-full overflow-hidden border border-white/10 shadow-sm">
               <iframe
@@ -127,7 +131,7 @@ export default function Footer() {
       <div className="border-t border-white/10 py-6 mt-4">
         <div className="container mx-auto px-4 md:px-6 text-center">
           <p className="text-sm text-gray-500 font-medium">
-            &copy; {new Date().getFullYear()} TPC Renewable Energy. All rights reserved.
+            &copy; {new Date().getFullYear()} {t("footer.rights")}
           </p>
         </div>
       </div>

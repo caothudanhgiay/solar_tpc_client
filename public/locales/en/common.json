@@ -1,5 +1,192 @@
 {
   "welcome": "Welcome",
   "login": "Login",
-  "logout": "Logout"
+  "logout": "Logout",
+  "header": {
+    "home": "HOME",
+    "services": "SERVICES",
+    "projects": "PROJECTS",
+    "pricing": "QUICK PRICING",
+    "contact": "CONTACT",
+    "getQuote": "Get a Quote"
+  },
+  "footer": {
+    "brandName": "TPC SOLAR RENEWABLE ENERGY",
+    "contactTitle": "CONTACT",
+    "companyName": "TPC SOLAR ENERGY SERVICES CO., LTD",
+    "addressLabel": "Address",
+    "addressValue": "Long Duc 1 Hamlet, Tam Phuoc Ward, Bien Hoa City, Dong Nai Province",
+    "supportTitle": "SUPPORT",
+    "commit": "Sales Commitment",
+    "warranty": "Warranty Policy",
+    "delivery": "Delivery & Payment",
+    "privacy": "Privacy Policy",
+    "career": "Careers",
+    "mapTitle": "MAP",
+    "rights": "TPC Renewable Energy. All rights reserved."
+  },
+  "hero": {
+    "pioneer": "Pioneering Green Energy",
+    "titlePre": "Solar Energy ",
+    "titleSolar": "Solutions",
+    "titlePost": " for the Future",
+    "desc": "TPC Solar provides comprehensive clean energy solutions, helping you save costs, optimize profits, and join hands to protect the environment.",
+    "getAdvice": "Get advice now",
+    "viewProjects": "View projects",
+    "savingTitle": "Save 80%",
+    "savingDesc": "Cut down maximum monthly electricity bills for households and businesses.",
+    "warrantyTitle": "25-year warranty",
+    "warrantyDesc": "Commitment to solar panel performance and lifelong professional maintenance services.",
+    "statProjects": "Completed Projects",
+    "statProvinces": "Provinces",
+    "statYears": "Years of Experience",
+    "statCapacity": "MWp Installed"
+  },
+  "about": {
+    "highlight1_title": "Cleaner",
+    "highlight1_sub": "Reduce emissions",
+    "highlight2_title": "More economical",
+    "highlight2_sub": "Reduce electricity cost",
+    "highlight3_title": "More efficient",
+    "highlight3_sub": "Optimize performance",
+    "highlight4_title": "More sustainable",
+    "highlight4_sub": "Long-term development",
+    "point1": "High efficiency, energy saving",
+    "point2": "Modern technology, smart operation",
+    "point3": "Durable operation, eco-friendly",
+    "service1_pre": "Solar rooftop system installation",
+    "service1_mid": "and commercial",
+    "service2": "Solar rooftop system for businesses",
+    "service3": "System maintenance & operation",
+    "service4": "Consulting and design of optimized solutions",
+    "service5": "Solar panel cleaning service",
+    "benefit1": "Reduce electricity bills",
+    "benefit2": "Protect environment",
+    "benefit3": "Modern technology",
+    "benefit4": "Professional service",
+    "benefit5": "Quality guaranteed",
+    "benefit6": "Quick & dedicated support",
+    "aboutUs": "About Us",
+    "ourServices": "TPC Services",
+    "whyChooseUs": "Why Choose TPC",
+    "slogan": "GREEN ENERGY · SUSTAINABLE VALUE"
+  },
+  "projects": {
+    "badge": "Portfolio",
+    "title": "FEATURED ",
+    "highlight": "PROJECTS",
+    "completed": "COMPLETED",
+    "capacity": "Capacity",
+    "locationLabel": "Location",
+    "details": "Project details",
+    "project_a": {
+      "name": "PROJECT A",
+      "location": "Dong Nai",
+      "desc": "Project A, Capacity 12 kWp, located in Dong Nai"
+    },
+    "project_b": {
+      "name": "PROJECT B",
+      "location": "Dong Nai",
+      "desc": "Project B, Capacity 12 kWp, located in Dong Nai"
+    },
+    "project_c": {
+      "name": "PROJECT C",
+      "location": "Dong Nai",
+      "desc": "Project C, Capacity 12 kWp, located in Dong Nai"
+    }
+  },
+  "services": {
+    "badge": "Comprehensive Solutions",
+    "title": "OUR ",
+    "highlight": "SERVICES",
+    "details": "Service details",
+    "item1": {
+      "title": "Installation & Construction Service",
+      "desc": "In-depth survey, precise engineering design, and turnkey installation of solar system meeting international quality standards."
+    },
+    "item2": {
+      "title": "O&M Service (Operation & Maintenance)",
+      "desc": "Routine maintenance, professional performance testing, and rapid troubleshooting help maximize electricity output."
+    },
+    "item3": {
+      "title": "Solar Panel Cleaning Service",
+      "desc": "Cleaning solar panels with modern technology helps completely remove dirt, improving solar radiation absorption performance by 15-20%."
+    },
+    "item4": {
+      "title": "SCADA Monitoring & Operation",
+      "desc": "Integrating modern SCADA monitoring software helps track visual operation indicators in real-time and detect errors automatically."
+    }
+  },
+  "contact": {
+    "title": "Contact Us",
+    "metaTitle": "Contact - TPC Solar",
+    "metaDesc": "Contact TPC Solar to get advice on solar energy systems.",
+    "officeTitle": "Dong Nai Office",
+    "officeAddress": "Nguyen Khac Hieu, Tam Phuoc, Dong Nai, Vietnam",
+    "sendUsTitle": "SEND US YOUR INFORMATION",
+    "sendUsDesc": "Please fill in all information. We will respond to you as soon as possible",
+    "placeholderName": "Full Name (*)",
+    "placeholderPhone": "Phone Number (*)",
+    "placeholderEmail": "Email",
+    "placeholderAddress": "Address",
+    "placeholderMessage": "Message (*)",
+    "btnSend": "SEND",
+    "btnSending": "SENDING...",
+    "btnCancel": "CANCEL",
+    "btnConfirm": "CONFIRM",
+    "requiredFieldsAlert": "Please fill in all required fields (*)",
+    "incorrectCaptcha": "Incorrect validation code",
+    "securityVerify": "Security Verification",
+    "securityVerifyDesc": "Please solve the math equation below to proceed.",
+    "enterResult": "Enter result"
+  },
+  "projects_page": {
+    "title": "Projects",
+    "metaTitle": "Projects - TPC Solar",
+    "metaDesc": "Featured projects implemented by TPC Solar.",
+    "updating": "Featured projects are being updated..."
+  },
+  "services_page": {
+    "title": "Services Directory",
+    "metaTitle": "Services - TPC Solar",
+    "metaDesc": "Professional solar services directory from TPC Solar.",
+    "allServices": "All Services",
+    "contactPrice": "Contact us",
+    "btnDetails": "Details",
+    "notFound": "No services found."
+  },
+  "pricing": {
+    "title": "Quick Pricing",
+    "metaTitle": "Quick Pricing - TPC Solar",
+    "metaDesc": "Solar energy capacity calculator and quick pricing tool from TPC Solar.",
+    "intro": "Estimate the required solar energy capacity and find the optimal investment options based on your needs.",
+    "systemInfo": "System Information",
+    "purposeLabel": "Electricity usage purpose (*)",
+    "purposeResidential": "Residential",
+    "purposeCommercial": "Commercial",
+    "purposeIndustrial": "Industrial",
+    "roofLabel": "Roof type (*)",
+    "roofMetal": "Metal roof",
+    "roofFlat": "Flat roof",
+    "roofTile": "Tile roof",
+    "billLabel": "Current monthly electricity bill (*)",
+    "billPlaceholder": "Enter electricity bill amount (VND)",
+    "lowConsumptionAlert": "Your electricity consumption is still low, installing a solar system is not yet efficient",
+    "lowConsumptionTitle": "Low Electricity Consumption",
+    "lowConsumptionDesc": "Your electricity consumption is still low, installing a solar system is not yet efficient.",
+    "lowConsumptionTip": "If your monthly electricity bill is 1,500,000 VND or more, investment will bring clear benefits and a faster payback period.",
+    "recommendedCapacity": "Recommended Capacity",
+    "estimatedSavings": "Estimated monthly savings",
+    "investmentOptions": "Recommended Investment Options",
+    "option1Title": "Customer owns 100%",
+    "option1Desc": "TPC surveys, advises & installs. Customer pays once and enjoys all benefits.",
+    "option1Price": "Turnkey price from: 11,000,000 VND / 1 kWp",
+    "option2Title": "TPC invests 100% - Buy cheap electricity",
+    "option2Desc": "TPC installs system for free. Customer gets up to 35% off EVN electricity price.",
+    "option2Price": "Electricity sales price from: 1,650 VND / kWh",
+    "option3Title": "TPC invests 100% - Lease system",
+    "option3Desc": "TPC installs system. Customer pays fixed monthly rent and uses generated electricity.",
+    "option3Price": "Rental fee from: 160,000 VND / 1 kWp / month",
+    "btnAdvice": "Get Detailed Advice"
+  }
 }

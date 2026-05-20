@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { Zap, Wrench, Sparkles, Activity, ShieldCheck, ArrowRight } from "lucide-react";
+import { useTranslation } from "next-i18next/pages";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 30 },
@@ -14,38 +15,40 @@ const fadeUp = {
   }),
 };
 
-const services = [
-  {
-    icon: Zap,
-    title: "Dịch Vụ Thi Công Lắp Đặt",
-    desc: "Khảo sát chuyên sâu, thiết kế kỹ thuật chính xác và lắp đặt trọn gói hệ thống điện mặt trời đạt chuẩn chất lượng quốc tế.",
-    image: "/images/demo2.jpg", // Solar arrays rooftop image
-    href: "/menu/services?category=lap-dat",
-  },
-  {
-    icon: Wrench,
-    title: "Dịch Vụ O&M (Vận Hành & Bảo Trì)",
-    desc: "Bảo dưỡng định kỳ, kiểm tra hiệu suất chuyên nghiệp và khắc phục sự cố nhanh chóng giúp tối đa hóa sản lượng điện phát ra.",
-    image: "/images/demo3.jpg", // Tightening tool image
-    href: "/menu/services?category=om",
-  },
-  {
-    icon: Sparkles,
-    title: "Dịch Vụ Vệ Sinh Tấm Pin NLMT",
-    desc: "Vệ sinh tấm pin bằng công nghệ hiện đại giúp làm sạch bụi bẩn hoàn toàn, nâng cao hiệu suất hấp thụ bức xạ mặt trời từ 15-20%.",
-    image: "/images/demo1.jpg", // Cabinet thermal scanner image
-    href: "/menu/services?category=ve-sinh",
-  },
-  {
-    icon: Activity,
-    title: "Giám Sát & Vận Hành Bằng SCADA",
-    desc: "Tích hợp phần mềm giám sát SCADA hiện đại giúp theo dõi các chỉ số vận hành trực quan theo thời gian thực và phát hiện lỗi tự động.",
-    image: "/images/demo4.jpg", // Warehouse panels image
-    href: "/menu/services?category=scada",
-  },
-];
-
 export default function ServicesSection() {
+  const { t } = useTranslation("common");
+
+  const services = [
+    {
+      icon: Zap,
+      title: t("services.item1.title"),
+      desc: t("services.item1.desc"),
+      image: "/images/demo2.jpg",
+      href: "/menu/services?category=lap-dat",
+    },
+    {
+      icon: Wrench,
+      title: t("services.item2.title"),
+      desc: t("services.item2.desc"),
+      image: "/images/demo3.jpg",
+      href: "/menu/services?category=om",
+    },
+    {
+      icon: Sparkles,
+      title: t("services.item3.title"),
+      desc: t("services.item3.desc"),
+      image: "/images/demo1.jpg",
+      href: "/menu/services?category=ve-sinh",
+    },
+    {
+      icon: Activity,
+      title: t("services.item4.title"),
+      desc: t("services.item4.desc"),
+      image: "/images/demo4.jpg",
+      href: "/menu/services?category=scada",
+    },
+  ];
+
   return (
     <section id="our-services" className="relative py-24 overflow-hidden">
       {/* Separator Lines */}
@@ -77,7 +80,7 @@ export default function ServicesSection() {
             transition={{ duration: 0.5 }}
             className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-500/15 border border-teal-500/30 text-teal-400 text-xs font-bold uppercase tracking-wider mb-4"
           >
-            <ShieldCheck className="w-3.5 h-3.5 animate-pulse" /> Giải Pháp Toàn Diện
+            <ShieldCheck className="w-3.5 h-3.5 animate-pulse" /> {t("services.badge")}
           </motion.div>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -86,7 +89,7 @@ export default function ServicesSection() {
             transition={{ duration: 0.6 }}
             className="text-3xl md:text-5xl font-black text-white uppercase tracking-tight mb-4"
           >
-            DỊCH VỤ <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-emerald-400">CỦA CHÚNG TÔI</span>
+            {t("services.title")}<span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-emerald-400">{t("services.highlight")}</span>
           </motion.h2>
           <motion.div
             initial={{ opacity: 0, scaleX: 0 }}
@@ -153,7 +156,7 @@ export default function ServicesSection() {
                       href={service.href}
                       className="inline-flex items-center gap-1 text-[11px] font-black text-orange-400 group-hover:translate-x-1.5 transition-transform duration-300 hover:underline"
                     >
-                      Chi tiết dịch vụ <ArrowRight className="w-3.5 h-3.5" />
+                      {t("services.details")} <ArrowRight className="w-3.5 h-3.5" />
                     </Link>
                   </div>
                 </motion.div>

@@ -1,5 +1,192 @@
 {
   "welcome": "Chào mừng",
   "login": "Đăng nhập",
-  "logout": "Đăng xuất"
+  "logout": "Đăng xuất",
+  "header": {
+    "home": "TRANG CHỦ",
+    "services": "DỊCH VỤ",
+    "projects": "DỰ ÁN",
+    "pricing": "BẢNG GIÁ NHANH",
+    "contact": "LIÊN HỆ",
+    "getQuote": "Nhận Báo Giá"
+  },
+  "footer": {
+    "brandName": "ĐIỆN MẶT TRỜI TPC SOLAR",
+    "contactTitle": "LIÊN HỆ",
+    "companyName": "CÔNG TY TNHH DỊCH VỤ NĂNG LƯỢNG MẶT TRỜI TPC",
+    "addressLabel": "Địa chỉ",
+    "addressValue": "Khu phố Long Đức 1, Phường Tam Phước, Thành Phố Đồng Nai",
+    "supportTitle": "HỖ TRỢ",
+    "commit": "Cam kết bán hàng",
+    "warranty": "Chính sách bảo hành",
+    "delivery": "Giao hàng & thanh toán",
+    "privacy": "Bảo mật thông tin",
+    "career": "Tuyển dụng",
+    "mapTitle": "BẢN ĐỒ",
+    "rights": "TPC Renewable Energy. All rights reserved."
+  },
+  "hero": {
+    "pioneer": "Tiên phong năng lượng xanh",
+    "titlePre": "Giải pháp ",
+    "titleSolar": "Điện Mặt Trời",
+    "titlePost": " Cho Tương Lai",
+    "desc": "TPC Solar mang đến giải pháp năng lượng sạch toàn diện, giúp bạn tiết kiệm chi phí, tối ưu hóa lợi nhuận và chung tay bảo vệ môi trường.",
+    "getAdvice": "Nhận tư vấn ngay",
+    "viewProjects": "Xem dự án",
+    "savingTitle": "Tiết kiệm 80%",
+    "savingDesc": "Cắt giảm tối đa hóa đơn tiền điện hàng tháng cho gia đình và doanh nghiệp.",
+    "warrantyTitle": "Bảo hành 25 năm",
+    "warrantyDesc": "Cam kết hiệu suất tấm pin và dịch vụ bảo trì chuyên nghiệp trọn đời.",
+    "statProjects": "Dự án hoàn thành",
+    "statProvinces": "Tỉnh thành",
+    "statYears": "Năm kinh nghiệm",
+    "statCapacity": "MWp đã lắp đặt"
+  },
+  "about": {
+    "highlight1_title": "Sạch hơn",
+    "highlight1_sub": "Giảm phát thải",
+    "highlight2_title": "Tiết kiệm hơn",
+    "highlight2_sub": "Giảm chi phí điện",
+    "highlight3_title": "Hiệu quả hơn",
+    "highlight3_sub": "Tối ưu hiệu suất",
+    "highlight4_title": "Bền vững hơn",
+    "highlight4_sub": "Phát triển dài lâu",
+    "point1": "Hiệu suất cao, tiết kiệm năng lượng",
+    "point2": "Công nghệ hiện đại, vận hành thông minh",
+    "point3": "Hoạt động bền bỉ, thân thiện môi trường",
+    "service1_pre": "Lắp đặt hệ thống điện mặt trời mái nhà",
+    "service1_mid": "và thương mại",
+    "service2": "Hệ thống điện mặt trời cho doanh nghiệp",
+    "service3": "Bảo trì và vận hành hệ thống",
+    "service4": "Tư vấn và thiết kế giải pháp tối ưu",
+    "service5": "Vệ sinh tấm pin năng lượng mặt trời",
+    "benefit1": "Tiết kiệm chi phí điện",
+    "benefit2": "Bảo vệ môi trường",
+    "benefit3": "Công nghệ hiện đại",
+    "benefit4": "Dịch vụ chuyên nghiệp",
+    "benefit5": "Chất lượng đảm bảo",
+    "benefit6": "Hỗ trợ nhanh chóng và tận tâm",
+    "aboutUs": "Về Chúng Tôi",
+    "ourServices": "Dịch Vụ Của TPC",
+    "whyChooseUs": "Lợi Ích Khi Chọn TPC",
+    "slogan": "NĂNG LƯỢNG XANH · GIÁ TRỊ BỀN VỮNG"
+  },
+  "projects": {
+    "badge": "Danh Mục Công Trình",
+    "title": "DỰ ÁN ",
+    "highlight": "TIÊU BIỂU",
+    "completed": "HOÀN THÀNH",
+    "capacity": "Công suất",
+    "locationLabel": "Địa điểm",
+    "details": "Chi tiết công trình",
+    "project_a": {
+      "name": "DỰ ÁN A",
+      "location": "Đồng Nai",
+      "desc": "Dự án A, Công suất 12 kWp, địa điểm Đồng Nai"
+    },
+    "project_b": {
+      "name": "DỰ ÁN B",
+      "location": "Đồng Nai",
+      "desc": "Dự án B, Công suất 12 kWp, địa điểm Đồng Nai"
+    },
+    "project_c": {
+      "name": "DỰ ÁN C",
+      "location": "Đồng Nai",
+      "desc": "Dự án C, Công suất 12 kWp, địa điểm Đồng Nai"
+    }
+  },
+  "services": {
+    "badge": "Giải Pháp Toàn Diện",
+    "title": "DỊCH VỤ ",
+    "highlight": "CỦA CHÚNG TÔI",
+    "details": "Chi tiết dịch vụ",
+    "item1": {
+      "title": "Dịch Vụ Thi Công Lắp Đặt",
+      "desc": "Khảo sát chuyên sâu, thiết kế kỹ thuật chính xác và lắp đặt trọn gói hệ thống điện mặt trời đạt chuẩn chất lượng quốc tế."
+    },
+    "item2": {
+      "title": "Dịch Vụ O&M (Vận Hành & Bảo Trì)",
+      "desc": "Bảo dưỡng định kỳ, kiểm tra hiệu suất chuyên nghiệp và khắc phục sự cố nhanh chóng giúp tối đa hóa sản lượng điện phát ra."
+    },
+    "item3": {
+      "title": "Dịch Vụ Vệ Sinh Tấm Pin NLMT",
+      "desc": "Vệ sinh tấm pin bằng công nghệ hiện đại giúp làm sạch bụi bẩn hoàn toàn, nâng cao hiệu suất hấp thụ bức xạ mặt trời từ 15-20%."
+    },
+    "item4": {
+      "title": "Giám Sát & Vận Hành Bằng SCADA",
+      "desc": "Tích hợp phần mềm giám sát SCADA hiện đại giúp theo dõi các chỉ số vận hành trực quan theo thời gian thực và phát hiện lỗi tự động."
+    }
+  },
+  "contact": {
+    "title": "Liên Hệ",
+    "metaTitle": "Liên Hệ - TPC Solar",
+    "metaDesc": "Liên hệ với TPC Solar để được tư vấn hệ thống điện năng lượng mặt trời.",
+    "officeTitle": "Văn phòng Đồng Nai",
+    "officeAddress": "Nguyễn Khắc Hiếu, Tam Phước, Đồng Nai, Việt Nam",
+    "sendUsTitle": "GỬI THÔNG TIN CHO CHÚNG TÔI",
+    "sendUsDesc": "Vui lòng điền đầy đủ thông tin và nội dung liên hệ. Chúng tôi sẽ phản hồi bạn sớm nhất",
+    "placeholderName": "Họ và tên (*)",
+    "placeholderPhone": "Điện thoại (*)",
+    "placeholderEmail": "Email",
+    "placeholderAddress": "Địa chỉ",
+    "placeholderMessage": "Nội dung (*)",
+    "btnSend": "GỬI",
+    "btnSending": "ĐANG GỬI...",
+    "btnCancel": "HỦY",
+    "btnConfirm": "XÁC NHẬN",
+    "requiredFieldsAlert": "Vui lòng nhập đầy đủ các trường bắt buộc (*)",
+    "incorrectCaptcha": "Mã xác nhận không đúng",
+    "securityVerify": "Xác minh bảo mật",
+    "securityVerifyDesc": "Vui lòng giải phép toán bên dưới để tiếp tục gửi yêu cầu.",
+    "enterResult": "Nhập kết quả"
+  },
+  "projects_page": {
+    "title": "Dự Án",
+    "metaTitle": "Dự Án - TPC Solar",
+    "metaDesc": "Các dự án tiêu biểu đã triển khai bởi TPC Solar.",
+    "updating": "Đang cập nhật các dự án tiêu biểu..."
+  },
+  "services_page": {
+    "title": "Danh Mục Dịch Vụ",
+    "metaTitle": "Dịch Vụ - TPC Solar",
+    "metaDesc": "Danh mục dịch vụ điện mặt trời chuyên nghiệp từ TPC Solar.",
+    "allServices": "Tất cả dịch vụ",
+    "contactPrice": "Liên hệ",
+    "btnDetails": "Chi tiết",
+    "notFound": "Không tìm thấy dịch vụ nào."
+  },
+  "pricing": {
+    "title": "Bảng Giá Nhanh",
+    "metaTitle": "Bảng Giá Nhanh - TPC Solar",
+    "metaDesc": "Công cụ tính toán công suất điện mặt trời và báo giá nhanh các phương án đầu tư từ TPC Solar.",
+    "intro": "Tính toán sơ bộ công suất hệ thống điện năng lượng mặt trời cần thiết và các phương án đầu tư tối ưu dựa trên nhu cầu của bạn.",
+    "systemInfo": "Thông tin hệ thống",
+    "purposeLabel": "Mục đích sử dụng điện (*)",
+    "purposeResidential": "Sinh hoạt",
+    "purposeCommercial": "Kinh doanh",
+    "purposeIndustrial": "Sản xuất",
+    "roofLabel": "Loại mái nhà (*)",
+    "roofMetal": "Mái tôn",
+    "roofFlat": "Mái bằng",
+    "roofTile": "Mái ngói",
+    "billLabel": "Tiền điện hiện tại/tháng (*)",
+    "billPlaceholder": "Nhập số tiền điện (VND)",
+    "lowConsumptionAlert": "Số tiền điện tiêu thụ của bạn còn thấp, việc lắp đặt hệ thống năng lượng mặt trời chưa hiệu quả",
+    "lowConsumptionTitle": "Tiêu thụ điện còn thấp",
+    "lowConsumptionDesc": "Số tiền điện tiêu thụ của bạn còn thấp, việc lắp đặt hệ thống năng lượng mặt trời chưa hiệu quả.",
+    "lowConsumptionTip": "Nếu hóa đơn tiền điện của bạn từ 1.500.000đ/tháng trở lên, việc đầu tư sẽ mang lại lợi ích rõ rệt và thời gian hoàn vốn nhanh hơn.",
+    "recommendedCapacity": "Công suất đề xuất",
+    "estimatedSavings": "Dự kiến tiết kiệm/tháng",
+    "investmentOptions": "Phương án đầu tư đề xuất",
+    "option1Title": "Khách hàng sở hữu 100%",
+    "option1Desc": "TPC khảo sát, tư vấn & lắp đặt trọn gói. Khách hàng thanh toán 1 lần và hưởng toàn bộ lợi ích.",
+    "option1Price": "Giá trọn gói từ: 11.000.000đ / 1 kWp",
+    "option2Title": "TPC đầu tư 100% - Khách hàng mua điện giá rẻ",
+    "option2Desc": "TPC lắp đặt hệ thống miễn phí. Khách hàng được giảm đến 35% giá điện so với EVN.",
+    "option2Price": "Giá bán điện từ: 1.650đ / kWh",
+    "option3Title": "TPC đầu tư 100% - Cho thuê hệ thống",
+    "option3Desc": "TPC lắp đặt hệ thống. Khách hàng trả tiền thuê cố định hàng tháng và tự dùng điện.",
+    "option3Price": "Phí thuê từ: 160.000đ / 1 kWp / tháng",
+    "btnAdvice": "Nhận Tư Vấn Chi Tiết"
+  }
 }

@@ -1,6 +1,6 @@
 import { API_URL } from "@/lib/utils/constants";
-import { ApiException, handleApiResponse } from "./exception/exception";
-import { AppError } from "./exception/error";
+import { ApiException, handleApiResponse } from "../exception/exception";
+import { AppError } from "../exception/error";
 
 const DEFAULT_BASE_URL = API_URL;
 
@@ -25,6 +25,23 @@ class ApiClient {
       headers.set('Content-Type', 'application/json');
     }
 
+    // Tự động thêm Accept-Language dựa trên ngôn ngữ hiện tại của client
+    if (!headers.has('Accept-Language') && typeof window !== 'undefined') {
+      let locale = 'vi';
+      const pathParts = window.location.pathname.split('/');
+      if (pathParts[1] === 'en') {
+        locale = 'en';
+      } else {
+        const match = document.cookie.match(/NEXT_LOCALE=([^;]+)/);
+        if (match) {
+          locale = match[1];
+        } else {
+          locale = document.documentElement.lang || 'vi';
+        }
+      }
+      headers.set('Accept-Language', locale);
+    }
+
     // Tương lai: bạn có thể cấu hình lấy token từ localStorage và gắn vào header ở đây
     // const token = localStorage.getItem('token');
     // if (token) headers.set('Authorization', `Bearer ${token}`);
@@ -36,12 +53,11 @@ class ApiClient {
 
     try {
       const response = await fetch(url, config);
-
       // Chuyển giao việc xử lý response cho hàm chuẩn hóa handleApiResponse
       const result = await handleApiResponse(response);
 
       // Nếu không có lỗi (status thuộc nhóm 200-204), trả về data
-      return result.data as T;
+      return result as T;
 
     } catch (error: any) {
       console.warn(`[API Call Failed] ${options.method || 'GET'} ${url}:`, error.message);

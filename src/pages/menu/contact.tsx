@@ -2,11 +2,16 @@ import { useEffect, useRef, useState, FormEvent } from "react";
 import { useRouter } from "next/router";
 import { User, Phone, Mail, MapPin, MessageSquare, ShieldCheck, RefreshCw } from "lucide-react";
 import Head from "next/head";
-import { apiClient } from "@/lib/apiClient";
+import { useTranslation } from "next-i18next/pages";
+import { serverSideTranslations } from "next-i18next/pages/serverSideTranslations";
+import { GetStaticProps } from "next";
+
+import { apiClient } from "@/lib/utils/apiClient";
 import { Toast } from "@/components/ui/Toast";
 import { ApiException } from "@/lib/exception/exception";
 
 export default function ContactPage() {
+  const { t } = useTranslation("common");
   const nameInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
@@ -57,9 +62,8 @@ export default function ContactPage() {
 
   const handleSubmitClick = (e: FormEvent) => {
     e.preventDefault();
-    // Validate empty required fields on client side before showing captcha
     if (!formData.customerName.trim() || !formData.customerPhone.trim() || !formData.requestContent.trim()) {
-      Toast.error("Vui lòng nhập đầy đủ các trường bắt buộc (*)");
+      Toast.error(t("contact.requiredFieldsAlert"));
       return;
     }
     generateCaptcha();
@@ -68,7 +72,7 @@ export default function ContactPage() {
 
   const handleCaptchaSubmit = async () => {
     if (parseInt(userCaptcha) !== captcha.answer) {
-      setCaptchaError("Mã xác nhận không đúng");
+      setCaptchaError(t("contact.incorrectCaptcha"));
       generateCaptcha();
       return;
     }
@@ -76,10 +80,10 @@ export default function ContactPage() {
     setShowCaptchaModal(false);
     setLoading(true);
     setErrors({});
-    
+
     try {
       const response = await apiClient.post<any>("/api/customer-requests", formData);
-      Toast.success(response?.message || "Gửi yêu cầu thành công, chúng tôi sẽ liên hệ lại với bạn sớm nhất!");
+      Toast.success(response?.message || t("customer_request.success"));
       setFormData({
         customerName: "",
         customerPhone: "",
@@ -91,17 +95,18 @@ export default function ContactPage() {
       if (error instanceof ApiException && error.statusCode === 400 && error.data) {
         setErrors(error.data);
       } else {
-        Toast.error(error.message || "Đã xảy ra lỗi, vui lòng thử lại sau.");
+        Toast.error(error.message || t("error.system_error"));
       }
     } finally {
       setLoading(false);
     }
   };
+
   return (
     <>
       <Head>
-        <title>Liên Hệ - TPC Solar</title>
-        <meta name="description" content="Liên hệ với TPC Solar để được tư vấn hệ thống điện năng lượng mặt trời." />
+        <title>{t("contact.metaTitle")}</title>
+        <meta name="description" content={t("contact.metaDesc")} />
       </Head>
       <main className="relative min-h-screen pt-32 pb-20 overflow-hidden">
         {/* Background with overlay to match Home Page */}
@@ -118,7 +123,7 @@ export default function ContactPage() {
           {/* Page Title */}
           <div className="text-center mb-16">
             <h1 className="text-3xl md:text-4xl font-bold text-white uppercase mb-4">
-              Liên Hệ
+              {t("contact.title")}
             </h1>
             <div className="flex items-center justify-center gap-2">
               <div className="h-[1px] w-12 bg-orange-500"></div>
@@ -133,7 +138,7 @@ export default function ContactPage() {
             <div className="space-y-8">
               <div className="bg-white/5 backdrop-blur-sm border border-white/10 p-8 rounded-2xl h-full">
                 <h2 className="text-orange-500 font-bold text-xl uppercase mb-8">
-                  CÔNG TY TNHH DỊCH VỤ NĂNG LƯỢNG MẶT TRỜI TPC
+                  {t("footer.companyName")}
                 </h2>
 
                 <div className="space-y-6">
@@ -142,9 +147,9 @@ export default function ContactPage() {
                       <MapPin className="w-5 h-5" />
                     </div>
                     <div>
-                      <h3 className="font-bold text-white mb-1">Văn phòng Đồng Nai</h3>
+                      <h3 className="font-bold text-white mb-1">{t("contact.officeTitle")}</h3>
                       <p className="text-gray-300 leading-relaxed text-sm">
-                        Nguyễn Khắc Hiếu, Tam Phước, Đồng Nai, Việt Nam
+                        {t("contact.officeAddress")}
                       </p>
                     </div>
                   </div>
@@ -189,11 +194,11 @@ export default function ContactPage() {
           {/* Contact Form Section */}
           <div className="max-w-3xl mx-auto bg-white/5 backdrop-blur-sm border border-white/10 p-8 md:p-12 rounded-2xl">
             <div className="text-center mb-10">
-              <h2 className="text-2xl font-bold text-white mb-3">GỬI THÔNG TIN CHO CHÚNG TÔI</h2>
-              <p className="text-gray-400 text-sm">Vui lòng điền đầy đủ thông tin và nội dung liên hệ. Chúng tôi sẽ phản hồi bạn sớm nhất</p>
+              <h2 className="text-2xl font-bold text-white mb-3">{t("contact.sendUsTitle")}</h2>
+              <p className="text-gray-400 text-sm">{t("contact.sendUsDesc")}</p>
             </div>
 
-            <form onSubmit={handleSubmitClick} className="space-y-8">
+            <form onSubmit={handleSubmitClick} className="space-y-8" autoComplete="off">
               <div className="grid md:grid-cols-2 gap-8">
                 <div className="relative">
                   <div className={`absolute top-3 left-0 ${errors.customerName ? "text-red-500" : "text-orange-400"}`}>
@@ -206,10 +211,11 @@ export default function ContactPage() {
                     onChange={handleInputChange}
                     id="ho-va-ten"
                     type="text"
-                    placeholder="Họ và tên (*)"
+                    autoComplete="off"
+                    placeholder={t("contact.placeholderName")}
                     className={`w-full pl-8 pr-4 py-3 bg-transparent border-0 border-b ${errors.customerName ? "border-red-500 text-red-500" : "border-gray-600 text-white focus:border-orange-500"} outline-none focus:ring-0 placeholder-gray-500 transition-colors`}
                   />
-                  {errors.customerName && <p className="text-red-500 text-xs mt-1 absolute -bottom-5">{errors.customerName}</p>}
+                  {errors.customerName && <p className="text-red-500 text-xs mt-1">{errors.customerName}</p>}
                 </div>
                 <div className="relative">
                   <div className={`absolute top-3 left-0 ${errors.customerPhone ? "text-red-500" : "text-orange-400"}`}>
@@ -220,10 +226,11 @@ export default function ContactPage() {
                     value={formData.customerPhone}
                     onChange={handleInputChange}
                     type="tel"
-                    placeholder="Điện thoại (*)"
+                    autoComplete="off"
+                    placeholder={t("contact.placeholderPhone")}
                     className={`w-full pl-8 pr-4 py-3 bg-transparent border-0 border-b ${errors.customerPhone ? "border-red-500 text-red-500" : "border-gray-600 text-white focus:border-orange-500"} outline-none focus:ring-0 placeholder-gray-500 transition-colors`}
                   />
-                  {errors.customerPhone && <p className="text-red-500 text-xs mt-1 absolute -bottom-5">{errors.customerPhone}</p>}
+                  {errors.customerPhone && <p className="text-red-500 text-xs mt-1">{errors.customerPhone}</p>}
                 </div>
               </div>
 
@@ -237,10 +244,11 @@ export default function ContactPage() {
                     value={formData.customerEmail}
                     onChange={handleInputChange}
                     type="email"
-                    placeholder="Email"
+                    autoComplete="off"
+                    placeholder={t("contact.placeholderEmail")}
                     className={`w-full pl-8 pr-4 py-3 bg-transparent border-0 border-b ${errors.customerEmail ? "border-red-500 text-red-500" : "border-gray-600 text-white focus:border-orange-500"} outline-none focus:ring-0 placeholder-gray-500 transition-colors`}
                   />
-                  {errors.customerEmail && <p className="text-red-500 text-xs mt-1 absolute -bottom-5">{errors.customerEmail}</p>}
+                  {errors.customerEmail && <p className="text-red-500 text-xs mt-1">{errors.customerEmail}</p>}
                 </div>
                 <div className="relative">
                   <div className={`absolute top-3 left-0 ${errors.customerAddress ? "text-red-500" : "text-orange-400"}`}>
@@ -251,10 +259,11 @@ export default function ContactPage() {
                     value={formData.customerAddress}
                     onChange={handleInputChange}
                     type="text"
-                    placeholder="Địa chỉ"
+                    autoComplete="off"
+                    placeholder={t("contact.placeholderAddress")}
                     className={`w-full pl-8 pr-4 py-3 bg-transparent border-0 border-b ${errors.customerAddress ? "border-red-500 text-red-500" : "border-gray-600 text-white focus:border-orange-500"} outline-none focus:ring-0 placeholder-gray-500 transition-colors`}
                   />
-                  {errors.customerAddress && <p className="text-red-500 text-xs mt-1 absolute -bottom-5">{errors.customerAddress}</p>}
+                  {errors.customerAddress && <p className="text-red-500 text-xs mt-1">{errors.customerAddress}</p>}
                 </div>
               </div>
 
@@ -266,13 +275,13 @@ export default function ContactPage() {
                   name="requestContent"
                   value={formData.requestContent}
                   onChange={handleInputChange}
-                  placeholder="Nội dung (*)"
+                  placeholder={t("contact.placeholderMessage")}
                   rows={4}
                   className={`w-full pl-8 pr-4 py-3 bg-transparent border-0 border-b ${errors.requestContent ? "border-red-500 text-red-500" : "border-gray-600 text-white focus:border-orange-500"} outline-none focus:ring-0 placeholder-gray-500 transition-colors resize-none`}
                 ></textarea>
-                {errors.requestContent && <p className="text-red-500 text-xs mt-1 absolute -bottom-5">{errors.requestContent}</p>}
+                {errors.requestContent && <p className="text-red-500 text-xs mt-1">{errors.requestContent}</p>}
               </div>
-              
+
               <div className="text-center pt-6">
                 <button
                   type="submit"
@@ -282,10 +291,10 @@ export default function ContactPage() {
                   {loading ? (
                     <>
                       <RefreshCw className="w-5 h-5 animate-spin" />
-                      ĐANG GỬI...
+                      {t("contact.btnSending")}
                     </>
                   ) : (
-                    "GỬI"
+                    t("contact.btnSend")
                   )}
                 </button>
               </div>
@@ -299,19 +308,19 @@ export default function ContactPage() {
       {showCaptchaModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <div className="bg-slate-900 border border-white/10 rounded-2xl p-6 md:p-8 max-w-sm w-full shadow-2xl relative animate-in fade-in zoom-in duration-200">
-            <h3 className="text-xl font-bold text-white mb-4 text-center">Xác minh bảo mật</h3>
-            <p className="text-gray-400 text-sm text-center mb-6">Vui lòng giải phép toán bên dưới để tiếp tục gửi yêu cầu.</p>
-            
+            <h3 className="text-xl font-bold text-white mb-4 text-center">{t("contact.securityVerify")}</h3>
+            <p className="text-gray-400 text-sm text-center mb-6">{t("contact.securityVerifyDesc")}</p>
+
             <div className="flex flex-col gap-4">
               <div className="flex items-center justify-center gap-4 bg-black/40 border border-white/20 rounded-xl px-4 py-4">
                 <span className="text-orange-400 font-bold text-2xl tracking-wider select-none">
                   {captcha.num1} + {captcha.num2} = ?
                 </span>
-                <button type="button" onClick={generateCaptcha} className="text-gray-400 hover:text-white transition-colors bg-white/5 p-2 rounded-lg" title="Đổi mã khác">
+                <button type="button" onClick={generateCaptcha} className="text-gray-400 hover:text-white transition-colors bg-white/5 p-2 rounded-lg">
                   <RefreshCw className="w-5 h-5" />
                 </button>
               </div>
-              
+
               <div className="relative">
                 <div className={`absolute top-3 left-3 ${captchaError ? "text-red-500" : "text-gray-400"}`}>
                   <ShieldCheck className="w-5 h-5" />
@@ -330,7 +339,7 @@ export default function ContactPage() {
                     }
                   }}
                   autoFocus
-                  placeholder="Nhập kết quả"
+                  placeholder={t("contact.enterResult")}
                   className={`w-full pl-10 pr-4 py-3 bg-white/5 border ${captchaError ? "border-red-500 text-red-500" : "border-white/20 text-white focus:border-orange-500"} rounded-xl outline-none focus:ring-0 placeholder-gray-500 transition-colors text-center text-lg`}
                 />
                 {captchaError && <p className="text-red-500 text-xs mt-2 text-center">{captchaError}</p>}
@@ -342,14 +351,14 @@ export default function ContactPage() {
                   onClick={() => setShowCaptchaModal(false)}
                   className="flex-1 py-3 px-4 rounded-xl font-bold text-gray-300 bg-white/5 hover:bg-white/10 transition-colors"
                 >
-                  HỦY
+                  {t("contact.btnCancel")}
                 </button>
                 <button
                   type="button"
                   onClick={handleCaptchaSubmit}
                   className="flex-1 py-3 px-4 rounded-xl font-bold text-white bg-orange-500 hover:bg-orange-600 shadow-lg shadow-orange-500/30 transition-colors"
                 >
-                  XÁC NHẬN
+                  {t("contact.btnConfirm")}
                 </button>
               </div>
             </div>
@@ -359,3 +368,11 @@ export default function ContactPage() {
     </>
   );
 }
+
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale || "vi", ["common"])),
+    },
+  };
+};

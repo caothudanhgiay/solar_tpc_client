@@ -1,11 +1,16 @@
 import Head from "next/head";
+import { useTranslation } from "next-i18next/pages";
+import { serverSideTranslations } from "next-i18next/pages/serverSideTranslations";
+import { GetStaticProps } from "next";
 
 export default function ProjectsPage() {
+  const { t } = useTranslation("common");
+
   return (
     <>
       <Head>
-        <title>Dự Án - TPC Solar</title>
-        <meta name="description" content="Các dự án tiêu biểu đã triển khai bởi TPC Solar." />
+        <title>{t("projects_page.metaTitle")}</title>
+        <meta name="description" content={t("projects_page.metaDesc")} />
       </Head>
       <main className="relative min-h-screen pt-32 pb-20 overflow-hidden">
         <div className="absolute inset-0 z-0">
@@ -19,7 +24,7 @@ export default function ProjectsPage() {
         <div className="container mx-auto px-4 md:px-6 max-w-6xl relative z-20">
           <div className="text-center mb-16">
             <h1 className="text-3xl md:text-4xl font-bold text-white uppercase mb-4">
-              Dự Án
+              {t("projects_page.title")}
             </h1>
             <div className="flex items-center justify-center gap-2">
               <div className="h-[1px] w-12 bg-orange-500"></div>
@@ -27,7 +32,7 @@ export default function ProjectsPage() {
               <div className="h-[1px] w-12 bg-orange-500"></div>
             </div>
             <p className="text-gray-300 mt-6">
-              Đang cập nhật các dự án tiêu biểu...
+              {t("projects_page.updating")}
             </p>
           </div>
         </div>
@@ -35,3 +40,11 @@ export default function ProjectsPage() {
     </>
   );
 }
+
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale || "vi", ["common"])),
+    },
+  };
+};

@@ -3,19 +3,24 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
-import { Menu, X, ChevronDown } from "lucide-react";
+import { cn } from "@/lib/utils/utils";
+import { Menu, X, ChevronDown, Globe } from "lucide-react";
+import { useRouter } from "next/router";
+import { useTranslation } from "next-i18next/pages";
 
-import { apiClient } from "@/lib/apiClient";
+import { apiClient } from "@/lib/utils/apiClient";
 import { API_MENUS } from "@/lib/utils/constants";
+import languagesUtils from "@/lib/utils/languagesUtils";
 
 interface SubMenu {
   menuName: string;
+  menuNameEng?: string;
   menuUrl: string;
 }
 
 interface MenuItem {
   menuName: string;
+  menuNameEng?: string;
   menuUrl: string;
   subMenus?: SubMenu[];
 }
@@ -29,52 +34,43 @@ interface NavigationItem {
   }[];
 }
 
-// Giữ lại menu mặc định làm fallback khi API lỗi hoặc đang load
-const initialNavigation: NavigationItem[] = [
-  { name: "TRANG CHỦ", href: "/" },
-  {
-    name: "DỊCH VỤ",
-    href: "/menu/services",
-    submenu: [
-      { name: "DỊCH VỤ LẮP ĐẶT HỆ THỐNG NĂNG LƯỢNG MẶT TRỜI", href: "/menu/services?category=lap-dat" },
-      { name: "DỊCH VỤ O&M (VẬN HÀNH & BẢO TRÌ) TRỌN GÓI", href: "/menu/services?category=om" },
-      { name: "DỊCH VỤ VỆ SINH TẤM PIN NLMT", href: "/menu/services?category=ve-sinh" },
-      { name: "DỊCH VỤ GIÁM SÁT & VẬN HÀNH HỆ THỐNG NLMT BẰNG PHẦN MỀM SCADA", href: "/menu/services?category=scada" },
-    ]
-  },
-  { name: "DỰ ÁN", href: "/menu/projects" },
-  { name: "BẢNG GIÁ NHANH", href: "/menu/quick-pricing" },
-  { name: "LIÊN HỆ", href: "/menu/contact" },
-];
-
 export default function Header({ initialMenus }: { initialMenus?: NavigationItem[] }) {
+  const router = useRouter();
+  const { locale } = router;
+  const { t } = useTranslation("common");
+
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [navigation, setNavigation] = useState<NavigationItem[]>(
-    initialMenus && initialMenus.length > 0 ? initialMenus : initialNavigation
-  );
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+
+  // Giữ lại menu mặc định làm fallback khi API lỗi hoặc đang load
+  const initialNavigation: NavigationItem[] = [
+    { name: t("header.home"), href: "/" },
+    {
+      name: t("header.services"),
+      href: "/menu/services",
+      submenu: [
+        { name: t("services.item1.title"), href: "/menu/services?category=lap-dat" },
+        { name: t("services.item2.title"), href: "/menu/services?category=om" },
+        { name: t("services.item3.title"), href: "/menu/services?category=ve-sinh" },
+        { name: t("services.item4.title"), href: "/menu/services?category=scada" },
+      ]
+    },
+    { name: t("header.projects"), href: "/menu/projects" },
+    { name: t("header.pricing"), href: "/menu/quick-pricing" },
+    { name: t("header.contact"), href: "/menu/contact" },
+  ];
+
+  const languages = languagesUtils.getLanguages();
 
   useEffect(() => {
     const fetchMenus = async () => {
       if (initialMenus && initialMenus.length > 0) return;
       try {
-        const data = await apiClient.get(API_MENUS) as MenuItem[];
+        const response = await apiClient.get<any>(API_MENUS);
+        const data = response.data as MenuItem[];
         if (data && data.length > 0) {
-          const fetchedMenus: NavigationItem[] = data
-            .filter((item) => item.menuUrl !== "/menu/installation")
-            .map((item) => ({
-              name: item.menuName.toUpperCase(),
-              href: item.menuUrl,
-              submenu: item.subMenus && item.subMenus.length > 0 
-                ? item.subMenus
-                    .filter((sub) => sub.menuUrl !== "/menu/installation")
-                    .map((sub) => ({
-                      name: sub.menuName.toUpperCase(),
-                      href: sub.menuUrl
-                    }))
-                : undefined
-            }));
-          setNavigation(fetchedMenus);
+          setMenuItems(data);
         }
       } catch (error) {
         const err = error as Error;
@@ -84,8 +80,28 @@ export default function Header({ initialMenus }: { initialMenus?: NavigationItem
     fetchMenus();
   }, [initialMenus]);
 
+  // Sinh navigation đã được dịch tự động
+  const navigation: NavigationItem[] = initialMenus && initialMenus.length > 0
+    ? initialMenus
+    : menuItems.length > 0
+      ? menuItems
+        .filter((item) => item.menuUrl !== "/menu/installation")
+        .map((item) => ({
+          name: (locale === 'en' && item.menuNameEng ? item.menuNameEng : item.menuName).toUpperCase(),
+          href: item.menuUrl,
+          submenu: item.subMenus && item.subMenus.length > 0
+            ? item.subMenus
+              .filter((sub) => sub.menuUrl !== "/menu/installation")
+              .map((sub) => ({
+                name: (locale === 'en' && sub.menuNameEng ? sub.menuNameEng : sub.menuName).toUpperCase(),
+                href: sub.menuUrl
+              }))
+            : undefined
+        }))
+      : initialNavigation;
+
   const handleQuoteClick = (e: React.MouseEvent) => {
-    if (window.location.pathname === "/menu/contact") {
+    if (window.location.pathname.endsWith("/menu/contact")) {
       e.preventDefault();
       const input = document.getElementById("ho-va-ten") as HTMLInputElement | null;
       if (input) {
@@ -96,6 +112,7 @@ export default function Header({ initialMenus }: { initialMenus?: NavigationItem
       }
     }
   };
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -168,15 +185,42 @@ export default function Header({ initialMenus }: { initialMenus?: NavigationItem
           ))}
         </nav>
 
-        {/* Action Button */}
-        <div className="hidden lg:flex items-center gap-4">
+        {/* Action Button & Language Switcher */}
+        <div className="hidden lg:flex items-center gap-6">
           <Link
             href="/menu/contact#ho-va-ten"
             onClick={handleQuoteClick}
             className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2.5 rounded-full text-xs font-bold transition-all shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 hover:-translate-y-0.5 uppercase tracking-wider"
           >
-            Nhận Báo Giá
+            {t("header.getQuote")}
           </Link>
+
+          {/* Language Selector */}
+          <div className="flex items-center gap-3 border-l border-white/20 pl-4 h-6">
+            {
+              Object.keys(languages).map((lang) => {
+                const langConfig = languages[lang as keyof typeof languages];
+                return (
+                  <button
+                    key={lang}
+                    onClick={() => languagesUtils.changeLanguage(lang)}
+                    className="flex items-center transition-all focus:outline-none"
+                  >
+                    <img
+                      src={langConfig.file_path}
+                      alt={langConfig.title}
+                      className={cn(
+                        "w-7 h-5 object-cover rounded-md transition-all duration-300",
+                        locale === lang
+                          ? "shadow-[0_0_8px_rgba(255,255,255,0.3)] scale-110"
+                          : "opacity-40 grayscale hover:grayscale-0 hover:opacity-100 hover:scale-105"
+                      )}
+                    />
+                  </button>
+                );
+              })
+            }
+          </div>
         </div>
 
         {/* Mobile menu button */}
@@ -222,14 +266,51 @@ export default function Header({ initialMenus }: { initialMenus?: NavigationItem
                 )}
               </div>
             ))}
+
             <div className="pt-4 pb-2 px-2">
               <Link
                 href="/menu/contact#ho-va-ten"
                 onClick={(e) => { handleQuoteClick(e); setMobileMenuOpen(false); }}
-                className="block w-full text-center bg-orange-500 hover:bg-orange-600 text-white px-5 py-3.5 rounded-xl text-sm font-bold transition-colors shadow-lg shadow-orange-500/30 uppercase tracking-wider"
+                className="block w-full text-center bg-orange-500 hover:bg-orange-600 text-white px-5 py-3.5 rounded-xl text-sm font-bold transition-colors shadow-lg shadow-orange-500/30 uppercase tracking-wider mb-4"
               >
-                Nhận Báo Giá
+                {t("header.getQuote")}
               </Link>
+            </div>
+
+            {/* Language Selector Mobile */}
+            <div className="flex items-center justify-center gap-4 py-3 border-t border-white/10 mt-2">
+              <button
+                onClick={() => { languagesUtils.changeLanguage("vi"); setMobileMenuOpen(false); }}
+                className={cn(
+                  "flex items-center justify-center gap-2 text-xs font-bold px-4 py-2.5 rounded-lg border transition-all w-36 focus:outline-none",
+                  locale === "vi"
+                    ? "text-orange-500 border-orange-500 bg-orange-500/10 shadow-[0_0_10px_rgba(249,115,22,0.2)]"
+                    : "text-white/60 border-white/10 hover:text-white"
+                )}
+              >
+                <img
+                  src="/images/vi_rec.png"
+                  alt="Tiếng Việt"
+                  className="w-5 h-3.5 object-cover rounded shadow-sm"
+                />
+                TIẾNG VIỆT
+              </button>
+              <button
+                onClick={() => { languagesUtils.changeLanguage("en"); setMobileMenuOpen(false); }}
+                className={cn(
+                  "flex items-center justify-center gap-2 text-xs font-bold px-4 py-2.5 rounded-lg border transition-all w-36 focus:outline-none",
+                  locale === "en"
+                    ? "text-orange-500 border-orange-500 bg-orange-500/10 shadow-[0_0_10px_rgba(249,115,22,0.2)]"
+                    : "text-white/60 border-white/10 hover:text-white"
+                )}
+              >
+                <img
+                  src="/images/en_rec.png"
+                  alt="English"
+                  className="w-5 h-3.5 object-cover rounded shadow-sm"
+                />
+                ENGLISH
+              </button>
             </div>
           </div>
         </div>

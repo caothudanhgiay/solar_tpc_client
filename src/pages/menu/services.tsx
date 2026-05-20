@@ -1,56 +1,57 @@
-"use client";
 import { useState, useEffect } from "react";
 import Head from "next/head";
 import { motion } from "framer-motion";
 import { ChevronRight, Settings, Wrench, ShieldCheck, Zap } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { useTranslation } from "next-i18next/pages";
+import { serverSideTranslations } from "next-i18next/pages/serverSideTranslations";
+import { GetStaticProps } from "next";
 
-// ── Data ────────────────────────────────────────────────────────
-const categories = [
-  { id: "lap-dat", name: "Dịch Vụ Lắp Đặt Hệ Thống Năng lượng Mặt Trời", icon: Zap },
-  { id: "om", name: "Dịch Vụ O&M (Vận Hành & Bảo Trì) Trọn Gói", icon: Settings },
-  { id: "ve-sinh", name: "Dịch Vụ Vệ Sinh Tấm Pin NLMT", icon: ShieldCheck },
-  { id: "scada", name: "Dịch vụ Giám Sát & Vận Hành Hệ Thống NLMT bằng Phần mềm SCADA", icon: Wrench },
-];
-
-const services = [
-  {
-    id: "lap-dat",
-    title: "Dịch Vụ Lắp Đặt Hệ Thống Năng lượng Mặt Trời",
-    image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?q=80&w=2072&auto=format&fit=crop",
-    desc: "Khảo sát, thiết kế và thi công lắp đặt trọn gói hệ thống điện mặt trời áp mái cho hộ gia đình và doanh nghiệp.",
-    price: "Liên hệ",
-  },
-  {
-    id: "om",
-    title: "Dịch Vụ O&M (Vận Hành & Bảo Trì) Trọn Gói",
-    image: "https://images.unsplash.com/photo-1466611653911-95081537e5b7?q=80&w=2070&auto=format&fit=crop",
-    desc: "Bảo dưỡng định kỳ, kiểm tra hệ thống inverter, đo đạc thông số kỹ thuật để đảm bảo hiệu suất hoạt động tối đa.",
-    price: "Liên hệ",
-  },
-  {
-    id: "ve-sinh",
-    title: "Dịch Vụ Vệ Sinh Tấm Pin NLMT",
-    image: "https://images.unsplash.com/photo-1592833159155-c62df1b65634?q=80&w=2069&auto=format&fit=crop",
-    desc: "Làm sạch chuyên nghiệp bằng thiết bị chuyên dụng, giúp tăng sản lượng điện sinh ra từ 10% đến 20%.",
-    price: "Liên hệ",
-  },
-  {
-    id: "scada",
-    title: "Dịch vụ Giám Sát & Vận Hành Hệ Thống NLMT bằng Phần mềm SCADA",
-    image: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop",
-    desc: "Giám sát 24/7 qua phần mềm SCADA thông minh, phát hiện sự cố nhanh chóng và điều khiển từ xa.",
-    price: "Liên hệ",
-  }
-];
-
-// ── Component ───────────────────────────────────────────────────
 export default function ServicesPage() {
+  const { t } = useTranslation("common");
   const searchParams = useSearchParams();
   const [activeCategory, setActiveCategory] = useState<string>("all");
+
+  const categories = [
+    { id: "lap-dat", name: t("services.item1.title"), icon: Zap },
+    { id: "om", name: t("services.item2.title"), icon: Settings },
+    { id: "ve-sinh", name: t("services.item3.title"), icon: ShieldCheck },
+    { id: "scada", name: t("services.item4.title"), icon: Wrench },
+  ];
+
+  const services = [
+    {
+      id: "lap-dat",
+      title: t("services.item1.title"),
+      image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?q=80&w=2072&auto=format&fit=crop",
+      desc: t("services.item1.desc"),
+      price: t("services_page.contactPrice"),
+    },
+    {
+      id: "om",
+      title: t("services.item2.title"),
+      image: "https://images.unsplash.com/photo-1466611653911-95081537e5b7?q=80&w=2070&auto=format&fit=crop",
+      desc: t("services.item2.desc"),
+      price: t("services_page.contactPrice"),
+    },
+    {
+      id: "ve-sinh",
+      title: t("services.item3.title"),
+      image: "https://images.unsplash.com/photo-1592833159155-c62df1b65634?q=80&w=2069&auto=format&fit=crop",
+      desc: t("services.item3.desc"),
+      price: t("services_page.contactPrice"),
+    },
+    {
+      id: "scada",
+      title: t("services.item4.title"),
+      image: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop",
+      desc: t("services.item4.desc"),
+      price: t("services_page.contactPrice"),
+    }
+  ];
 
   useEffect(() => {
     const category = searchParams?.get("category");
@@ -66,8 +67,8 @@ export default function ServicesPage() {
   return (
     <>
       <Head>
-        <title>Dịch Vụ - TPC Solar</title>
-        <meta name="description" content="Danh mục dịch vụ điện mặt trời chuyên nghiệp từ TPC Solar." />
+        <title>{t("services_page.metaTitle")}</title>
+        <meta name="description" content={t("services_page.metaDesc")} />
       </Head>
 
       <main className="relative min-h-screen pt-32 pb-20 overflow-hidden bg-slate-950">
@@ -84,11 +85,11 @@ export default function ServicesPage() {
           
           {/* Breadcrumb / Title area */}
           <div className="mb-10 pb-6 border-b border-white/10">
-            <h1 className="text-3xl font-bold text-white uppercase tracking-wider">Danh Mục Dịch Vụ</h1>
+            <h1 className="text-3xl font-bold text-white uppercase tracking-wider">{t("services_page.title")}</h1>
             <div className="flex items-center gap-2 mt-3 text-sm text-gray-400">
-              <Link href="/" className="hover:text-orange-500 transition-colors">Trang chủ</Link>
+              <Link href="/" className="hover:text-orange-500 transition-colors">{t("header.home")}</Link>
               <ChevronRight className="w-4 h-4" />
-              <span className="text-orange-500 font-medium">Dịch vụ</span>
+              <span className="text-orange-500 font-medium">{t("header.services")}</span>
             </div>
           </div>
 
@@ -98,7 +99,7 @@ export default function ServicesPage() {
             <div className="lg:w-1/4 shrink-0">
               <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden sticky top-32">
                 <div className="bg-gradient-to-r from-orange-600 to-orange-500 p-4">
-                  <h2 className="text-lg font-bold text-white uppercase">Danh Mục Dịch Vụ</h2>
+                  <h2 className="text-lg font-bold text-white uppercase">{t("services_page.title")}</h2>
                 </div>
                 <div className="p-2">
                   <button
@@ -110,7 +111,7 @@ export default function ServicesPage() {
                         : "text-gray-300 hover:bg-white/5 hover:text-white"
                     )}
                   >
-                    Tất cả dịch vụ
+                    {t("services_page.allServices")}
                     <ChevronRight className={cn(
                       "w-4 h-4 transition-transform", 
                       activeCategory === "all" ? "translate-x-1 text-orange-400" : "text-gray-500 group-hover:translate-x-1"
@@ -142,7 +143,7 @@ export default function ServicesPage() {
             {/* Main Content (Grid) */}
             <div className="lg:w-3/4">
               <motion.div 
-                className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6"
+                className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6"
                 layout
               >
                 {filteredServices.map((service, idx) => (
@@ -190,7 +191,7 @@ export default function ServicesPage() {
                           href={`/menu/contact`}
                           className="text-xs font-bold uppercase tracking-wider text-white bg-white/10 hover:bg-orange-500 px-4 py-2 rounded-lg transition-colors"
                         >
-                          Chi tiết
+                          {t("services_page.btnDetails")}
                         </Link>
                       </div>
                     </div>
@@ -200,7 +201,7 @@ export default function ServicesPage() {
 
               {filteredServices.length === 0 && (
                 <div className="text-center py-20 text-gray-400">
-                  Không tìm thấy dịch vụ nào.
+                  {t("services_page.notFound")}
                 </div>
               )}
             </div>
@@ -211,3 +212,11 @@ export default function ServicesPage() {
     </>
   );
 }
+
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale || "vi", ["common"])),
+    },
+  };
+};
