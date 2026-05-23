@@ -35,6 +35,9 @@ export default function Footer() {
               <span className="text-white font-bold text-lg mt-4 uppercase tracking-wide">
                 {t("footer.brandName")}
               </span>
+              <span className="text-white font-bold text-lg mt-4 uppercase tracking-wide">
+                {t("footer.taxIDNumber")}
+              </span>
             </Link>
             <div className="flex space-x-4 pt-2">
               <a href="https://www.facebook.com/tpcsolar.vn/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="relative w-10 h-10 rounded-xl overflow-hidden hover:scale-110 transition-transform shadow-md block">
