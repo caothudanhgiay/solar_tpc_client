@@ -189,5 +189,20 @@
     "option3Desc": "TPC lắp đặt hệ thống. Khách hàng trả tiền thuê cố định hàng tháng và tự dùng điện.",
     "option3Price": "Phí thuê từ: 160.000đ / 1 kWp / tháng",
     "btnAdvice": "Nhận Tư Vấn Chi Tiết"
+  },
+  "chatbot": {
+    "title": "Tư Vấn Solar TPC",
+    "subtitle": "Trợ lý AI",
+    "placeholder": "Nhập câu hỏi của bạn...",
+    "send": "Gửi",
+    "greeting": "Xin chào! 👋 Tôi là trợ lý AI của **Solar TPC Group**. Tôi có thể giúp bạn tìm hiểu về:\n\n☀️ Giải pháp điện mặt trời\n💰 Báo giá & phương án đầu tư\n🔧 Dịch vụ bảo trì, vệ sinh\n\nBạn cần tư vấn gì ạ?",
+    "quickQ1": "💰 Giá lắp đặt?",
+    "quickQ2": "🔋 Tiết kiệm bao nhiêu?",
+    "quickQ3": "🛡️ Bảo hành bao lâu?",
+    "quickQ4": "📞 Liên hệ tư vấn",
+    "zaloBtn": "💬 Chat qua Zalo",
+    "typing": "Đang trả lời...",
+    "errorRetry": "Lỗi kết nối. Vui lòng thử lại.",
+    "poweredBy": "Powered by Gemini AI"
   }
 }

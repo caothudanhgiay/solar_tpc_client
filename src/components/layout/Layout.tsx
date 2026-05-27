@@ -1,6 +1,7 @@
 import Header from "./Header";
 import Footer from "./Footer";
 import Toaster from "@/components/ui/Toast";
+import TsoChatbot from "@/components/ui/TsoChatbot";
 import { Inter } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin", "vietnamese"] });
@@ -13,6 +14,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         {children}
       </main>
       <Footer />
+      <TsoChatbot />
       <Toaster />
     </div>
   );

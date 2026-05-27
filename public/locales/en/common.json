@@ -189,5 +189,20 @@
     "option3Desc": "TPC installs system. Customer pays fixed monthly rent and uses generated electricity.",
     "option3Price": "Rental fee from: 160,000 VND / 1 kWp / month",
     "btnAdvice": "Get Detailed Advice"
+  },
+  "chatbot": {
+    "title": "Solar TPC Advisor",
+    "subtitle": "AI Assistant",
+    "placeholder": "Type your question...",
+    "send": "Send",
+    "greeting": "Hello! 👋 I'm the AI assistant of **Solar TPC Group**. I can help you learn about:\n\n☀️ Solar energy solutions\n💰 Pricing & investment plans\n🔧 Maintenance & cleaning services\n\nHow can I help you?",
+    "quickQ1": "💰 Installation price?",
+    "quickQ2": "🔋 How much can I save?",
+    "quickQ3": "🛡️ Warranty period?",
+    "quickQ4": "📞 Contact for advice",
+    "zaloBtn": "💬 Chat via Zalo",
+    "typing": "Typing...",
+    "errorRetry": "Connection error. Please try again.",
+    "poweredBy": "Powered by Gemini AI"
   }
 }

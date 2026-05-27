@@ -6,6 +6,12 @@ export const API_BASE = '/api';
 // Các hằng số về API Menus
 export const API_MENUS = `${API_BASE}/menus`;
 
+// Chatbot AI
+export const API_CHATBOT_ASK = `${API_BASE}/chatbot/ask`;
+
+// Zalo deep link
+export const ZALO_PHONE = '0035832304';
+export const ZALO_CHAT_URL = `https://zalo.me/${ZALO_PHONE}`;
 
 // Các hằng số HTTP Methods
 export const HTTP_METHODS = {
