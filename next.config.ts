@@ -1,3 +1,5 @@
+process.env.TZ = 'Asia/Ho_Chi_Minh';
+
 import type { NextConfig } from "next";
 const { i18n } = require('./next-i18next.config');
 
