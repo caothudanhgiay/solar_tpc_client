@@ -1,4 +1,5 @@
 import { Toast } from "@/components/ui/Toast";
+import Router from "next/router";
 
 export class ApiException extends Error {
   public statusCode: number;
@@ -17,18 +18,19 @@ export class ApiException extends Error {
 
   public static handle(error: ApiException) {
     if (typeof window !== 'undefined') {
-      // Prevent infinite redirect loop
+      // Tránh vòng lặp redirect vô hạn
       if (window.location.pathname === '/error-pages') {
         console.error("API error occurred while already on error page:", error);
         return;
       }
 
       if (error.statusCode === 404) {
-        window.location.href = `/error-pages?type=not-found`;
+        // Dùng Router.push thay vì window.location.href để giữ SPA navigation
+        Router.push(`/error-pages?type=not-found`);
       } else if (error.statusCode >= 500 && error.statusCode <= 506) {
         let errorType = 'server-error';
         if (error.statusCode === 503) errorType = 'maintenance';
-        window.location.href = `/error-pages?type=${errorType}`;
+        Router.push(`/error-pages?type=${errorType}`);
       } else {
         Toast.error(`Lỗi ${error.statusCode}: ${error.message}`);
       }

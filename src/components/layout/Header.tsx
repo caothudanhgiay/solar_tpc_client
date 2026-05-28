@@ -64,20 +64,33 @@ export default function Header({ initialMenus }: { initialMenus?: NavigationItem
   const languages = languagesUtils.getLanguages();
 
   useEffect(() => {
+    if (initialMenus && initialMenus.length > 0) return;
+
+    const controller = new AbortController();
+    // Timeout 3 giây — nếu API không phản hồi, dùng menu mặc định
+    const timeout = setTimeout(() => controller.abort(), 3000);
+
     const fetchMenus = async () => {
-      if (initialMenus && initialMenus.length > 0) return;
       try {
-        const response = await apiClient.get<any>(API_MENUS);
+        const response = await apiClient.get<any>(API_MENUS, { signal: controller.signal });
         const data = response.data as MenuItem[];
         if (data && data.length > 0) {
           setMenuItems(data);
         }
-      } catch (error) {
-        const err = error as Error;
-        console.warn("Failed to fetch menus from API in Header:", err.message);
+      } catch (error: any) {
+        // Bỏ qua lỗi AbortError (do timeout hoặc unmount) — dùng menu mặc định
+        if (error?.name !== 'AbortError') {
+          console.warn("Failed to fetch menus from API in Header:", error?.message);
+        }
       }
     };
+
     fetchMenus();
+
+    return () => {
+      clearTimeout(timeout);
+      controller.abort();
+    };
   }, [initialMenus]);
 
   // Sinh navigation đã được dịch tự động
