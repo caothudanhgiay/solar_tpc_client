@@ -3,7 +3,7 @@ import { useTranslation } from "next-i18next/pages";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, X, Send, Bot, User, Loader2, ExternalLink } from "lucide-react";
 import { apiClient } from "@/lib/utils/apiClient";
-import { API_CHATBOT_ASK, ZALO_CHAT_URL } from "@/lib/utils/constants";
+import { API_CHATBOT_ASK, API_CHATBOT_ASK_STREAM, API_URL, ZALO_CHAT_URL } from "@/lib/utils/constants";
 import Image from "next/image";
 
 // Kiểu dữ liệu tin nhắn
@@ -60,50 +60,144 @@ export default function TsoChatbot() {
     }
   }, [isOpen, messages.length, t]);
 
-  // Gửi tin nhắn
+  // Lấy locale hiện tại từ URL path
+  const getLocale = (): string => {
+    if (typeof window === "undefined") return "vi";
+    const pathParts = window.location.pathname.split("/");
+    return pathParts[1] === "en" ? "en" : "vi";
+  };
+
+  // Gọi SSE stream, parse từng chunk và cập nhật message dần dần.
+  // Trả về accumulated text, hoặc throw nếu không nhận được gì.
+  const fetchSseStream = async (text: string, botMsgId: string): Promise<string> => {
+    const response = await fetch(`${API_URL}${API_CHATBOT_ASK_STREAM}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept-Language": getLocale(),
+      },
+      body: JSON.stringify({ message: text.trim(), sessionId }),
+    });
+
+    if (!response.ok || !response.body) {
+      throw new Error("Stream response không hợp lệ");
+    }
+
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+    let accumulatedText = "";
+    let buffer = "";
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+
+      // Tách từng dòng SSE, giữ lại dòng chưa hoàn chỉnh trong buffer
+      const lines = buffer.split("\n");
+      buffer = lines.pop() || "";
+
+      for (const line of lines) {
+        accumulatedText = parseSseLine(line.trim(), botMsgId, accumulatedText);
+      }
+    }
+
+    if (!accumulatedText) {
+      throw new Error("Không nhận được response từ stream");
+    }
+    return accumulatedText;
+  };
+
+  // Parse một dòng SSE: cập nhật state nếu nhận được data hợp lệ.
+  // Trả về accumulated text mới nhất.
+  const parseSseLine = (trimmed: string, botMsgId: string, accumulatedText: string): string => {
+    if (!trimmed || trimmed.startsWith("event:")) return accumulatedText;
+
+    if (trimmed.startsWith("data:")) {
+      const jsonStr = trimmed.substring(5).trim();
+      if (!jsonStr) return accumulatedText;
+
+      try {
+        const parsed = JSON.parse(jsonStr);
+
+        // Event: session — nhận sessionId
+        if (parsed.sessionId) {
+          setSessionId(parsed.sessionId);
+        }
+
+        // Event: chunk — nhận text chunk và hiển thị dần
+        if (parsed.text !== undefined) {
+          const newText = accumulatedText + parsed.text;
+          setMessages((prev) =>
+            prev.map((msg) => (msg.id === botMsgId ? { ...msg, text: newText } : msg))
+          );
+          return newText;
+        }
+
+        // Event: error — hiển thị thông báo lỗi từ server
+        if (parsed.message && !parsed.text && !parsed.sessionId) {
+          setMessages((prev) =>
+            prev.map((msg) => (msg.id === botMsgId ? { ...msg, text: parsed.message } : msg))
+          );
+          return parsed.message;
+        }
+      } catch {
+        // Bỏ qua JSON không hợp lệ
+      }
+    }
+    return accumulatedText;
+  };
+
+  // Fallback: gọi endpoint /ask cũ (non-streaming) khi stream lỗi.
+  const fetchFallback = async (text: string, botMsgId: string): Promise<void> => {
+    try {
+      const fallbackResponse = await apiClient.post<TsoChatbotApiResponse>(API_CHATBOT_ASK, {
+        message: text.trim(),
+        sessionId,
+      });
+
+      if (fallbackResponse?.data) {
+        setSessionId(fallbackResponse.data.sessionId);
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === botMsgId ? { ...msg, text: fallbackResponse.data.reply } : msg
+          )
+        );
+      } else {
+        throw new Error("Fallback cũng lỗi");
+      }
+    } catch {
+      setMessages((prev) =>
+        prev.map((msg) => (msg.id === botMsgId ? { ...msg, text: t("chatbot.errorRetry") } : msg))
+      );
+    }
+  };
+
+  // Gửi tin nhắn — điều phối toàn bộ luồng: streaming → fallback nếu lỗi.
   const sendMessage = async (text: string) => {
     if (!text.trim() || isLoading) return;
 
-    const userMsg: TsoChatMessage = {
-      id: `user-${Date.now()}`,
-      role: "user",
-      text: text.trim(),
-      timestamp: new Date(),
-    };
-
-    setMessages((prev) => [...prev, userMsg]);
+    // Thêm tin nhắn user và tạo bot message trống ngay lập tức
+    const botMsgId = `bot-${Date.now()}`;
+    setMessages((prev) => [
+      ...prev,
+      { id: `user-${Date.now()}`, role: "user", text: text.trim(), timestamp: new Date() },
+      { id: botMsgId, role: "bot", text: "", timestamp: new Date() },
+    ]);
     setInput("");
     setIsLoading(true);
     setShowQuickActions(false);
 
     try {
-      const response = await apiClient.post<TsoChatbotApiResponse>(API_CHATBOT_ASK, {
-        message: text.trim(),
-        sessionId: sessionId,
-      });
-
-      if (response?.data) {
-        setSessionId(response.data.sessionId);
-        const botMsg: TsoChatMessage = {
-          id: `bot-${Date.now()}`,
-          role: "bot",
-          text: response.data.reply,
-          timestamp: new Date(),
-        };
-        setMessages((prev) => [...prev, botMsg]);
-      }
+      await fetchSseStream(text, botMsgId);
     } catch {
-      const errorMsg: TsoChatMessage = {
-        id: `error-${Date.now()}`,
-        role: "bot",
-        text: t("chatbot.errorRetry"),
-        timestamp: new Date(),
-      };
-      setMessages((prev) => [...prev, errorMsg]);
+      await fetchFallback(text, botMsgId);
     } finally {
       setIsLoading(false);
     }
   };
+
 
   // Quick action click
   const handleQuickAction = (text: string) => {
