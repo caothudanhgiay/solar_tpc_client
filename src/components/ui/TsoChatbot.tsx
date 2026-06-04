@@ -274,20 +274,23 @@ export default function TsoChatbot() {
             id="chatbot-panel"
           >
             {/* Header */}
-            <div className="bg-gradient-to-r px-5 py-4 flex items-center gap-3 shrink-0">
-              <div className="relative w-10 h-10 rounded-full bg-white/20 flex items-center justify-center overflow-hidden">
+            <div className="bg-gradient-to-r from-slate-800 to-slate-900 border-b border-white/10 px-5 py-4 flex items-center gap-3 shrink-0 relative overflow-hidden">
+              {/* Subtle accent glow */}
+              <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-orange-500/50 to-transparent"></div>
+
+              <div className="relative w-10 h-10 rounded-full bg-orange-500 flex items-center justify-center overflow-hidden shrink-0">
                 <Image src="/icon.png" alt="TPC Bot" fill className="object-cover p-1" sizes="40px" />
               </div>
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0 z-10">
                 <h3 className="text-white font-bold text-sm leading-tight">{t("chatbot.title")}</h3>
-                <p className="text-orange-100 text-xs">{t("chatbot.subtitle")}</p>
+                <p className="text-orange-400 text-xs">{t("chatbot.subtitle")}</p>
               </div>
               <button
                 onClick={() => setIsOpen(false)}
-                className="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors cursor-pointer"
+                className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors cursor-pointer z-10"
                 aria-label="Close chatbot"
               >
-                <X className="w-4 h-4 text-white" />
+                <X className="w-4 h-4 text-gray-300" />
               </button>
             </div>
 
