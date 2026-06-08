@@ -60,6 +60,11 @@ class ApiClient {
       return result as T;
 
     } catch (error: any) {
+      // Bỏ qua AbortError — do client chủ động hủy request (timeout hoặc component unmount)
+      if (error?.name === 'AbortError') {
+        throw error;
+      }
+
       console.warn(`[API Call Failed] ${options.method || 'GET'} ${url}:`, error.message);
 
       if (error instanceof ApiException) {

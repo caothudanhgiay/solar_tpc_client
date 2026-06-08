@@ -67,8 +67,8 @@ export default function Header({ initialMenus }: { initialMenus?: NavigationItem
     if (initialMenus && initialMenus.length > 0) return;
 
     const controller = new AbortController();
-    // Timeout 3 giây — nếu API không phản hồi, dùng menu mặc định
-    const timeout = setTimeout(() => controller.abort(), 3000);
+    // Timeout 8 giây — đủ thời gian cho kết nối Docker network trên production Linux
+    const timeout = setTimeout(() => controller.abort(), 8000);
 
     const fetchMenus = async () => {
       try {
@@ -79,7 +79,9 @@ export default function Header({ initialMenus }: { initialMenus?: NavigationItem
         }
       } catch (error: any) {
         // Bỏ qua lỗi AbortError (do timeout hoặc unmount) — dùng menu mặc định
-        if (error?.name !== 'AbortError') {
+        const isAbortError = error?.name === 'AbortError'
+          || (error?.message && error.message.includes('aborted'));
+        if (!isAbortError) {
           console.warn("Failed to fetch menus from API in Header:", error?.message);
         }
       }
