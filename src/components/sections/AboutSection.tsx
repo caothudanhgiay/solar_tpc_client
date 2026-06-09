@@ -1,5 +1,6 @@
 "use client";
-import { motion } from "framer-motion";
+
+import Image from "next/image";
 import { useTranslation } from "next-i18next/pages";
 import {
   Leaf,
@@ -18,52 +19,18 @@ import {
   CheckCircle2,
   Settings,
 } from "lucide-react";
-
-// ── Animation variants ──────────────────────────────────────────
-const fadeUp = {
-  hidden: { opacity: 0, y: 40 },
-  visible: (i = 0) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.6, delay: i * 0.1, ease: "easeOut" as const },
-  }),
-};
-
-const fadeIn = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { duration: 0.8, ease: "easeOut" as const } },
-};
-
-const slideLeft = {
-  hidden: { opacity: 0, x: -50 },
-  visible: (i = 0) => ({
-    opacity: 1,
-    x: 0,
-    transition: { duration: 0.6, delay: i * 0.15, ease: "easeOut" as const },
-  }),
-};
-
-const slideRight = {
-  hidden: { opacity: 0, x: 50 },
-  visible: (i = 0) => ({
-    opacity: 1,
-    x: 0,
-    transition: { duration: 0.6, delay: i * 0.15, ease: "easeOut" as const },
-  }),
-};
-
-const scaleIn = {
-  hidden: { opacity: 0, scale: 0.85 },
-  visible: (i = 0) => ({
-    opacity: 1,
-    scale: 1,
-    transition: { duration: 0.5, delay: i * 0.1, ease: "easeOut" as const },
-  }),
-};
+import { useScrollAnimation, useScrollAnimationGroup } from "@/lib/utils/useScrollAnimation";
 
 // ── Component ───────────────────────────────────────────────────
 export default function AboutSection() {
   const { t } = useTranslation("common");
+
+  // Scroll animation refs
+  const heroTitle = useScrollAnimation(0.2);
+  const badgesGroup = useScrollAnimationGroup(0.3);
+  const col1 = useScrollAnimation(0.2);
+  const col2 = useScrollAnimation(0.2);
+  const col3 = useScrollAnimation(0.2);
 
   const highlights = [
     { icon: Leaf, title: t("about.highlight1_title"), sub: t("about.highlight1_sub"), color: "text-green-400", bg: "bg-green-500/20" },
@@ -106,19 +73,19 @@ export default function AboutSection() {
 
   return (
     <section id="about" className="relative py-20 overflow-hidden">
-      {/* Background ảnh pin mặt trời */}
-      <motion.div
-        className="absolute inset-0 z-0"
-        initial={{ scale: 1.05 }}
-        animate={{ scale: 1 }}
-        transition={{ duration: 1.5, ease: "easeOut" }}
-      >
+      {/* Background ảnh pin mặt trời — dùng <Image> thay CSS backgroundImage */}
+      <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-r from-slate-900/95 to-slate-900/75 z-10" />
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/images/bg_page.avif')" }}
+        <Image
+          src="/images/bg_page.avif"
+          alt=""
+          fill
+          sizes="100vw"
+          className="object-cover object-center"
+          quality={75}
+          loading="lazy"
         />
-      </motion.div>
+      </div>
 
       {/* ===== HERO TITLE ===== */}
       <div className="relative z-10 overflow-hidden py-14 px-4">
@@ -131,14 +98,12 @@ export default function AboutSection() {
           <div className="w-[500px] h-[120px] bg-orange-500/10 blur-3xl rounded-full" />
         </div>
 
-        <motion.div
-          className="relative z-10 text-center max-w-4xl mx-auto"
-          variants={fadeUp}
-          initial="hidden"
-          animate="visible"
+        <div
+          ref={heroTitle.ref}
+          className={`relative z-10 text-center max-w-4xl mx-auto anim-fade-up ${heroTitle.isVisible ? "is-visible" : ""}`}
         >
           {/* Dòng 1: TPC SOLAR */}
-          <motion.h1
+          <h1
             className="font-black italic uppercase"
             style={{
               fontSize: "clamp(2.5rem, 8vw, 5rem)",
@@ -150,97 +115,66 @@ export default function AboutSection() {
               letterSpacing: "0.05em",
               lineHeight: 1.1,
             }}
-            initial={{ opacity: 0, y: -24, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.7, delay: 0.15, ease: "easeOut" }}
           >
             TPC SOLAR
-          </motion.h1>
+          </h1>
 
           {/* Separator */}
-          <motion.div
-            className="flex items-center justify-center gap-3 my-4"
-            initial={{ opacity: 0, scaleX: 0 }}
-            animate={{ opacity: 1, scaleX: 1 }}
-            transition={{ duration: 0.6, delay: 0.45 }}
-          >
+          <div className="flex items-center justify-center gap-3 my-4">
             <div className="h-px w-16 bg-gradient-to-r from-transparent to-orange-400" />
             <div className="w-2 h-2 rounded-full bg-orange-400 shadow-[0_0_8px_2px_rgba(251,146,60,0.6)]" />
             <div className="h-px w-16 bg-gradient-to-l from-transparent to-orange-400" />
-          </motion.div>
+          </div>
 
           {/* Dòng 2: Slogan */}
-          <motion.p
+          <p
             className="text-white/80 font-semibold uppercase"
             style={{
               fontSize: "clamp(0.75rem, 2.5vw, 1.25rem)",
               letterSpacing: "0.25em",
             }}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.6, ease: "easeOut" }}
           >
             {t("about.slogan")}
-          </motion.p>
-        </motion.div>
+          </p>
+        </div>
       </div>
 
       {/* ===== 4 HIGHLIGHT BADGES ===== */}
-      <motion.div
-        className="relative z-10 bg-white/5 backdrop-blur-sm border-y border-white/10"
-        variants={fadeIn}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
+      <div
+        ref={badgesGroup.ref}
+        className={`relative z-10 bg-white/5 backdrop-blur-sm border-y border-white/10 anim-fade-in ${badgesGroup.isVisible ? "is-visible" : ""}`}
       >
         <div className="max-w-5xl mx-auto px-4 py-5 grid grid-cols-2 md:grid-cols-4 gap-4">
           {highlights.map(({ icon: Icon, title, sub, color, bg }, i) => (
-            <motion.div
+            <div
               key={title}
-              className="flex items-center gap-3"
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              custom={i}
+              className={`flex items-center gap-3 anim-fade-up ${badgesGroup.isVisible ? "is-visible" : ""} anim-delay-${i + 1}`}
             >
-              <motion.div
-                className={`${bg} p-2.5 rounded-full shrink-0`}
-                whileHover={{ scale: 1.2, rotate: 10 }}
-                transition={{ type: "spring", stiffness: 300 }}
-              >
+              <div className={`${bg} p-2.5 rounded-full shrink-0 hover:scale-110 transition-transform`}>
                 <Icon className={`h-5 w-5 ${color}`} />
-              </motion.div>
+              </div>
               <div>
                 <p className="font-bold text-white text-sm uppercase">{title}</p>
                 <p className="text-gray-400 text-xs">{sub}</p>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
-      </motion.div>
+      </div>
 
       {/* ===== MAIN 3-COLUMN SECTION ===== */}
       <div className="relative z-10 max-w-6xl mx-auto px-4 py-12 grid md:grid-cols-3 gap-6">
 
         {/* --- Column 1: Về Chúng Tôi --- */}
-        <motion.div
-          className="bg-white/5 backdrop-blur-sm border border-blue-500/30 rounded-2xl p-6 space-y-4"
-          variants={slideLeft}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          whileHover={{ y: -4, boxShadow: "0 20px 40px rgba(59,130,246,0.15)" }}
-          transition={{ type: "spring", stiffness: 200 }}
+        <div
+          ref={col1.ref}
+          className={`bg-white/5 backdrop-blur-sm border border-blue-500/30 rounded-2xl p-6 space-y-4 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(59,130,246,0.15)] transition-all duration-300 anim-slide-left ${col1.isVisible ? "is-visible" : ""}`}
         >
           <div className="flex items-center gap-3 pb-3 border-b border-blue-500/30">
-            <motion.div
-              className="bg-blue-500/20 p-2 rounded-full"
-              animate={{ rotate: [0, 5, -5, 0] }}
-              transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-            >
+            {/* CSS animation thay Framer Motion infinite rotate */}
+            <div className="bg-blue-500/20 p-2 rounded-full animate-icon-wobble">
               <Users className="h-5 w-5 text-blue-400" />
-            </motion.div>
+            </div>
             <h2 className="text-white font-bold text-lg uppercase tracking-wide">{t("about.aboutUs")}</h2>
           </div>
 
@@ -253,113 +187,72 @@ export default function AboutSection() {
 
           <div className="space-y-3 pt-2">
             {aboutPoints.map(({ icon: Icon, text }, i) => (
-              <motion.div
+              <div
                 key={text}
-                className="flex items-start gap-3"
-                variants={fadeUp}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                custom={i}
+                className={`flex items-start gap-3 anim-fade-up ${col1.isVisible ? "is-visible" : ""} anim-delay-${i + 1}`}
               >
                 <div className="bg-green-500/20 p-1.5 rounded-full shrink-0 mt-0.5">
                   <Icon className="h-4 w-4 text-green-400" />
                 </div>
                 <p className="text-gray-300 text-sm leading-snug">{text}</p>
-              </motion.div>
+              </div>
             ))}
           </div>
-        </motion.div>
+        </div>
 
         {/* --- Column 2: Dịch Vụ Của TPC --- */}
-        <motion.div
-          className="bg-white/5 backdrop-blur-sm border border-orange-500/30 rounded-2xl p-6 space-y-4"
-          variants={fadeUp}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          whileHover={{ y: -4, boxShadow: "0 20px 40px rgba(249,115,22,0.15)" }}
-          transition={{ type: "spring", stiffness: 200 }}
+        <div
+          ref={col2.ref}
+          className={`bg-white/5 backdrop-blur-sm border border-orange-500/30 rounded-2xl p-6 space-y-4 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(249,115,22,0.15)] transition-all duration-300 anim-fade-up ${col2.isVisible ? "is-visible" : ""}`}
         >
           <div className="flex items-center gap-3 pb-3 border-b border-orange-500/30">
-            <motion.div
-              className="bg-orange-500/20 p-2 rounded-full"
-              animate={{ rotate: 360 }}
-              transition={{ repeat: Infinity, duration: 8, ease: "linear" }}
-            >
+            {/* CSS animation thay Framer Motion infinite spin */}
+            <div className="bg-orange-500/20 p-2 rounded-full animate-icon-spin">
               <Settings className="h-5 w-5 text-orange-400" />
-            </motion.div>
+            </div>
             <h2 className="text-white font-bold text-lg uppercase tracking-wide">{t("about.ourServices")}</h2>
           </div>
 
           <ul className="space-y-4">
             {services.map(({ icon: Icon, text }, i) => (
-              <motion.li
+              <li
                 key={i}
-                className="flex items-start gap-3"
-                variants={fadeUp}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                custom={i}
+                className={`flex items-start gap-3 anim-fade-up ${col2.isVisible ? "is-visible" : ""} anim-delay-${i + 1}`}
               >
-                <motion.div
-                  className="bg-orange-500/20 p-2 rounded-lg shrink-0 mt-0.5"
-                  whileHover={{ scale: 1.15, backgroundColor: "rgba(249,115,22,0.4)" }}
-                >
+                <div className="bg-orange-500/20 p-2 rounded-lg shrink-0 mt-0.5 hover:scale-110 hover:bg-orange-500/40 transition-all">
                   <Icon className="h-4 w-4 text-orange-400" />
-                </motion.div>
+                </div>
                 <p className="text-gray-300 text-sm leading-snug">{text}</p>
-              </motion.li>
+              </li>
             ))}
           </ul>
-        </motion.div>
+        </div>
 
         {/* --- Column 3: Lợi Ích Khi Chọn TPC --- */}
-        <motion.div
-          className="bg-white/5 backdrop-blur-sm border border-green-500/30 rounded-2xl p-6 space-y-4"
-          variants={slideRight}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          whileHover={{ y: -4, boxShadow: "0 20px 40px rgba(34,197,94,0.15)" }}
-          transition={{ type: "spring", stiffness: 200 }}
+        <div
+          ref={col3.ref}
+          className={`bg-white/5 backdrop-blur-sm border border-green-500/30 rounded-2xl p-6 space-y-4 hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(34,197,94,0.15)] transition-all duration-300 anim-slide-right ${col3.isVisible ? "is-visible" : ""}`}
         >
           <div className="flex items-center gap-3 pb-3 border-b border-green-500/30">
-            <motion.div
-              className="bg-green-500/20 p-2 rounded-full"
-              animate={{ scale: [1, 1.15, 1] }}
-              transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut" }}
-            >
+            {/* CSS animation thay Framer Motion infinite pulse */}
+            <div className="bg-green-500/20 p-2 rounded-full animate-icon-pulse">
               <ShieldCheck className="h-5 w-5 text-green-400" />
-            </motion.div>
+            </div>
             <h2 className="text-white font-bold text-lg uppercase tracking-wide">{t("about.whyChooseUs")}</h2>
           </div>
 
           <ul className="space-y-3">
             {benefits.map((item, i) => (
-              <motion.li
+              <li
                 key={item}
-                className="flex items-center gap-3"
-                variants={scaleIn}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true }}
-                custom={i}
+                className={`flex items-center gap-3 anim-scale-in ${col3.isVisible ? "is-visible" : ""} anim-delay-${i + 1}`}
               >
-                <motion.div
-                  initial={{ scale: 0 }}
-                  whileInView={{ scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 + 0.3, type: "spring", stiffness: 300 }}
-                >
-                  <CheckCircle2 className="h-5 w-5 text-green-400 shrink-0" />
-                </motion.div>
+                <CheckCircle2 className="h-5 w-5 text-green-400 shrink-0" />
                 <p className="text-gray-300 text-sm">{item}</p>
-              </motion.li>
+              </li>
             ))}
           </ul>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

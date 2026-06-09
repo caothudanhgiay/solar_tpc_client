@@ -1,22 +1,16 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { Zap, Wrench, Sparkles, Activity, ShieldCheck, ArrowRight } from "lucide-react";
 import { useTranslation } from "next-i18next/pages";
-
-const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: (i = 0) => ({
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.5, delay: i * 0.1, ease: "easeOut" as const },
-  }),
-};
+import { useScrollAnimation, useScrollAnimationGroup } from "@/lib/utils/useScrollAnimation";
 
 export default function ServicesSection() {
   const { t } = useTranslation("common");
+
+  const titleRef = useScrollAnimation(0.2);
+  const gridRef = useScrollAnimationGroup(0.1);
 
   const services = [
     {
@@ -55,88 +49,69 @@ export default function ServicesSection() {
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-400/50 to-transparent z-20" />
       <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-teal-400/50 to-transparent z-20" />
 
-      {/* Background ảnh pin mặt trời */}
-      <motion.div
-        className="absolute inset-0 z-0"
-        initial={{ scale: 1.05 }}
-        whileInView={{ scale: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 1.5, ease: "easeOut" }}
-      >
+      {/* Background ảnh pin mặt trời — dùng <Image> thay CSS backgroundImage */}
+      <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-b from-slate-950/95 via-slate-950/80 to-slate-950/95 z-10" />
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-30"
-          style={{ backgroundImage: "url('/images/bg_page.avif')" }}
+        <Image
+          src="/images/bg_page.avif"
+          alt=""
+          fill
+          sizes="100vw"
+          className="object-cover object-center opacity-30"
+          quality={60}
+          loading="lazy"
         />
-      </motion.div>
+      </div>
 
       <div className="max-w-[1440px] mx-auto px-6 md:px-12 xl:px-24 relative z-10">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-20">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-500/15 border border-teal-500/30 text-teal-400 text-xs font-bold uppercase tracking-wider mb-4"
+          <div
+            ref={titleRef.ref}
+            className={`anim-scale-in ${titleRef.isVisible ? "is-visible" : ""}`}
           >
-            <ShieldCheck className="w-3.5 h-3.5 animate-pulse" /> {t("services.badge")}
-          </motion.div>
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-3xl md:text-5xl font-black text-white uppercase tracking-tight mb-4"
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-teal-500/15 border border-teal-500/30 text-teal-400 text-xs font-bold uppercase tracking-wider mb-4">
+              <ShieldCheck className="w-3.5 h-3.5 animate-pulse" /> {t("services.badge")}
+            </div>
+          </div>
+          <h2
+            className={`text-3xl md:text-5xl font-black text-white uppercase tracking-tight mb-4 anim-fade-up ${titleRef.isVisible ? "is-visible" : ""} anim-delay-1`}
           >
             {t("services.title")}<span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-400 to-emerald-400">{t("services.highlight")}</span>
-          </motion.h2>
-          <motion.div
-            initial={{ opacity: 0, scaleX: 0 }}
-            whileInView={{ opacity: 1, scaleX: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="h-1.5 w-32 bg-gradient-to-r from-teal-500 to-emerald-500 mx-auto rounded-full"
+          </h2>
+          <div
+            className={`h-1.5 w-32 bg-gradient-to-r from-teal-500 to-emerald-500 mx-auto rounded-full anim-fade-up ${titleRef.isVisible ? "is-visible" : ""} anim-delay-2`}
           />
         </div>
 
-        {/* 4-Column Services Grid matching screenshot */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        {/* 4-Column Services Grid */}
+        <div
+          ref={gridRef.ref}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
+        >
           {services.map((service, index) => {
             const Icon = service.icon;
             return (
-              <motion.div
+              <div
                 key={service.title}
-                custom={index}
-                variants={fadeUp}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.1 }}
-                className="flex flex-col gap-4 group"
+                className={`flex flex-col gap-4 group anim-fade-up ${gridRef.isVisible ? "is-visible" : ""} anim-delay-${index + 1}`}
               >
                 {/* 1. Image block on top */}
-                <motion.div
-                  whileHover={{ scale: 1.02 }}
-                  transition={{ duration: 0.3 }}
-                  className="relative h-[200px] rounded-2xl overflow-hidden shadow-xl border border-white/10 cursor-pointer"
-                >
+                <div className="relative h-[200px] rounded-2xl overflow-hidden shadow-xl border border-white/10 cursor-pointer hover:scale-[1.02] transition-transform duration-300">
                   <Image
                     src={service.image}
                     alt={service.title}
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 300px"
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    loading="lazy"
                   />
                   {/* Subtle dark filter on top of image */}
                   <div className="absolute inset-0 bg-slate-950/20 group-hover:bg-transparent transition-colors duration-300" />
-                </motion.div>
+                </div>
 
                 {/* 2. Text Card below with custom Orange Border */}
-                <motion.div
-                  whileHover={{ y: -6, boxShadow: "0 15px 30px rgba(249,115,22,0.12)" }}
-                  transition={{ type: "spring", stiffness: 250 }}
-                  className="bg-white/5 backdrop-blur-xl border-2 border-orange-500/40 rounded-2xl p-6 flex flex-col justify-between h-[180px] shadow-2xl relative overflow-hidden transition-all duration-300"
-                >
+                <div className="bg-white/5 backdrop-blur-xl border-2 border-orange-500/40 rounded-2xl p-6 flex flex-col justify-between h-[180px] shadow-2xl relative overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_15px_30px_rgba(249,115,22,0.12)]">
                   <div className="space-y-2">
                     <div className="flex items-center gap-2">
                       <div className="p-1.5 bg-orange-500/10 rounded-lg text-orange-400 shrink-0">
@@ -159,8 +134,8 @@ export default function ServicesSection() {
                       {t("services.details")} <ArrowRight className="w-3.5 h-3.5" />
                     </Link>
                   </div>
-                </motion.div>
-              </motion.div>
+                </div>
+              </div>
             );
           })}
         </div>

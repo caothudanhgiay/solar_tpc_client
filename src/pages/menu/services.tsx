@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import Head from "next/head";
-import { motion } from "framer-motion";
 import { ChevronRight, Settings, Wrench, ShieldCheck, Zap } from "lucide-react";
 import { cn } from "@/lib/utils/utils";
 import Image from "next/image";
@@ -26,28 +25,28 @@ export default function ServicesPage() {
     {
       id: "lap-dat",
       title: t("services.item1.title"),
-      image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?q=80&w=2072&auto=format&fit=crop",
+      image: "/images/demo2.jpg",
       desc: t("services.item1.desc"),
       price: t("services_page.contactPrice"),
     },
     {
       id: "om",
       title: t("services.item2.title"),
-      image: "https://images.unsplash.com/photo-1466611653911-95081537e5b7?q=80&w=2070&auto=format&fit=crop",
+      image: "/images/demo3.jpg",
       desc: t("services.item2.desc"),
       price: t("services_page.contactPrice"),
     },
     {
       id: "ve-sinh",
       title: t("services.item3.title"),
-      image: "https://images.unsplash.com/photo-1592833159155-c62df1b65634?q=80&w=2069&auto=format&fit=crop",
+      image: "/images/demo1.jpg",
       desc: t("services.item3.desc"),
       price: t("services_page.contactPrice"),
     },
     {
       id: "scada",
       title: t("services.item4.title"),
-      image: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2070&auto=format&fit=crop",
+      image: "/images/demo4.jpg",
       desc: t("services.item4.desc"),
       price: t("services_page.contactPrice"),
     }
@@ -72,19 +71,24 @@ export default function ServicesPage() {
       </Head>
 
       <main className="relative min-h-screen pt-32 pb-20 overflow-hidden bg-slate-950">
-        {/* Background elements */}
+        {/* Background elements — dùng <Image> thay CSS backgroundImage */}
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-r from-slate-900/95 to-slate-900/70 z-10" />
-          <div
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-            style={{ backgroundImage: "url('https://images.unsplash.com/photo-1509391366360-2e959784a276?q=80&w=2072&auto=format&fit=crop')" }}
+          <Image
+            src="/images/bg_page.avif"
+            alt=""
+            fill
+            sizes="100vw"
+            className="object-cover object-center"
+            quality={60}
+            priority
           />
         </div>
 
         <div className="container mx-auto px-4 md:px-6 max-w-7xl relative z-20">
           
           {/* Breadcrumb / Title area */}
-          <div className="mb-10 pb-6 border-b border-white/10">
+          <div className="mb-10 pb-6 border-b border-white/10 page-animate">
             <h1 className="text-3xl font-bold text-white uppercase tracking-wider">{t("services_page.title")}</h1>
             <div className="flex items-center gap-2 mt-3 text-sm text-gray-400">
               <Link href="/" className="hover:text-orange-500 transition-colors">{t("header.home")}</Link>
@@ -140,20 +144,14 @@ export default function ServicesPage() {
               </div>
             </div>
 
-            {/* Main Content (Grid) */}
+            {/* Main Content (Grid) — CSS transition thay Framer Motion layout */}
             <div className="lg:w-3/4">
-              <motion.div 
-                className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6"
-                layout
-              >
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
                 {filteredServices.map((service, idx) => (
-                  <motion.div
+                  <div
                     key={service.id}
-                    layout
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.4, delay: idx * 0.1 }}
-                    className="bg-slate-900 border border-white/10 rounded-2xl overflow-hidden group hover:border-orange-500/50 hover:shadow-[0_8px_30px_rgba(249,115,22,0.15)] transition-all duration-300 flex flex-col"
+                    className="bg-slate-900 border border-white/10 rounded-2xl overflow-hidden group hover:border-orange-500/50 hover:shadow-[0_8px_30px_rgba(249,115,22,0.15)] transition-all duration-300 flex flex-col page-animate"
+                    style={{ animationDelay: `${idx * 0.1}s` }}
                   >
                     {/* Image */}
                     <div className="relative h-48 w-full overflow-hidden">
@@ -161,9 +159,9 @@ export default function ServicesPage() {
                         src={service.image}
                         alt={service.title}
                         fill
-                        priority={idx <= 2}
                         className="object-cover transition-transform duration-700 group-hover:scale-110"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        loading="lazy"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent opacity-80" />
                     </div>
@@ -195,9 +193,9 @@ export default function ServicesPage() {
                         </Link>
                       </div>
                     </div>
-                  </motion.div>
+                  </div>
                 ))}
-              </motion.div>
+              </div>
 
               {filteredServices.length === 0 && (
                 <div className="text-center py-20 text-gray-400">

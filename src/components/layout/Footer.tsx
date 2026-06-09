@@ -1,10 +1,16 @@
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Mail, Phone, MapPin, Globe, ChevronRight } from "lucide-react";
 import { useTranslation } from "next-i18next/pages";
+import { useScrollAnimation } from "@/lib/utils/useScrollAnimation";
 
 export default function Footer() {
   const { t } = useTranslation("common");
+
+  // Chỉ load Google Maps iframe khi section scroll vào viewport
+  const mapSection = useScrollAnimation(0.1);
+  const [mapLoaded, setMapLoaded] = useState(false);
 
   const supportItems = [
     { label: t("footer.commit"), href: "#" },
@@ -29,7 +35,7 @@ export default function Footer() {
                   fill
                   sizes="(max-width: 768px) 192px, (max-width: 1024px) 256px, 288px"
                   className="object-contain p-1 object-left"
-                  priority
+                  loading="lazy"
                 />
               </div>
               <span className="text-white font-bold text-lg mt-4 uppercase tracking-wide">
@@ -42,11 +48,12 @@ export default function Footer() {
             <div className="flex space-x-4 pt-2">
               <a href="https://www.facebook.com/tpcsolar.vn/" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="relative w-10 h-10 rounded-xl overflow-hidden hover:scale-110 transition-transform shadow-md block">
                 <Image
-                  src="/images/fb-icon.png"
+                  src="/images/fb-icon.webp"
                   alt="Facebook"
                   fill
                   className="object-cover"
                   sizes="40px"
+                  loading="lazy"
                 />
               </a>
               <a href="#" aria-label="Zalo" className="relative w-10 h-10 rounded-xl overflow-hidden hover:scale-110 transition-transform shadow-md block">
@@ -56,6 +63,7 @@ export default function Footer() {
                   fill
                   className="object-cover"
                   sizes="40px"
+                  loading="lazy"
                 />
               </a>
             </div>
@@ -110,21 +118,29 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Column 4: Map */}
-          <div>
+          {/* Column 4: Map — Lazy load iframe khi scroll vào viewport */}
+          <div ref={mapSection.ref}>
             <h3 className="text-white font-bold text-lg mb-8 uppercase relative before:content-[''] before:absolute before:-bottom-3 before:left-0 before:w-10 before:h-1 before:bg-orange-500">
               {t("footer.mapTitle")}
             </h3>
-            <div className="rounded-lg h-[200px] w-full overflow-hidden border border-white/10 shadow-sm">
-              <iframe
-                src="https://maps.google.com/maps?q=%E1%BA%A4p+Long+%C4%90%E1%BB%A9c+1,+P+Tam+Ph%C6%B0%E1%BB%9Bc+TP+Bi%C3%AAn+Ho%C3%A0+,+T%E1%BB%89nh+%C4%90%E1%BB%93ng+Nai&t=&z=16&ie=UTF8&iwloc=&output=embed"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen={false}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              ></iframe>
+            <div className="rounded-lg h-[200px] w-full overflow-hidden border border-white/10 shadow-sm bg-slate-800">
+              {(mapSection.isVisible || mapLoaded) ? (
+                <iframe
+                  src="https://maps.google.com/maps?q=%E1%BA%A4p+Long+%C4%90%E1%BB%A9c+1,+P+Tam+Ph%C6%B0%E1%BB%9Bc+TP+Bi%C3%AAn+Ho%C3%A0+,+T%E1%BB%89nh+%C4%90%E1%BB%93ng+Nai&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen={false}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  onLoad={() => setMapLoaded(true)}
+                ></iframe>
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm">
+                  <MapPin className="w-6 h-6 mr-2 text-orange-500/50" />
+                  Đang tải bản đồ...
+                </div>
+              )}
             </div>
           </div>
         </div>

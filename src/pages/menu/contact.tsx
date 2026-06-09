@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, FormEvent } from "react";
 import { useRouter } from "next/router";
 import { User, Phone, Mail, MapPin, MessageSquare, ShieldCheck, RefreshCw } from "lucide-react";
 import Head from "next/head";
+import Image from "next/image";
 import { useTranslation } from "next-i18next/pages";
 import { serverSideTranslations } from "next-i18next/pages/serverSideTranslations";
 import { GetStaticProps } from "next";
@@ -112,9 +113,14 @@ export default function ContactPage() {
         {/* Background with overlay to match Home Page */}
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-r from-slate-900/95 to-slate-900/70 z-10" />
-          <div
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-            style={{ backgroundImage: "url('https://images.unsplash.com/photo-1509391366360-2e959784a276?q=80&w=2072&auto=format&fit=crop')" }}
+          <Image
+            src="/images/bg_page.avif"
+            alt=""
+            fill
+            sizes="100vw"
+            className="object-cover object-center"
+            quality={60}
+            priority
           />
         </div>
 

@@ -35,3 +35,155 @@ input:-webkit-autofill:active {
   transition: background-color 5000s ease-in-out 0s;
 }
 
+/* ═══════════════════════════════════════════════════════
+   CSS Animations — thay thế Framer Motion để giảm bundle
+   ═══════════════════════════════════════════════════════ */
+
+/* --- Keyframes --- */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideLeft {
+  from { opacity: 0; transform: translateX(-50px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideRight {
+  from { opacity: 0; transform: translateX(50px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.85); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes heroFadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes heroSlideRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes separatorExpand {
+  from { opacity: 0; transform: scaleX(0); }
+  to   { opacity: 1; transform: scaleX(1); }
+}
+
+@keyframes badgeScaleIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* --- Infinite CSS Animations (thay Framer Motion repeat: Infinity) --- */
+@keyframes iconWobble {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(5deg); }
+  75% { transform: rotate(-5deg); }
+}
+
+@keyframes iconSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+@keyframes iconPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+
+.animate-icon-wobble {
+  animation: iconWobble 4s ease-in-out infinite;
+}
+
+.animate-icon-spin {
+  animation: iconSpin 8s linear infinite;
+}
+
+.animate-icon-pulse {
+  animation: iconPulse 2.5s ease-in-out infinite;
+}
+
+/* --- Scroll-triggered animation base classes --- */
+/* Mặc định ẩn, khi IntersectionObserver thêm .is-visible → chạy animation */
+.anim-fade-up,
+.anim-fade-in,
+.anim-slide-left,
+.anim-slide-right,
+.anim-scale-in {
+  opacity: 0;
+  will-change: opacity, transform;
+}
+
+.anim-fade-up.is-visible {
+  animation: fadeUp 0.6s ease-out forwards;
+}
+
+.anim-fade-in.is-visible {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+.anim-slide-left.is-visible {
+  animation: slideLeft 0.6s ease-out forwards;
+}
+
+.anim-slide-right.is-visible {
+  animation: slideRight 0.6s ease-out forwards;
+}
+
+.anim-scale-in.is-visible {
+  animation: scaleIn 0.5s ease-out forwards;
+}
+
+/* Stagger delay utilities — dùng cho các item trong list */
+.anim-delay-1 { animation-delay: 0.1s; }
+.anim-delay-2 { animation-delay: 0.2s; }
+.anim-delay-3 { animation-delay: 0.3s; }
+.anim-delay-4 { animation-delay: 0.4s; }
+.anim-delay-5 { animation-delay: 0.5s; }
+.anim-delay-6 { animation-delay: 0.6s; }
+
+/* --- Hero page entrance animations (chạy ngay, không cần IntersectionObserver) --- */
+.hero-animate {
+  animation: heroFadeUp 0.8s ease-out both;
+}
+
+.hero-animate-delay-1 {
+  animation: heroFadeUp 0.8s ease-out 0.2s both;
+}
+
+.hero-animate-delay-2 {
+  animation: heroFadeUp 0.8s ease-out 0.4s both;
+}
+
+.hero-slide-right {
+  animation: heroSlideRight 0.8s ease-out 0.2s both;
+}
+
+/* --- Page entrance animation --- */
+.page-animate {
+  animation: heroFadeUp 0.6s ease-out both;
+}
+
+.page-animate-delay-1 {
+  animation: heroFadeUp 0.6s ease-out 0.2s both;
+}
+
+.page-animate-delay-2 {
+  animation: heroFadeUp 0.6s ease-out 0.3s both;
+}
+
+/* --- Global Loading Cursor --- */
+body.is-loading, body.is-loading * {
+  cursor: wait !important;
+}

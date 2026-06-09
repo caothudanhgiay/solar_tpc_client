@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, Zap, Shield, Leaf } from "lucide-react";
-import { motion } from "framer-motion";
 import { useTranslation } from "next-i18next/pages";
 
 export default function HeroSection() {
@@ -17,25 +17,25 @@ export default function HeroSection() {
 
   return (
     <section className="relative min-h-screen flex items-center pt-20 pb-16 overflow-hidden">
-      {/* Background with overlay */}
+      {/* Background with overlay — dùng <Image> thay vì CSS backgroundImage */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-r from-slate-900/95 to-slate-900/70 z-10" />
-        <div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/images/bg_page.avif')" }}
+        <Image
+          src="/images/bg_page.avif"
+          alt=""
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-center"
+          quality={75}
         />
       </div>
 
       <div className="container mx-auto px-4 md:px-6 relative z-20">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
 
-          {/* Content */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="text-white space-y-8"
-          >
+          {/* Content — CSS animation thay vì motion.div */}
+          <div className="text-white space-y-8 hero-animate">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-orange-400 font-medium text-sm">
               <Zap className="h-4 w-4" />
               <span>{t("hero.pioneer")}</span>
@@ -64,15 +64,10 @@ export default function HeroSection() {
                 {t("hero.viewProjects")}
               </Link>
             </div>
-          </motion.div>
+          </div>
 
-          {/* Value Props Cards */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:pl-12"
-          >
+          {/* Value Props Cards — CSS animation thay vì motion.div */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 lg:pl-12 hero-slide-right">
             <div className="bg-white/10 backdrop-blur-md border border-white/10 p-6 rounded-2xl hover:bg-white/20 transition-all cursor-default">
               <div className="bg-orange-500/20 w-14 h-14 rounded-xl flex items-center justify-center mb-6">
                 <Leaf className="h-7 w-7 text-orange-400" />
@@ -88,23 +83,18 @@ export default function HeroSection() {
               <h3 className="text-xl font-bold text-white mb-3">{t("hero.warrantyTitle")}</h3>
               <p className="text-gray-300 text-sm leading-relaxed">{t("hero.warrantyDesc")}</p>
             </div>
-          </motion.div>
+          </div>
         </div>
 
-        {/* Stats */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-24 border-t border-white/10 pt-12"
-        >
+        {/* Stats — CSS animation */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-24 border-t border-white/10 pt-12 hero-animate-delay-2">
           {stats.map((stat, index) => (
             <div key={index} className="text-center">
               <p className="text-4xl md:text-5xl font-bold text-white mb-2">{stat.value}</p>
               <p className="text-gray-400 text-sm md:text-base uppercase tracking-wider">{stat.label}</p>
             </div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </section>
   );

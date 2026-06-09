@@ -66,9 +66,24 @@ export default function Header({ initialMenus }: { initialMenus?: NavigationItem
   useEffect(() => {
     if (initialMenus && initialMenus.length > 0) return;
 
+    // Kiểm tra cache từ sessionStorage trước — tránh gọi API mỗi lần navigate
+    const MENU_CACHE_KEY = 'tso_menu_cache';
+    try {
+      const cached = sessionStorage.getItem(MENU_CACHE_KEY);
+      if (cached) {
+        const parsed = JSON.parse(cached) as MenuItem[];
+        if (parsed && parsed.length > 0) {
+          setMenuItems(parsed);
+          return; // Đã có cache, không cần gọi API
+        }
+      }
+    } catch {
+      // Bỏ qua lỗi parse — tiếp tục gọi API
+    }
+
     const controller = new AbortController();
-    // Timeout 8 giây — đủ thời gian cho kết nối Docker network trên production Linux
-    const timeout = setTimeout(() => controller.abort(), 8000);
+    // Giảm timeout xuống 3 giây — nếu backend không respond trong 3s thì dùng menu mặc định
+    const timeout = setTimeout(() => controller.abort(), 3000);
 
     const fetchMenus = async () => {
       try {
@@ -76,6 +91,10 @@ export default function Header({ initialMenus }: { initialMenus?: NavigationItem
         const data = response.data as MenuItem[];
         if (data && data.length > 0) {
           setMenuItems(data);
+          // Lưu cache vào sessionStorage
+          try {
+            sessionStorage.setItem(MENU_CACHE_KEY, JSON.stringify(data));
+          } catch { /* bỏ qua lỗi storage */ }
         }
       } catch (error: any) {
         // Bỏ qua lỗi AbortError (do timeout hoặc unmount) — dùng menu mặc định
