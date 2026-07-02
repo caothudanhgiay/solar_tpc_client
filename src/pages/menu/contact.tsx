@@ -10,6 +10,7 @@ import { GetStaticProps } from "next";
 import { apiClient } from "@/lib/utils/apiClient";
 import { Toast } from "@/components/ui/Toast";
 import { ApiException } from "@/lib/exception/exception";
+import { useScrollAnimation } from "@/lib/utils/useScrollAnimation";
 
 export default function ContactPage() {
   const { t } = useTranslation("common");
@@ -31,6 +32,10 @@ export default function ContactPage() {
   const [userCaptcha, setUserCaptcha] = useState("");
   const [captchaError, setCaptchaError] = useState("");
   const [showCaptchaModal, setShowCaptchaModal] = useState(false);
+
+  // Lazy load Google Maps iframe — chỉ load khi scroll tới
+  const mapSection = useScrollAnimation(0.1);
+  const [mapLoaded, setMapLoaded] = useState(false);
 
   const generateCaptcha = () => {
     const num1 = Math.floor(Math.random() * 10) + 1;
@@ -183,17 +188,25 @@ export default function ContactPage() {
               </div>
             </div>
 
-            {/* Map Column */}
-            <div className="h-[400px] rounded-2xl overflow-hidden border border-white/10 shadow-lg relative">
-              <iframe
-                src="https://maps.google.com/maps?q=%E1%BA%A4p+Long+%C4%90%E1%BB%A9c+1,+P+Tam+Ph%C6%B0%E1%BB%9Bc+TP+Bi%C3%AAn+Ho%C3%A0+,+T%E1%BB%89nh+%C4%90%E1%BB%93ng+Nai&t=&z=16&ie=UTF8&iwloc=&output=embed"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen={false}
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              ></iframe>
+            {/* Map Column — Lazy load iframe khi scroll vào viewport */}
+            <div ref={mapSection.ref} className="h-[400px] rounded-2xl overflow-hidden border border-white/10 shadow-lg relative bg-slate-800">
+              {(mapSection.isVisible || mapLoaded) ? (
+                <iframe
+                  src="https://maps.google.com/maps?q=%E1%BA%A4p+Long+%C4%90%E1%BB%A9c+1,+P+Tam+Ph%C6%B0%E1%BB%9Bc+TP+Bi%C3%AAn+Ho%C3%A0+,+T%E1%BB%89nh+%C4%90%E1%BB%93ng+Nai&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen={false}
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  onLoad={() => setMapLoaded(true)}
+                ></iframe>
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm">
+                  <MapPin className="w-6 h-6 mr-2 text-orange-500/50" />
+                  Đang tải bản đồ...
+                </div>
+              )}
             </div>
           </div>
 

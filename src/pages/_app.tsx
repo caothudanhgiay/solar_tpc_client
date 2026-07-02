@@ -4,16 +4,19 @@ import Layout from '@/components/layout/Layout'
 import { appWithTranslation } from 'next-i18next/pages'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 function App({ Component, pageProps }: AppProps) {
   const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     const handleStart = () => {
+      setIsLoading(true)
       document.body.classList.add('is-loading')
     }
     const handleComplete = () => {
+      setIsLoading(false)
       document.body.classList.remove('is-loading')
     }
 
@@ -33,6 +36,8 @@ function App({ Component, pageProps }: AppProps) {
       <Head>
         <link rel="icon" href="/icon.png?v=2" key="favicon" type="image/png" />
       </Head>
+      {/* Loading bar — hiển thị khi đang navigate giữa các trang */}
+      {isLoading && <div className="loading-bar" />}
       <Layout>
         <Component {...pageProps} />
       </Layout>
@@ -41,3 +46,4 @@ function App({ Component, pageProps }: AppProps) {
 }
 
 export default appWithTranslation(App)
+

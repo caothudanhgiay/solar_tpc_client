@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useTranslation } from "next-i18next/pages";
-import { motion, AnimatePresence } from "framer-motion";
 import { MessageCircle, X, Send, Bot, User, Loader2, ExternalLink } from "lucide-react";
 import { apiClient } from "@/lib/utils/apiClient";
 import { API_CHATBOT_ASK, API_CHATBOT_ASK_STREAM, API_URL, ZALO_CHAT_URL } from "@/lib/utils/constants";
@@ -237,42 +236,30 @@ export default function TsoChatbot() {
 
   return (
     <>
-      {/* Nút trigger chatbot */}
-      <AnimatePresence>
-        {!isOpen && (
-          <motion.button
-            initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0, opacity: 0 }}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-            onClick={() => setIsOpen(true)}
-            className="fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full bg-gradient-to-br from-orange-500 to-amber-600 text-white shadow-2xl flex items-center justify-center cursor-pointer group"
-            aria-label="Open chatbot"
-            id="chatbot-trigger"
-          >
-            <MessageCircle className="w-7 h-7" />
-            {/* Pulse ring */}
-            <span className="absolute inset-0 rounded-full bg-orange-500 animate-ping opacity-30" />
-            {/* Tooltip */}
-            <span className="absolute bottom-full right-0 mb-3 px-3 py-1.5 text-xs font-medium bg-slate-800 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-lg">
-              {t("chatbot.title")}
-            </span>
-          </motion.button>
-        )}
-      </AnimatePresence>
+      {/* Nút trigger chatbot — CSS animation thay framer-motion */}
+      {!isOpen && (
+        <button
+          onClick={() => setIsOpen(true)}
+          className="fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full bg-gradient-to-br from-orange-500 to-amber-600 text-white shadow-2xl flex items-center justify-center cursor-pointer group chatbot-trigger-enter hover:scale-110 active:scale-90 transition-transform"
+          aria-label="Open chatbot"
+          id="chatbot-trigger"
+        >
+          <MessageCircle className="w-7 h-7" />
+          {/* Pulse ring */}
+          <span className="absolute inset-0 rounded-full bg-orange-500 animate-ping opacity-30" />
+          {/* Tooltip */}
+          <span className="absolute bottom-full right-0 mb-3 px-3 py-1.5 text-xs font-medium bg-slate-800 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-lg">
+            {t("chatbot.title")}
+          </span>
+        </button>
+      )}
 
-      {/* Chat panel */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="fixed bottom-6 right-6 z-50 w-[380px] max-w-[calc(100vw-2rem)] h-[560px] max-h-[calc(100vh-3rem)] flex flex-col rounded-2xl overflow-hidden shadow-2xl border border-white/10"
-            id="chatbot-panel"
-          >
+      {/* Chat panel — CSS animation thay framer-motion */}
+      {isOpen && (
+        <div
+          className="fixed bottom-6 right-6 z-50 w-[380px] max-w-[calc(100vw-2rem)] h-[560px] max-h-[calc(100vh-3rem)] flex flex-col rounded-2xl overflow-hidden shadow-2xl border border-white/10 chatbot-panel-enter"
+          id="chatbot-panel"
+        >
             {/* Header */}
             <div className="bg-gradient-to-r from-slate-800 to-slate-900 border-b border-white/10 px-5 py-4 flex items-center gap-3 shrink-0 relative overflow-hidden">
               {/* Subtle accent glow */}
@@ -396,9 +383,8 @@ export default function TsoChatbot() {
               {/* Powered by */}
               <p className="text-center text-[10px] text-gray-600">{t("chatbot.poweredBy")}</p>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+        </div>
+      )}
     </>
   );
 }

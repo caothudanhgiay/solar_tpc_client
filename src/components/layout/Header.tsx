@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils/utils";
@@ -42,6 +42,34 @@ export default function Header({ initialMenus }: { initialMenus?: NavigationItem
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  // State cho submenu toggle trên mobile — lưu tên menu đang mở
+  const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
+
+  // Callback đóng mobile menu — dùng chung cho router.events và click handlers
+  const closeMobileMenu = useCallback(() => {
+    setMobileMenuOpen(false);
+    setOpenSubmenu(null);
+  }, []);
+
+  // ★ Auto-close mobile menu khi route thay đổi (FIX CHÍNH cho bug navigation)
+  useEffect(() => {
+    router.events.on('routeChangeStart', closeMobileMenu);
+    return () => {
+      router.events.off('routeChangeStart', closeMobileMenu);
+    };
+  }, [router.events, closeMobileMenu]);
+
+  // ★ Scroll-lock body khi mobile menu đang mở — ngăn scroll nội dung phía sau
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.classList.add('mobile-menu-open');
+    } else {
+      document.body.classList.remove('mobile-menu-open');
+    }
+    return () => {
+      document.body.classList.remove('mobile-menu-open');
+    };
+  }, [mobileMenuOpen]);
 
   // Giữ lại menu mặc định làm fallback khi API lỗi hoặc đang load
   const initialNavigation: NavigationItem[] = [
@@ -271,84 +299,116 @@ export default function Header({ initialMenus }: { initialMenus?: NavigationItem
         </button>
       </div>
 
-      {/* Mobile Menu */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden absolute top-full left-0 w-full bg-slate-900 shadow-2xl border-t border-white/10 py-4 animate-in slide-in-from-top-2 duration-200">
-          <div className="flex flex-col space-y-1 px-4">
-            {navigation.map((item) => (
-              <div key={item.name}>
+      {/* Mobile Menu — dùng max-h transition thay vì conditional render để smooth hơn */}
+      <div
+        className={cn(
+          "lg:hidden absolute top-full left-0 w-full bg-slate-900 shadow-2xl border-t border-white/10 transition-all duration-300 ease-in-out overflow-hidden",
+          mobileMenuOpen ? "max-h-[calc(100vh-80px)] opacity-100 overflow-y-auto" : "max-h-0 opacity-0 pointer-events-none"
+        )}
+      >
+        <div className="flex flex-col space-y-1 px-4 py-4">
+          {navigation.map((item) => (
+            <div key={item.name}>
+              {item.submenu ? (
+                /* Item có submenu: bấm toggle submenu thay vì navigate */
+                <>
+                  <button
+                    onClick={() => setOpenSubmenu(openSubmenu === item.name ? null : item.name)}
+                    className="w-full flex items-center justify-between text-white hover:text-orange-500 hover:bg-white/5 px-4 py-3 rounded-lg text-sm font-semibold transition-colors uppercase tracking-wider"
+                  >
+                    {item.name}
+                    <ChevronDown className={cn(
+                      "w-4 h-4 transition-transform duration-200",
+                      openSubmenu === item.name ? "rotate-180 text-orange-400" : ""
+                    )} />
+                  </button>
+                  {/* Submenu — slide down animation */}
+                  <div className={cn(
+                    "overflow-hidden transition-all duration-200 ease-in-out",
+                    openSubmenu === item.name ? "max-h-96 opacity-100" : "max-h-0 opacity-0"
+                  )}>
+                    <div className="pl-6 flex flex-col space-y-1 pb-2 pt-1">
+                      {/* Link tới trang chính của menu cha */}
+                      <Link
+                        href={item.href}
+                        onClick={closeMobileMenu}
+                        className="block text-orange-400 hover:text-orange-500 hover:bg-white/5 px-4 py-2 rounded-lg text-xs font-bold transition-colors uppercase tracking-wide"
+                      >
+                        ▸ {item.name}
+                      </Link>
+                      {item.submenu.map((sub) => (
+                        <Link
+                          key={sub.name}
+                          href={sub.href}
+                          onClick={closeMobileMenu}
+                          className="block text-gray-300 hover:text-orange-500 hover:bg-white/5 px-4 py-2 rounded-lg text-xs transition-colors uppercase tracking-wide"
+                        >
+                          - {sub.name}
+                        </Link>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              ) : (
+                /* Item không có submenu: navigate trực tiếp */
                 <Link
                   href={item.href}
-                  onClick={() => !item.submenu && setMobileMenuOpen(false)}
+                  onClick={closeMobileMenu}
                   className="block text-white hover:text-orange-500 hover:bg-white/5 px-4 py-3 rounded-lg text-sm font-semibold transition-colors uppercase tracking-wider"
                 >
                   {item.name}
                 </Link>
-                {item.submenu && (
-                  <div className="pl-6 flex flex-col space-y-1 pb-2">
-                    {item.submenu.map((sub) => (
-                      <Link
-                        key={sub.name}
-                        href={sub.href}
-                        onClick={() => setMobileMenuOpen(false)}
-                        className="block text-gray-300 hover:text-orange-500 hover:bg-white/5 px-4 py-2 rounded-lg text-xs transition-colors uppercase tracking-wide"
-                      >
-                        - {sub.name}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-
-            <div className="pt-4 pb-2 px-2">
-              <Link
-                href="/menu/contact#ho-va-ten"
-                onClick={(e) => { handleQuoteClick(e); setMobileMenuOpen(false); }}
-                className="block w-full text-center bg-orange-500 hover:bg-orange-600 text-white px-5 py-3.5 rounded-xl text-sm font-bold transition-colors shadow-lg shadow-orange-500/30 uppercase tracking-wider mb-4"
-              >
-                {t("header.getQuote")}
-              </Link>
+              )}
             </div>
+          ))}
 
-            {/* Language Selector Mobile */}
-            <div className="flex items-center justify-center gap-4 py-3 border-t border-white/10 mt-2">
-              <button
-                onClick={() => { languagesUtils.changeLanguage("vi"); setMobileMenuOpen(false); }}
-                className={cn(
-                  "flex items-center justify-center gap-2 text-xs font-bold px-4 py-2.5 rounded-lg border transition-all w-36 focus:outline-none",
-                  locale === "vi"
-                    ? "text-orange-500 border-orange-500 bg-orange-500/10 shadow-[0_0_10px_rgba(249,115,22,0.2)]"
-                    : "text-white/60 border-white/10 hover:text-white"
-                )}
-              >
-                <img
-                  src="/images/vi_rec.png"
-                  alt="Tiếng Việt"
-                  className="w-5 h-3.5 object-cover rounded shadow-sm"
-                />
-                TIẾNG VIỆT
-              </button>
-              <button
-                onClick={() => { languagesUtils.changeLanguage("en"); setMobileMenuOpen(false); }}
-                className={cn(
-                  "flex items-center justify-center gap-2 text-xs font-bold px-4 py-2.5 rounded-lg border transition-all w-36 focus:outline-none",
-                  locale === "en"
-                    ? "text-orange-500 border-orange-500 bg-orange-500/10 shadow-[0_0_10px_rgba(249,115,22,0.2)]"
-                    : "text-white/60 border-white/10 hover:text-white"
-                )}
-              >
-                <img
-                  src="/images/en_rec.png"
-                  alt="English"
-                  className="w-5 h-3.5 object-cover rounded shadow-sm"
-                />
-                ENGLISH
-              </button>
-            </div>
+          <div className="pt-4 pb-2 px-2">
+            <Link
+              href="/menu/contact#ho-va-ten"
+              onClick={(e) => { handleQuoteClick(e); closeMobileMenu(); }}
+              className="block w-full text-center bg-orange-500 hover:bg-orange-600 text-white px-5 py-3.5 rounded-xl text-sm font-bold transition-colors shadow-lg shadow-orange-500/30 uppercase tracking-wider mb-4"
+            >
+              {t("header.getQuote")}
+            </Link>
+          </div>
+
+          {/* Language Selector Mobile */}
+          <div className="flex items-center justify-center gap-4 py-3 border-t border-white/10 mt-2">
+            <button
+              onClick={() => { languagesUtils.changeLanguage("vi"); closeMobileMenu(); }}
+              className={cn(
+                "flex items-center justify-center gap-2 text-xs font-bold px-4 py-2.5 rounded-lg border transition-all w-36 focus:outline-none",
+                locale === "vi"
+                  ? "text-orange-500 border-orange-500 bg-orange-500/10 shadow-[0_0_10px_rgba(249,115,22,0.2)]"
+                  : "text-white/60 border-white/10 hover:text-white"
+              )}
+            >
+              <img
+                src="/images/vi_rec.png"
+                alt="Tiếng Việt"
+                className="w-5 h-3.5 object-cover rounded shadow-sm"
+              />
+              TIẾNG VIỆT
+            </button>
+            <button
+              onClick={() => { languagesUtils.changeLanguage("en"); closeMobileMenu(); }}
+              className={cn(
+                "flex items-center justify-center gap-2 text-xs font-bold px-4 py-2.5 rounded-lg border transition-all w-36 focus:outline-none",
+                locale === "en"
+                  ? "text-orange-500 border-orange-500 bg-orange-500/10 shadow-[0_0_10px_rgba(249,115,22,0.2)]"
+                  : "text-white/60 border-white/10 hover:text-white"
+              )}
+            >
+              <img
+                src="/images/en_rec.png"
+                alt="English"
+                className="w-5 h-3.5 object-cover rounded shadow-sm"
+              />
+              ENGLISH
+            </button>
           </div>
         </div>
-      )}
+      </div>
     </header>
   );
 }
