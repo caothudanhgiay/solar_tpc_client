@@ -180,7 +180,8 @@ export default function Header({ initialMenus }: { initialMenus?: NavigationItem
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
     };
-    window.addEventListener("scroll", handleScroll);
+    // passive: true — không block scroll trên mobile
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 

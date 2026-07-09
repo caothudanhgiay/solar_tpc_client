@@ -4,6 +4,7 @@ import AboutSection from "@/components/sections/AboutSection";
 import ServicesSection from "@/components/sections/ServicesSection";
 import ProjectsSection from "@/components/sections/ProjectsSection";
 import { serverSideTranslations } from "next-i18next/pages/serverSideTranslations";
+
 import { GetStaticProps } from "next";
 import { useTranslation } from "next-i18next/pages";
 

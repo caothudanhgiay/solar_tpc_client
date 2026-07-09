@@ -17,29 +17,29 @@ export default function ProjectsSection() {
 
   const projects = [
     {
-      id: "du-an-a",
-      name: t("projects.project_a.name"),
-      power: "12 kWp",
-      location: t("projects.project_a.location"),
-      desc: t("projects.project_a.desc"),
+      id: "1",
+      name: "Dự án Đông Hòa",
+      power: "13.86kWp lưu trữ 32kWh",
+      location: "TP.HCM",
+      desc: "Dự án hộ nhà dân ở Đông Hòa, TP.HCM. Công suất 13.86kWp, lưu trữ 32kWh",
       image: "/images/demo1.jpg",
       isReverse: false,
     },
     {
-      id: "du-an-b",
-      name: t("projects.project_b.name"),
-      power: "12 kWp",
-      location: t("projects.project_b.location"),
-      desc: t("projects.project_b.desc"),
+      id: "2",
+      name: "Dự án Đông Hòa",
+      power: "13.86kWp lưu trữ 32kWh",
+      location: "TP.HCM",
+      desc: "Dự án hộ nhà dân ở Đông Hòa, TP.HCM. Công suất 13.86kWp, lưu trữ 32kWh",
       image: "/images/demo3.jpg",
       isReverse: true,
     },
     {
-      id: "du-an-c",
-      name: t("projects.project_c.name"),
-      power: "12 kWp",
-      location: t("projects.project_c.location"),
-      desc: t("projects.project_c.desc"),
+      id: "3",
+      name: "Dự án Đông Hòa",
+      power: "13.86kWp lưu trữ 32kWh",
+      location: "TP.HCM",
+      desc: "Dự án hộ nhà dân ở Đông Hòa, TP.HCM. Công suất 13.86kWp, lưu trữ 32kWh",
       image: "/images/demo2.jpg",
       isReverse: false,
     },
@@ -95,9 +95,8 @@ export default function ProjectsSection() {
               <div
                 key={project.id}
                 ref={pRef.ref}
-                className={`flex flex-col lg:flex-row items-center gap-6 lg:gap-8 ${
-                  project.isReverse ? "lg:flex-row-reverse" : ""
-                }`}
+                className={`flex flex-col lg:flex-row items-center gap-6 lg:gap-8 ${project.isReverse ? "lg:flex-row-reverse" : ""
+                  }`}
               >
                 {/* 1. COLUMN TEXT CARD */}
                 <div

@@ -22,6 +22,8 @@ const nextConfig: NextConfig = {
     // Tối ưu kích thước device
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    // Chất lượng ảnh cho phép
+    qualities: [60, 75],
     remotePatterns: [
       {
         protocol: 'https',

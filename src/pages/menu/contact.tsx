@@ -160,7 +160,7 @@ export default function ContactPage() {
                     <div>
                       <h3 className="font-bold text-white mb-1">{t("contact.officeTitle")}</h3>
                       <p className="text-gray-300 leading-relaxed text-sm">
-                        {t("contact.officeAddress")}
+                        {t("common.address")}
                       </p>
                     </div>
                   </div>
@@ -171,7 +171,7 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <h3 className="font-bold text-white mb-1">Hotline</h3>
-                      <p className="text-orange-400 font-bold text-lg">079 779 1612</p>
+                      <p className="text-orange-400 font-bold text-lg">{t("common.tel")}</p>
                     </div>
                   </div>
 

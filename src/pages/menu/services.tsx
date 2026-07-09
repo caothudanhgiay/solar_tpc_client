@@ -39,7 +39,28 @@ export default function ServicesPage() {
     {
       id: "ve-sinh",
       title: t("services.item3.title"),
-      image: "/images/demo1.jpg",
+      image: "/images/clean_solar_panels/csp_1.webp",
+      desc: t("services.item3.desc"),
+      price: t("services_page.contactPrice"),
+    },
+    {
+      id: "ve-sinh",
+      title: t("services.item3.title"),
+      image: "/images/clean_solar_panels/csp_2.webp",
+      desc: t("services.item3.desc"),
+      price: t("services_page.contactPrice"),
+    },
+    {
+      id: "ve-sinh",
+      title: t("services.item3.title"),
+      image: "/images/clean_solar_panels/csp_3.webp",
+      desc: t("services.item3.desc"),
+      price: t("services_page.contactPrice"),
+    },
+    {
+      id: "ve-sinh",
+      title: t("services.item3.title"),
+      image: "/images/clean_solar_panels/csp_4.webp",
       desc: t("services.item3.desc"),
       price: t("services_page.contactPrice"),
     },
@@ -59,9 +80,10 @@ export default function ServicesPage() {
     }
   }, [searchParams]);
 
-  const filteredServices = activeCategory === "all" 
-    ? services 
+  const filteredServices = activeCategory === "all"
+    ? services.filter((s, idx, arr) => arr.findIndex(x => x.id === s.id) === idx)
     : services.filter(s => s.id === activeCategory);
+
 
   return (
     <>
@@ -85,8 +107,8 @@ export default function ServicesPage() {
           />
         </div>
 
-        <div className="container mx-auto px-4 md:px-6 max-w-7xl relative z-20">
-          
+        <div className="container mx-auto px-4 md:px-6 max-w-8xl relative z-20">
+
           {/* Breadcrumb / Title area */}
           <div className="mb-10 pb-6 border-b border-white/10 page-animate">
             <h1 className="text-3xl font-bold text-white uppercase tracking-wider">{t("services_page.title")}</h1>
@@ -98,7 +120,7 @@ export default function ServicesPage() {
           </div>
 
           <div className="flex flex-col lg:flex-row gap-8">
-            
+
             {/* Sidebar (DANH MỤC DỊCH VỤ) */}
             <div className="lg:w-1/4 shrink-0">
               <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden sticky top-32">
@@ -110,32 +132,32 @@ export default function ServicesPage() {
                     onClick={() => setActiveCategory("all")}
                     className={cn(
                       "w-full flex items-center justify-between px-4 py-3 rounded-xl text-left text-sm font-medium transition-all duration-200 group mb-1",
-                      activeCategory === "all" 
-                        ? "bg-white/10 text-orange-400" 
+                      activeCategory === "all"
+                        ? "bg-white/10 text-orange-400"
                         : "text-gray-300 hover:bg-white/5 hover:text-white"
                     )}
                   >
                     {t("services_page.allServices")}
                     <ChevronRight className={cn(
-                      "w-4 h-4 transition-transform", 
+                      "w-4 h-4 transition-transform",
                       activeCategory === "all" ? "translate-x-1 text-orange-400" : "text-gray-500 group-hover:translate-x-1"
                     )} />
                   </button>
-                  
+
                   {categories.map((cat) => (
                     <button
                       key={cat.id}
                       onClick={() => setActiveCategory(cat.id)}
                       className={cn(
                         "w-full flex items-center justify-between px-4 py-3 rounded-xl text-left text-sm font-medium transition-all duration-200 group mb-1",
-                        activeCategory === cat.id 
-                          ? "bg-white/10 text-orange-400" 
+                        activeCategory === cat.id
+                          ? "bg-white/10 text-orange-400"
                           : "text-gray-300 hover:bg-white/5 hover:text-white"
                       )}
                     >
                       <span className="flex-1 pr-4 line-clamp-2">{cat.name}</span>
                       <ChevronRight className={cn(
-                        "w-4 h-4 shrink-0 transition-transform", 
+                        "w-4 h-4 shrink-0 transition-transform",
                         activeCategory === cat.id ? "translate-x-1 text-orange-400" : "text-gray-500 group-hover:translate-x-1"
                       )} />
                     </button>
@@ -146,10 +168,15 @@ export default function ServicesPage() {
 
             {/* Main Content (Grid) — CSS transition thay Framer Motion layout */}
             <div className="lg:w-3/4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+              <div className={activeCategory === "ve-sinh"
+                ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+                : filteredServices.length >= 4
+                  ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+                  : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+              }>
                 {filteredServices.map((service, idx) => (
                   <div
-                    key={service.id}
+                    key={`${service.id}-${idx}`}
                     className="bg-slate-900 border border-white/10 rounded-2xl overflow-hidden group hover:border-orange-500/50 hover:shadow-[0_8px_30px_rgba(249,115,22,0.15)] transition-all duration-300 flex flex-col page-animate"
                     style={{ animationDelay: `${idx * 0.1}s` }}
                   >
@@ -174,18 +201,18 @@ export default function ServicesPage() {
                           return <Icon className="w-5 h-5 text-white" />;
                         })()}
                       </div>
-                      
+
                       <h3 className="text-lg font-bold text-white mb-3 mt-2 line-clamp-2 group-hover:text-orange-400 transition-colors uppercase leading-snug">
                         {service.title}
                       </h3>
-                      
+
                       <p className="text-sm text-gray-400 mb-6 line-clamp-3 flex-grow">
                         {service.desc}
                       </p>
-                      
+
                       <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/10">
                         <span className="text-orange-400 font-bold text-lg">{service.price}</span>
-                        <Link 
+                        <Link
                           href={`/menu/contact`}
                           className="text-xs font-bold uppercase tracking-wider text-white bg-white/10 hover:bg-orange-500 px-4 py-2 rounded-lg transition-colors"
                         >

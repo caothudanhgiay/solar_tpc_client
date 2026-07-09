@@ -2,6 +2,10 @@
   "welcome": "Chào mừng",
   "login": "Đăng nhập",
   "logout": "Đăng xuất",
+  "common": {
+    "tel": "0397937109",
+    "address": "Khu phố Long Đức 1, Phường Tam Phước, Thành Phố Đồng Nai"
+  },
   "header": {
     "home": "TRANG CHỦ",
     "services": "DỊCH VỤ",
@@ -11,6 +15,12 @@
     "getQuote": "Nhận Báo Giá"
   },
   "footer": {
+    "soon": "Sắp ra mắt",
+    "comingSoonTitle": "Sắp Ra Mắt!",
+    "comingSoonDesc": "Tính năng này đang được phát triển và sẽ sớm được ra mắt. Cảm ơn bạn đã kiên nhẫn!",
+    "comingSoonBtn": "Đã hiểu",
+    "zalo": "Zalo",
+    "facebook": "Facebook",
     "brandName": "ĐIỆN MẶT TRỜI TPC SOLAR",
     "taxIDNumber": "MÃ SỐ THUẾ: 3604102994",
     "contactTitle": "LIÊN HỆ",
@@ -18,7 +28,6 @@
     "addressLabel": "Địa chỉ",
     "addressValue": "Khu phố Long Đức 1, Phường Tam Phước, Thành Phố Đồng Nai",
     "supportTitle": "HỖ TRỢ",
-    "commit": "Cam kết bán hàng",
     "warranty": "Chính sách bảo hành",
     "delivery": "Giao hàng & thanh toán",
     "privacy": "Bảo mật thông tin",

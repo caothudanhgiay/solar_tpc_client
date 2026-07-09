@@ -1,7 +1,8 @@
 import '@/styles/globals.css'
 import type { AppProps } from 'next/app'
 import Layout from '@/components/layout/Layout'
-import { appWithTranslation } from 'next-i18next/pages'
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { appWithTranslation } = require('next-i18next/pages')
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'

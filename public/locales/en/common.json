@@ -2,6 +2,10 @@
   "welcome": "Welcome",
   "login": "Login",
   "logout": "Logout",
+  "common": {
+    "tel": "0397937109",
+    "address": "Long Duc 1 Hamlet, Tam Phuoc Ward, Bien Hoa City, Dong Nai Province"
+  },
   "header": {
     "home": "HOME",
     "services": "SERVICES",
@@ -11,6 +15,13 @@
     "getQuote": "Get a Quote"
   },
   "footer": {
+    "soon": "Soon",
+    "comingSoonTitle": "Coming Soon!",
+    "comingSoonDesc": "This feature is under development and will be available soon. Thank you for your patience!",
+    "comingSoonBtn": "Got it",
+
+    "zalo": "Zalo",
+    "facebook": "Facebook",
     "brandName": "TPC SOLAR RENEWABLE ENERGY",
     "taxIDNumber": "TAX ID NUMBER: 3604102994",
     "contactTitle": "CONTACT",
@@ -18,7 +29,6 @@
     "addressLabel": "Address",
     "addressValue": "Long Duc 1 Hamlet, Tam Phuoc Ward, Bien Hoa City, Dong Nai Province",
     "supportTitle": "SUPPORT",
-    "commit": "Sales Commitment",
     "warranty": "Warranty Policy",
     "delivery": "Delivery & Payment",
     "privacy": "Privacy Policy",
