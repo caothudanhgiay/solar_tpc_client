@@ -110,8 +110,8 @@ function Header({ initialMenus }: { initialMenus?: NavigationItem[] }) {
     }
 
     const controller = new AbortController();
-    // Giảm timeout xuống 3 giây — nếu backend không respond trong 3s thì dùng menu mặc định
-    const timeout = setTimeout(() => controller.abort(), 3000);
+    // Timeout 1.5 giây — nếu backend không respond thì dùng menu mặc định ngay
+    const timeout = setTimeout(() => controller.abort(), 1500);
 
     const fetchMenus = async () => {
       try {

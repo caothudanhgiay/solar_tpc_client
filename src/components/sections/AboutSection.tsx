@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useTranslation } from "next-i18next/pages";
 import {
   Leaf,
@@ -73,19 +72,8 @@ export default function AboutSection() {
 
   return (
     <section id="about" className="relative py-20 overflow-hidden">
-      {/* Background ảnh pin mặt trời — dùng <Image> thay CSS backgroundImage */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-r from-slate-900/95 to-slate-900/75 z-10" />
-        <Image
-          src="/images/bg_page.avif"
-          alt=""
-          fill
-          sizes="100vw"
-          className="object-cover object-center"
-          quality={75}
-          loading="lazy"
-        />
-      </div>
+      {/* Background — dùng CSS gradient thay vì ảnh (overlay phủ 95%, ảnh gần như không thấy) */}
+      <div className="absolute inset-0 z-0 bg-gradient-to-br from-slate-900 via-slate-900 to-slate-800" />
 
       {/* ===== HERO TITLE ===== */}
       <div className="relative z-10 overflow-hidden py-14 px-4">

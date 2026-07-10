@@ -1,12 +1,15 @@
 import Head from "next/head";
+import dynamic from "next/dynamic";
 import HeroSection from "@/components/sections/HeroSection";
-import AboutSection from "@/components/sections/AboutSection";
-import ServicesSection from "@/components/sections/ServicesSection";
-import ProjectsSection from "@/components/sections/ProjectsSection";
 import { serverSideTranslations } from "next-i18next/pages/serverSideTranslations";
 
 import { GetStaticProps } from "next";
 import { useTranslation } from "next-i18next/pages";
+
+// Lazy load các sections below-the-fold — chỉ HeroSection cần tải ngay
+const AboutSection = dynamic(() => import("@/components/sections/AboutSection"));
+const ProjectsSection = dynamic(() => import("@/components/sections/ProjectsSection"));
+const ServicesSection = dynamic(() => import("@/components/sections/ServicesSection"));
 
 export default function Home() {
   const { t } = useTranslation("common");

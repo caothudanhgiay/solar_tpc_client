@@ -49,19 +49,8 @@ export default function ServicesSection() {
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-400/50 to-transparent z-20" />
       <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-teal-400/50 to-transparent z-20" />
 
-      {/* Background ảnh pin mặt trời — dùng <Image> thay CSS backgroundImage */}
-      <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/95 via-slate-950/80 to-slate-950/95 z-10" />
-        <Image
-          src="/images/bg_page.avif"
-          alt=""
-          fill
-          sizes="100vw"
-          className="object-cover object-center opacity-30"
-          quality={60}
-          loading="lazy"
-        />
-      </div>
+      {/* Background — CSS gradient thay vì ảnh (overlay phủ 95%) */}
+      <div className="absolute inset-0 z-0 bg-gradient-to-b from-slate-950 via-slate-900 to-slate-950" />
 
       <div className="max-w-[1440px] mx-auto px-6 md:px-12 xl:px-24 relative z-10">
         {/* Section Header */}

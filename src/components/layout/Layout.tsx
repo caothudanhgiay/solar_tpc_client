@@ -1,4 +1,5 @@
 import Header from "./Header";
+import Footer from "./Footer";
 import Toaster from "@/components/ui/Toast";
 import dynamic from "next/dynamic";
 import { Inter } from "next/font/google";
@@ -6,11 +7,6 @@ import { Inter } from "next/font/google";
 // Lazy load TsoChatbot — không cần SSR, chỉ load khi client-side render
 const TsoChatbot = dynamic(() => import("@/components/ui/TsoChatbot"), {
   ssr: false,
-});
-
-// Lazy load Footer — code-split thành chunk riêng, giữ SSR để SEO vẫn đầy đủ
-const Footer = dynamic(() => import("./Footer"), {
-  ssr: true,
 });
 
 const inter = Inter({ subsets: ["latin", "vietnamese"], display: "swap" });
