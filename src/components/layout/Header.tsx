@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo, memo } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils/utils";
@@ -34,7 +34,7 @@ interface NavigationItem {
   }[];
 }
 
-export default function Header({ initialMenus }: { initialMenus?: NavigationItem[] }) {
+function Header({ initialMenus }: { initialMenus?: NavigationItem[] }) {
   const router = useRouter();
   const { locale } = router;
   const { t } = useTranslation("common");
@@ -143,10 +143,11 @@ export default function Header({ initialMenus }: { initialMenus?: NavigationItem
   }, [initialMenus]);
 
   // Sinh navigation đã được dịch tự động
-  const navigation: NavigationItem[] = initialMenus && initialMenus.length > 0
-    ? initialMenus
-    : menuItems.length > 0
-      ? menuItems
+  // Memoize navigation — tránh tạo mới array mỗi render (scroll, hover, ...)
+  const navigation: NavigationItem[] = useMemo(() => {
+    if (initialMenus && initialMenus.length > 0) return initialMenus;
+    if (menuItems.length > 0) {
+      return menuItems
         .filter((item) => item.menuUrl !== "/menu/installation")
         .map((item) => ({
           name: (locale === 'en' && item.menuNameEng ? item.menuNameEng : item.menuName).toUpperCase(),
@@ -159,8 +160,10 @@ export default function Header({ initialMenus }: { initialMenus?: NavigationItem
                 href: sub.menuUrl
               }))
             : undefined
-        }))
-      : initialNavigation;
+        }));
+    }
+    return initialNavigation;
+  }, [initialMenus, menuItems, locale, initialNavigation]);
 
   const handleQuoteClick = (e: React.MouseEvent) => {
     if (window.location.pathname.endsWith("/menu/contact")) {
@@ -199,7 +202,7 @@ export default function Header({ initialMenus }: { initialMenus?: NavigationItem
         <Link href="/" className="flex items-center group shrink-0">
           <div className="relative w-56 md:w-64 lg:w-72 h-16 md:h-20 transition-transform group-hover:scale-105">
             <Image
-              src="/images/logo_tpc.png"
+              src="/images/logo_tpc.webp"
               alt="TPC Logo"
               fill
               sizes="(max-width: 768px) 256px, (max-width: 1024px) 320px, 384px"
@@ -228,6 +231,7 @@ export default function Header({ initialMenus }: { initialMenus?: NavigationItem
                       <Link
                         key={sub.name}
                         href={sub.href}
+                        prefetch={false}
                         className="block px-4 py-3 text-xs text-gray-300 hover:text-orange-400 hover:bg-white/5 border-b border-white/5 last:border-0 transition-colors uppercase tracking-wide"
                       >
                         {sub.name}
@@ -341,6 +345,7 @@ export default function Header({ initialMenus }: { initialMenus?: NavigationItem
                         <Link
                           key={sub.name}
                           href={sub.href}
+                          prefetch={false}
                           onClick={closeMobileMenu}
                           className="block text-gray-300 hover:text-orange-500 hover:bg-white/5 px-4 py-2 rounded-lg text-xs transition-colors uppercase tracking-wide"
                         >
@@ -385,7 +390,7 @@ export default function Header({ initialMenus }: { initialMenus?: NavigationItem
               )}
             >
               <img
-                src="/images/vi_rec.png"
+                src="/images/vi_rec.webp"
                 alt="Tiếng Việt"
                 className="w-5 h-3.5 object-cover rounded shadow-sm"
               />
@@ -401,7 +406,7 @@ export default function Header({ initialMenus }: { initialMenus?: NavigationItem
               )}
             >
               <img
-                src="/images/en_rec.png"
+                src="/images/en_rec.webp"
                 alt="English"
                 className="w-5 h-3.5 object-cover rounded shadow-sm"
               />
@@ -413,3 +418,5 @@ export default function Header({ initialMenus }: { initialMenus?: NavigationItem
     </header>
   );
 }
+
+export default memo(Header);

@@ -61,7 +61,7 @@ export default function Footer() {
               <Link href="/" className="flex flex-col items-start group mb-2">
                 <div className="relative w-48 md:w-64 lg:w-72 h-14 md:h-20 transition-transform group-hover:scale-105 bg-white/5 p-2 rounded-xl border border-white/10">
                   <Image
-                    src="/images/logo_tpc.png"
+                    src="/images/logo_tpc.webp"
                     alt="TPC Logo"
                     fill
                     sizes="(max-width: 768px) 192px, (max-width: 1024px) 256px, 288px"
@@ -111,7 +111,7 @@ export default function Footer() {
                   </li>
                   <li className="flex items-center gap-3">
                     <div className="relative h-5 w-5 shrink-0">
-                      <Image src="/images/zalo-icon.png" alt="Zalo" fill className="object-contain" sizes="20px" />
+                      <Image src="/images/zalo-icon.webp" alt="Zalo" fill className="object-contain" sizes="20px" />
                     </div>
                     <a href="#" className="hover:text-orange-400 transition-colors">Zalo</a>
                   </li>

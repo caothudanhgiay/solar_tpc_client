@@ -351,7 +351,7 @@ export default function TsoChatbot() {
                 className="flex items-center justify-center gap-2 w-full py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-colors"
                 id="chatbot-zalo-btn"
               >
-                <Image src="/images/zalo-icon.png" alt="Zalo" width={18} height={18} className="rounded-sm" />
+                <Image src="/images/zalo-icon.webp" alt="Zalo" width={18} height={18} className="rounded-sm" />
                 {t("chatbot.zaloBtn")}
                 <ExternalLink className="w-3 h-3 opacity-60" />
               </a>

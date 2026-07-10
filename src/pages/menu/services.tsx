@@ -25,14 +25,14 @@ export default function ServicesPage() {
     {
       id: "lap-dat",
       title: t("services.item1.title"),
-      image: "/images/demo2.jpg",
+      image: "/images/demo2.webp",
       desc: t("services.item1.desc"),
       price: t("services_page.contactPrice"),
     },
     {
       id: "om",
       title: t("services.item2.title"),
-      image: "/images/demo3.jpg",
+      image: "/images/demo3.webp",
       desc: t("services.item2.desc"),
       price: t("services_page.contactPrice"),
     },
@@ -67,7 +67,7 @@ export default function ServicesPage() {
     {
       id: "scada",
       title: t("services.item4.title"),
-      image: "/images/demo4.jpg",
+      image: "/images/demo4.webp",
       desc: t("services.item4.desc"),
       price: t("services_page.contactPrice"),
     }

@@ -7,11 +7,11 @@ class LanguagesUtils {
         var rs = {
             "vi": {
                 "title": "Tiếng Việt",
-                "file_path": "/images/vi_rec.png"
+                "file_path": "/images/vi_rec.webp"
             },
             "en": {
                 "title": "English",
-                "file_path": "/images/en_rec.png"
+                "file_path": "/images/en_rec.webp"
             }
         }
 
@@ -24,17 +24,17 @@ class LanguagesUtils {
             case "en":
                 return {
                     "title": "English",
-                    "file_path": "/images/en_rec.png"
+                    "file_path": "/images/en_rec.webp"
                 }
             case "vi":
                 return {
                     "title": "Tiếng Việt",
-                    "file_path": "/images/vi_rec.png"
+                    "file_path": "/images/vi_rec.webp"
                 }
             default:
                 return {
                     "title": "Tiếng Việt",
-                    "file_path": "/images/vi_rec.png"
+                    "file_path": "/images/vi_rec.webp"
                 }
         }
     }
