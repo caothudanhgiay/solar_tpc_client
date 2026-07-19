@@ -9,10 +9,9 @@ export default function HeroSection() {
   const { t } = useTranslation("common");
 
   const stats = [
-    { label: t("hero.statProjects"), value: "500+" },
-    { label: t("hero.statProvinces"), value: "30+" },
+    { label: t("hero.statProjects"), value: "50+" },
+    { label: t("hero.statProvinces"), value: "20+" },
     { label: t("hero.statYears"), value: "10+" },
-    { label: t("hero.statCapacity"), value: "50+" },
   ];
 
   return (
@@ -87,7 +86,7 @@ export default function HeroSection() {
         </div>
 
         {/* Stats — CSS animation */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-24 border-t border-white/10 pt-12 hero-animate-delay-2">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-8 mt-24 border-t border-white/10 pt-12 hero-animate-delay-2">
           {stats.map((stat, index) => (
             <div key={index} className="text-center">
               <p className="text-4xl md:text-5xl font-bold text-white mb-2">{stat.value}</p>

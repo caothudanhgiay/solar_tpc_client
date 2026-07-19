@@ -6,6 +6,9 @@ export const API_BASE = '/api';
 // Các hằng số về API Menus
 export const API_MENUS = `${API_BASE}/menus`;
 
+// Các hằng số về API Projects
+export const API_PROJECTS = `${API_BASE}/projects`;
+
 // Chatbot AI
 export const API_CHATBOT_ASK = `${API_BASE}/chatbot/ask`;
 export const API_CHATBOT_ASK_STREAM = `${API_BASE}/chatbot/ask/stream`;

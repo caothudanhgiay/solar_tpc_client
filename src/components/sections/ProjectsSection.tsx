@@ -1,49 +1,61 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { Zap, MapPin, ArrowRight } from "lucide-react";
 import { useTranslation } from "next-i18next/pages";
 import { useScrollAnimation } from "@/lib/utils/useScrollAnimation";
+
+import { useEffect, useState } from "react";
+import { apiClient } from "@/lib/utils/apiClient";
+import { API_PROJECTS } from "@/lib/utils/constants";
+
+interface ProjectItem {
+  id: string;
+  name: string;
+  power: string;
+  location: string;
+  desc: string;
+  image: string;
+  isReverse: boolean;
+}
 
 export default function ProjectsSection() {
   const { t } = useTranslation("common");
 
   // Scroll animation refs
   const titleRef = useScrollAnimation(0.2);
-  const project1 = useScrollAnimation(0.2);
-  const project2 = useScrollAnimation(0.2);
-  const project3 = useScrollAnimation(0.2);
-  const projectRefs = [project1, project2, project3];
 
-  const projects = [
-    {
-      id: "1",
-      name: "Dự án Đông Hòa",
-      power: "13.86kWp lưu trữ 32kWh",
-      location: "TP.HCM",
-      desc: "Dự án hộ nhà dân ở Đông Hòa, TP.HCM. Công suất 13.86kWp, lưu trữ 32kWh",
-      image: "/images/demo1.webp",
-      isReverse: false,
-    },
-    {
-      id: "2",
-      name: "Dự án Đông Hòa",
-      power: "13.86kWp lưu trữ 32kWh",
-      location: "TP.HCM",
-      desc: "Dự án hộ nhà dân ở Đông Hòa, TP.HCM. Công suất 13.86kWp, lưu trữ 32kWh",
-      image: "/images/demo3.webp",
-      isReverse: true,
-    },
-    {
-      id: "3",
-      name: "Dự án Đông Hòa",
-      power: "13.86kWp lưu trữ 32kWh",
-      location: "TP.HCM",
-      desc: "Dự án hộ nhà dân ở Đông Hòa, TP.HCM. Công suất 13.86kWp, lưu trữ 32kWh",
-      image: "/images/demo2.webp",
-      isReverse: false,
-    },
-  ];
+  const [projects, setProjects] = useState<ProjectItem[]>([]);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const res: any = await apiClient.get(`${API_PROJECTS}/featured`);
+        const data = Array.isArray(res.data) ? res.data.slice(0, 4) : [];
+        const mapped = data.map((item: any, idx: number) => {
+          const powerText = [
+            item.solarPower ? `${item.solarPower}kWp` : "",
+            item.savingPower ? `lưu trữ ${item.savingPower}kWh` : ""
+          ].filter(Boolean).join(" ");
+
+          return {
+            id: String(item.projectId),
+            name: item.projectName || item.projectTitle || "",
+            power: powerText || "N/A",
+            location: item.projectAddress || "",
+            desc: item.description || "",
+            image: item.featuredImage || `/images/demo${(idx % 3) + 1}.webp`,
+            isReverse: idx % 2 !== 0,
+          };
+        });
+        setProjects(mapped);
+      } catch (error) {
+        console.error("Failed to fetch featured projects:", error);
+      }
+    };
+    fetchProjects();
+  }, []);
 
   return (
     <section id="featured-projects" className="relative py-24 overflow-hidden">
@@ -77,94 +89,119 @@ export default function ProjectsSection() {
 
         {/* Alternating Layout List */}
         <div className="space-y-12 lg:space-y-16">
-          {projects.map((project, idx) => {
-            const isTextLeft = !project.isReverse;
-            const pRef = projectRefs[idx];
-            return (
-              <div
-                key={project.id}
-                ref={pRef.ref}
-                className={`flex flex-col lg:flex-row items-center gap-6 lg:gap-8 ${project.isReverse ? "lg:flex-row-reverse" : ""
-                  }`}
-              >
-                {/* 1. COLUMN TEXT CARD */}
-                <div
-                  className={`w-full lg:w-1/2 flex justify-center ${isTextLeft ? "lg:justify-end" : "lg:justify-start"} ${isTextLeft ? "anim-slide-left" : "anim-slide-right"} ${pRef.isVisible ? "is-visible" : ""} anim-delay-1`}
-                >
-                  <div
-                    className="w-full max-w-xl h-[300px] sm:h-[380px] bg-white/5 backdrop-blur-xl border-2 border-orange-500/40 rounded-3xl p-6 md:p-8 shadow-2xl relative group overflow-hidden flex flex-col justify-between hover:-translate-y-1.5 hover:shadow-[0_15px_30px_rgba(249,115,22,0.15)] transition-all duration-300"
-                  >
-                    {/* Glowing Accent Corner */}
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-orange-500/20 to-transparent rounded-bl-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-
-                    <div className="space-y-6">
-                      <div className="flex items-center justify-between">
-                        <h3 className="text-2xl md:text-3xl font-black italic text-white uppercase tracking-tight group-hover:text-orange-400 transition-colors duration-300">
-                          {project.name}
-                        </h3>
-                        <span className="flex items-center gap-1 text-[10px] md:text-xs font-black bg-orange-500/20 text-orange-400 px-3 py-1 rounded-full border border-orange-500/30">
-                          <Zap className="w-3.5 h-3.5" /> {t("projects.completed")}
-                        </span>
-                      </div>
-
-                      {/* Accent divider line */}
-                      <div className="h-0.5 w-16 bg-orange-500/50 group-hover:w-24 transition-all duration-300" />
-
-                      {/* Main Desc text */}
-                      <p className="text-gray-200 text-base md:text-lg font-bold leading-relaxed">
-                        {project.desc}
-                      </p>
-
-                      {/* Structural Details */}
-                      <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/10">
-                        <div className="space-y-1">
-                          <span className="text-xs text-gray-400 font-semibold uppercase tracking-wider block">{t("projects.capacity")}</span>
-                          <span className="text-lg font-extrabold text-orange-400 flex items-center gap-1">
-                            <Zap className="w-4 h-4 text-orange-500" /> {project.power}
-                          </span>
-                        </div>
-                        <div className="space-y-1">
-                          <span className="text-xs text-gray-400 font-semibold uppercase tracking-wider block">{t("projects.locationLabel")}</span>
-                          <span className="text-lg font-extrabold text-white flex items-center gap-1">
-                            <MapPin className="w-4 h-4 text-orange-500" /> {project.location}
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="pt-2">
-                        <span className="inline-flex items-center gap-2 text-xs font-extrabold text-orange-400 group-hover:translate-x-2 transition-transform duration-300">
-                          {t("projects.details")} <ArrowRight className="w-4 h-4" />
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* 2. COLUMN IMAGE */}
-                <div
-                  className={`w-full lg:w-1/2 flex justify-center ${isTextLeft ? "lg:justify-start" : "lg:justify-end"} ${isTextLeft ? "anim-slide-right" : "anim-slide-left"} ${pRef.isVisible ? "is-visible" : ""} anim-delay-2`}
-                >
-                  <div className="relative h-[300px] sm:h-[380px] rounded-3xl overflow-hidden shadow-2xl border border-white/10 group cursor-pointer w-full max-w-xl hover:scale-[1.02] transition-transform duration-400">
-                    <Image
-                      src={project.image}
-                      alt={project.name}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 600px"
-                      className="object-cover transition-transform duration-1000 group-hover:scale-105"
-                      loading="lazy"
-                    />
-                    {/* Shadow overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-slate-950/20" />
-                    {/* Glowing hover light */}
-                    <div className="absolute inset-0 bg-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  </div>
-                </div>
-
-              </div>
-            );
-          })}
+          {projects.map((project, idx) => (
+            <ProjectCard key={project.id} project={project} idx={idx} t={t} />
+          ))}
         </div>
       </div>
     </section>
+  );
+}
+
+function ProjectCard({ project, idx, t }: { project: ProjectItem; idx: number; t: any }) {
+  const { ref, isVisible } = useScrollAnimation<HTMLDivElement>(0.2);
+  const isTextLeft = !project.isReverse;
+
+  return (
+    <div
+      ref={ref}
+      className={`flex flex-col lg:flex-row items-center gap-6 lg:gap-8 ${
+        project.isReverse ? "lg:flex-row-reverse" : ""
+      }`}
+    >
+      {/* 1. COLUMN TEXT CARD */}
+      <div
+        className={`w-full lg:w-1/2 flex justify-center ${
+          isTextLeft ? "lg:justify-end" : "lg:justify-start"
+        } ${isTextLeft ? "anim-slide-left" : "anim-slide-right"} ${
+          isVisible ? "is-visible" : ""
+        } anim-delay-1`}
+      >
+        <div className="w-full max-w-xl h-[300px] sm:h-[380px] bg-white/5 backdrop-blur-xl border-2 border-orange-500/40 rounded-3xl p-6 md:p-8 shadow-2xl relative group overflow-hidden flex flex-col justify-between hover:-translate-y-1.5 hover:shadow-[0_15px_30px_rgba(249,115,22,0.15)] transition-all duration-300">
+          {/* Glowing Accent Corner */}
+          <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-orange-500/20 to-transparent rounded-bl-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h3 className="text-2xl md:text-3xl font-black italic text-white uppercase tracking-tight group-hover:text-orange-400 transition-colors duration-300">
+                {project.name}
+              </h3>
+              <span className="flex items-center gap-1 text-[10px] md:text-xs font-black bg-orange-500/20 text-orange-400 px-3 py-1 rounded-full border border-orange-500/30">
+                <Zap className="w-3.5 h-3.5" /> {t("projects.completed")}
+              </span>
+            </div>
+
+            {/* Accent divider line */}
+            <div className="h-0.5 w-16 bg-orange-500/50 group-hover:w-24 transition-all duration-300" />
+
+            {/* Main Desc text */}
+            <p className="text-gray-200 text-base md:text-lg font-bold leading-relaxed">
+              {project.desc}
+            </p>
+
+            {/* Structural Details */}
+            <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/10">
+              <div className="space-y-1">
+                <span className="text-xs text-gray-400 font-semibold uppercase tracking-wider block">
+                  {t("projects.capacity")}
+                </span>
+                <span className="text-lg font-extrabold text-orange-400 flex items-center gap-1">
+                  <Zap className="w-4 h-4 text-orange-500" /> {project.power}
+                </span>
+              </div>
+              <div className="space-y-1">
+                <span className="text-xs text-gray-400 font-semibold uppercase tracking-wider block">
+                  {t("projects.locationLabel")}
+                </span>
+                <span className="text-lg font-extrabold text-white flex items-center gap-1">
+                  <MapPin className="w-4 h-4 text-orange-500" /> {project.location}
+                </span>
+              </div>
+            </div>
+
+            <div className="pt-2">
+              <Link href={`/projects/${project.id}`}>
+                <span className="inline-flex items-center gap-2 text-xs font-extrabold text-orange-400 group-hover:translate-x-2 transition-transform duration-300 cursor-pointer">
+                  {t("projects.details")} <ArrowRight className="w-4 h-4" />
+                </span>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 2. COLUMN IMAGE */}
+      <div
+        className={`w-full lg:w-1/2 flex justify-center ${
+          isTextLeft ? "lg:justify-start" : "lg:justify-end"
+        } ${isTextLeft ? "anim-slide-right" : "anim-slide-left"} ${
+          isVisible ? "is-visible" : ""
+        } anim-delay-2`}
+      >
+        <Link href={`/projects/${project.id}`} className="relative block h-[300px] sm:h-[380px] rounded-3xl overflow-hidden shadow-2xl border border-white/10 group cursor-pointer w-full max-w-xl hover:scale-[1.02] transition-transform duration-400">
+          {project.image.startsWith('http') || project.image.startsWith('/upload') ? (
+            <img
+              src={project.image.startsWith('/upload') ? `http://localhost:8080${project.image}` : project.image}
+              alt={project.name}
+              className="object-cover transition-transform duration-1000 group-hover:scale-105 w-full h-full"
+              loading="lazy"
+            />
+          ) : (
+            <Image
+              src={project.image}
+              alt={project.name}
+              fill
+              sizes="(max-width: 768px) 100vw, 600px"
+              className="object-cover transition-transform duration-1000 group-hover:scale-105"
+              loading="lazy"
+            />
+          )}
+          {/* Shadow overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-slate-950/20" />
+          {/* Glowing hover light */}
+          <div className="absolute inset-0 bg-orange-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        </Link>
+      </div>
+    </div>
   );
 }
