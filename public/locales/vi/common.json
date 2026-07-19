@@ -4,7 +4,8 @@
   "logout": "Đăng xuất",
   "common": {
     "tel": "0397937109",
-    "address": "Khu phố Long Đức 1, Phường Tam Phước, Thành Phố Đồng Nai"
+    "address": "Khu phố Long Đức 1, Phường Tam Phước, Thành Phố Đồng Nai",
+    "loadingMap": "Đang tải bản đồ..."
   },
   "header": {
     "home": "TRANG CHỦ",
@@ -154,7 +155,8 @@
     "title": "Dự Án",
     "metaTitle": "Dự Án - TPC Solar",
     "metaDesc": "Các dự án tiêu biểu đã triển khai bởi TPC Solar.",
-    "updating": "Đang cập nhật các dự án tiêu biểu..."
+    "updating": "Đang cập nhật các dự án tiêu biểu...",
+    "projectDetails": "Chi tiết dự án"
   },
   "services_page": {
     "title": "Danh Mục Dịch Vụ",
@@ -213,5 +215,42 @@
     "typing": "Đang trả lời...",
     "errorRetry": "Lỗi kết nối. Vui lòng thử lại.",
     "poweredBy": "Powered by Gemini AI"
+  },
+  "project_detail": {
+    "notFound": "Không tìm thấy dự án",
+    "backToHome": "Trở về trang chủ",
+    "backToHomeShort": "Về trang chủ",
+    "featuredProject": "Dự án nổi bật",
+    "solarPower": "Công suất mặt trời",
+    "storageCapacity": "Khả năng lưu trữ",
+    "location": "Địa điểm",
+    "status": "Trạng thái",
+    "updating": "Đang cập nhật",
+    "inProgress": "Đang triển khai",
+    "overview": "Tổng quan",
+    "overviewDesc": "Thông tin tổng quan về dự án {{projectName}} đang được đội ngũ kỹ thuật của TPC Solar cập nhật. Dự án này được thiết kế với công suất {{solarPower}}kWp và khả năng lưu trữ {{savingPower}}kWh, mang lại hiệu quả vượt trội trong việc tiết kiệm điện và bảo vệ môi trường.",
+    "projectInfo": "Thông tin dự án",
+    "address": "Địa chỉ",
+    "startDate": "Bắt đầu",
+    "endDate": "Hoàn thành",
+    "imageAlt": "Chi tiết dự án",
+    "contentUpdating": "Đang cập nhật nội dung chi tiết thi công cho hạng mục này.",
+    "imageUpdating": "Đang cập nhật hình ảnh thi công"
+  },
+  "errors": {
+    "maintenanceTitle": "Hệ Thống Đang Bảo Trì",
+    "maintenanceDesc": "Chúng tôi đang tiến hành bảo trì định kỳ và nâng cấp hệ thống để mang lại dịch vụ năng lượng mặt trời tốt nhất. Quá trình này sẽ diễn ra nhanh chóng.",
+    "reloadPage": "Tải Lại Trang",
+    "pageNotFoundTitle": "404 - Không Tìm Thấy Trang",
+    "pageNotFoundDesc": "Trang bạn đang tìm kiếm có thể đã bị xóa, đổi tên hoặc tạm thời không truy cập được. Hãy kiểm tra lại đường dẫn hoặc quay về trang chủ.",
+    "backToHome": "Về Trang Chủ",
+    "serverErrorTitle": "Đã Xảy Ra Lỗi Trang",
+    "serverErrorDesc": "Rất tiếc, máy chủ của TPC Solar đang gặp chút vấn đề ngoài ý muốn. Đội ngũ kỹ thuật của chúng tôi đang nỗ lực khắc phục sự cố này.",
+    "pageErrorTitle": "Đã Xảy Ra Lỗi Trang",
+    "pageErrorDesc": "Có một lỗi không xác định xảy ra trong quá trình xử lý trang này. Vui lòng kiểm tra lại kết nối mạng hoặc quay lại trang trước đó.",
+    "maintenanceLabel": "Bảo Trì",
+    "notFoundLabel": "Không Tìm Thấy",
+    "serverErrorLabel": "Lỗi Server",
+    "pageErrorLabel": "Lỗi Trang"
   }
 }

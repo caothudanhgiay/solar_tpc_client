@@ -12,11 +12,15 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import Head from 'next/head';
+import { useTranslation } from 'next-i18next';
+import { GetStaticProps } from 'next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 
 type ErrorType = 'maintenance' | 'not-found' | 'server-error' | 'page-error';
 
 export default function ErrorPage() {
   const router = useRouter();
+  const { t } = useTranslation('common');
   const [currentError, setCurrentError] = useState<ErrorType>('maintenance');
 
   useEffect(() => {
@@ -31,48 +35,48 @@ export default function ErrorPage() {
   const errorData = {
     'maintenance': {
       icon: Wrench,
-      title: 'Hệ Thống Đang Bảo Trì',
+      title: t('errors.maintenanceTitle'),
       subtitle: 'Nâng cấp trải nghiệm',
-      description: 'Chúng tôi đang tiến hành bảo trì định kỳ và nâng cấp hệ thống để mang lại dịch vụ năng lượng mặt trời tốt nhất. Quá trình này sẽ diễn ra nhanh chóng.',
+      description: t('errors.maintenanceDesc'),
       color: 'text-blue-500',
       bgColor: 'bg-blue-500/10',
       glowColor: 'shadow-blue-500/20',
       gradient: 'from-blue-500 to-cyan-400',
-      buttonText: 'Tải Lại Trang',
+      buttonText: t('errors.reloadPage'),
       buttonIcon: RefreshCcw,
       action: () => window.location.reload(),
     },
     'not-found': {
       icon: FileQuestion,
-      title: '404 - Không Tìm Thấy Trang',
+      title: t('errors.pageNotFoundTitle'),
       subtitle: 'Lạc đường rổi?',
-      description: 'Trang bạn đang tìm kiếm có thể đã bị xóa, đổi tên hoặc tạm thời không truy cập được. Hãy kiểm tra lại đường dẫn hoặc quay về trang chủ.',
+      description: t('errors.pageNotFoundDesc'),
       color: 'text-amber-500',
       bgColor: 'bg-amber-500/10',
       glowColor: 'shadow-amber-500/20',
       gradient: 'from-amber-400 to-orange-500',
-      buttonText: 'Về Trang Chủ',
+      buttonText: t('errors.backToHome'),
       buttonIcon: Home,
       action: () => router.push('/'),
     },
     'server-error': {
       icon: ServerCrash,
-      title: '500 - Lỗi Máy Chủ',
+      title: t('errors.serverErrorTitle'),
       subtitle: 'Sự cố kỹ thuật',
-      description: 'Rất tiếc, máy chủ của TPC Solar đang gặp chút vấn đề ngoài ý muốn. Đội ngũ kỹ thuật của chúng tôi đang nỗ lực khắc phục sự cố này.',
+      description: t('errors.serverErrorDesc'),
       color: 'text-red-500',
       bgColor: 'bg-red-500/10',
       glowColor: 'shadow-red-500/20',
       gradient: 'from-red-500 to-rose-400',
-      buttonText: 'Thử Lại Ngay',
+      buttonText: t('errors.reloadPage'),
       buttonIcon: RefreshCcw,
       action: () => window.location.reload(),
     },
     'page-error': {
       icon: AlertTriangle,
-      title: 'Đã Xảy Ra Lỗi Trang',
+      title: t('errors.pageErrorTitle'),
       subtitle: 'Thao tác gián đoạn',
-      description: 'Có một lỗi không xác định xảy ra trong quá trình xử lý trang này. Vui lòng kiểm tra lại kết nối mạng hoặc quay lại trang trước đó.',
+      description: t('errors.pageErrorDesc'),
       color: 'text-orange-500',
       bgColor: 'bg-orange-500/10',
       glowColor: 'shadow-orange-500/20',
@@ -150,7 +154,7 @@ export default function ErrorPage() {
 
               <Link href="/menu/contact" className="flex items-center justify-center gap-2 px-8 py-3.5 rounded-full font-medium text-white bg-slate-700/50 hover:bg-slate-700 border border-slate-600 transition-all hover:scale-105 active:scale-95">
                 <PhoneCall className="w-5 h-5" />
-                Liên Hệ Hỗ Trợ
+                {t('contact.title', 'Liên Hệ Hỗ Trợ')}
               </Link>
             </div>
 
@@ -166,10 +170,10 @@ export default function ErrorPage() {
           Mô phỏng các trạng thái lỗi
         </span>
         {[
-          { id: 'maintenance', label: 'Bảo Trì', icon: Wrench },
-          { id: 'not-found', label: '404', icon: FileQuestion },
-          { id: 'server-error', label: '500', icon: ServerCrash },
-          { id: 'page-error', label: 'Lỗi Trang', icon: AlertTriangle },
+          { id: 'maintenance', label: t('errors.maintenanceLabel'), icon: Wrench },
+          { id: 'not-found', label: t('errors.notFoundLabel'), icon: FileQuestion },
+          { id: 'server-error', label: t('errors.serverErrorLabel'), icon: ServerCrash },
+          { id: 'page-error', label: t('errors.pageErrorLabel'), icon: AlertTriangle },
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = currentError === tab.id;
@@ -193,3 +197,11 @@ export default function ErrorPage() {
     </div>
   );
 }
+
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale || 'vi', ['common'])),
+    },
+  };
+};

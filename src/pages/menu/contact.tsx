@@ -204,7 +204,7 @@ export default function ContactPage() {
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm">
                   <MapPin className="w-6 h-6 mr-2 text-orange-500/50" />
-                  Đang tải bản đồ...
+                  {t("common.loadingMap")}
                 </div>
               )}
             </div>

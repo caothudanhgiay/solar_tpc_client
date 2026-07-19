@@ -4,7 +4,8 @@
   "logout": "Logout",
   "common": {
     "tel": "0397937109",
-    "address": "Long Duc 1 Hamlet, Tam Phuoc Ward, Bien Hoa City, Dong Nai Province"
+    "address": "Long Duc 1 Hamlet, Tam Phuoc Ward, Bien Hoa City, Dong Nai Province",
+    "loadingMap": "Loading map..."
   },
   "header": {
     "home": "HOME",
@@ -155,7 +156,8 @@
     "title": "Projects",
     "metaTitle": "Projects - TPC Solar",
     "metaDesc": "Featured projects implemented by TPC Solar.",
-    "updating": "Featured projects are being updated..."
+    "updating": "Featured projects are being updated...",
+    "projectDetails": "Project Details"
   },
   "services_page": {
     "title": "Services Directory",
@@ -214,5 +216,42 @@
     "typing": "Typing...",
     "errorRetry": "Connection error. Please try again.",
     "poweredBy": "Powered by Gemini AI"
+  },
+  "project_detail": {
+    "notFound": "Project not found",
+    "backToHome": "Back to Home",
+    "backToHomeShort": "Back to home",
+    "featuredProject": "Featured Project",
+    "solarPower": "Solar Power",
+    "storageCapacity": "Storage Capacity",
+    "location": "Location",
+    "status": "Status",
+    "updating": "Updating",
+    "inProgress": "In Progress",
+    "overview": "Overview",
+    "overviewDesc": "Overview information about the project {{projectName}} is being updated by TPC Solar's technical team. This project is designed with a capacity of {{solarPower}}kWp and storage of {{savingPower}}kWh, delivering outstanding efficiency in power saving and environmental protection.",
+    "projectInfo": "Project Information",
+    "address": "Address",
+    "startDate": "Start Date",
+    "endDate": "Completion Date",
+    "imageAlt": "Project Details",
+    "contentUpdating": "Construction details for this item are being updated.",
+    "imageUpdating": "Construction images are being updated"
+  },
+  "errors": {
+    "maintenanceTitle": "System Under Maintenance",
+    "maintenanceDesc": "We are undergoing routine maintenance and system upgrades to bring you the best solar energy services. This process will be completed quickly.",
+    "reloadPage": "Reload Page",
+    "pageNotFoundTitle": "404 - Page Not Found",
+    "pageNotFoundDesc": "The page you are looking for might have been removed, had its name changed, or is temporarily unavailable. Please check the URL or return to the homepage.",
+    "backToHome": "Back to Home",
+    "serverErrorTitle": "Server Error Occurred",
+    "serverErrorDesc": "Sorry, TPC Solar's servers are experiencing an unexpected issue. Our technical team is working hard to resolve it.",
+    "pageErrorTitle": "Page Error Occurred",
+    "pageErrorDesc": "An unknown error occurred while processing this page. Please check your network connection or return to the previous page.",
+    "maintenanceLabel": "Maintenance",
+    "notFoundLabel": "Not Found",
+    "serverErrorLabel": "Server Error",
+    "pageErrorLabel": "Page Error"
   }
 }

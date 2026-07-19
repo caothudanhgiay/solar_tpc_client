@@ -79,9 +79,9 @@ export default function ProjectDetailsPage() {
   if (!project) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-slate-950 text-white">
-        <h1 className="text-4xl font-bold mb-4">Không tìm thấy dự án</h1>
+        <h1 className="text-4xl font-bold mb-4">{t('project_detail.notFound')}</h1>
         <Link href="/" className="text-orange-400 hover:underline flex items-center gap-2">
-          <ChevronLeft className="w-5 h-5" /> Trở về trang chủ
+          <ChevronLeft className="w-5 h-5" /> {t('project_detail.backToHome')}
         </Link>
       </div>
     );
@@ -122,19 +122,21 @@ export default function ProjectDetailsPage() {
 
           <div className="container mx-auto px-6 md:px-12 xl:px-24 relative z-10">
             <Link href="/" className="inline-flex items-center gap-2 text-gray-300 hover:text-white transition-colors mb-6 backdrop-blur-md bg-white/10 px-4 py-2 rounded-full text-sm font-semibold border border-white/10">
-              <ChevronLeft className="w-4 h-4" /> Về trang chủ
+              <ChevronLeft className="w-4 h-4" /> {t('project_detail.backToHomeShort')}
             </Link>
 
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-500/20 border border-orange-500/30 text-orange-400 text-xs font-bold uppercase tracking-wider mb-4">
-              <Zap className="w-3.5 h-3.5" /> Dự án nổi bật
+              <Zap className="w-3.5 h-3.5" /> {t('project_detail.featuredProject')}
             </div>
 
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tight max-w-4xl leading-tight">
-              {project.projectName}
-            </h1>
-            {project.projectTitle && project.projectTitle !== project.projectName && (
-              <p className="text-xl md:text-2xl text-gray-300 mt-4 font-semibold italic">
+            {project.projectTitle && (
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white uppercase tracking-tight leading-tight">
                 {project.projectTitle}
+              </h1>
+            )}
+            {project.projectName && (
+              <p className="text-xl md:text-2xl text-gray-300 mt-4 font-semibold italic">
+                {project.projectName}
               </p>
             )}
           </div>
@@ -149,7 +151,7 @@ export default function ProjectDetailsPage() {
               <div className="w-12 h-12 bg-orange-500/20 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                 <Zap className="text-orange-400 w-6 h-6" />
               </div>
-              <p className="text-sm text-gray-400 font-semibold uppercase tracking-wider mb-1">Công suất mặt trời</p>
+              <p className="text-sm text-gray-400 font-semibold uppercase tracking-wider mb-1">{t('project_detail.solarPower')}</p>
               <p className="text-2xl font-black text-white">{project.solarPower ? `${project.solarPower} kWp` : 'N/A'}</p>
             </div>
 
@@ -158,7 +160,7 @@ export default function ProjectDetailsPage() {
               <div className="w-12 h-12 bg-blue-500/20 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                 <Zap className="text-blue-400 w-6 h-6" />
               </div>
-              <p className="text-sm text-gray-400 font-semibold uppercase tracking-wider mb-1">Khả năng lưu trữ</p>
+              <p className="text-sm text-gray-400 font-semibold uppercase tracking-wider mb-1">{t('project_detail.storageCapacity')}</p>
               <p className="text-2xl font-black text-white">{project.savingPower ? `${project.savingPower} kWh` : 'N/A'}</p>
             </div>
 
@@ -167,8 +169,8 @@ export default function ProjectDetailsPage() {
               <div className="w-12 h-12 bg-emerald-500/20 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                 <MapPin className="text-emerald-400 w-6 h-6" />
               </div>
-              <p className="text-sm text-gray-400 font-semibold uppercase tracking-wider mb-1">Địa điểm</p>
-              <p className="text-2xl font-black text-white line-clamp-1">{project.projectAddress || 'Đang cập nhật'}</p>
+              <p className="text-sm text-gray-400 font-semibold uppercase tracking-wider mb-1">{t('project_detail.location')}</p>
+              <p className="text-2xl font-black text-white line-clamp-1">{project.projectAddress || t('project_detail.updating')}</p>
             </div>
 
             {/* TRẠNG THÁI */}
@@ -176,8 +178,8 @@ export default function ProjectDetailsPage() {
               <div className="w-12 h-12 bg-purple-500/20 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                 <CheckCircle2 className="text-purple-400 w-6 h-6" />
               </div>
-              <p className="text-sm text-gray-400 font-semibold uppercase tracking-wider mb-1">Trạng thái</p>
-              <p className="text-2xl font-black text-white">{project.processStatusName || 'Đang triển khai'}</p>
+              <p className="text-sm text-gray-400 font-semibold uppercase tracking-wider mb-1">{t('project_detail.status')}</p>
+              <p className="text-2xl font-black text-white">{project.processStatusName || t('project_detail.inProgress')}</p>
             </div>
 
           </div>
@@ -189,30 +191,30 @@ export default function ProjectDetailsPage() {
 
             {/* CỘT TRÁI - TEXT */}
             <div className="w-full lg:w-1/3">
-              <h2 className="text-3xl font-bold text-white mb-6 uppercase tracking-tight flex items-center gap-3">
-                <div className="w-2 h-8 bg-orange-500 rounded-full" /> Tổng quan
+              <h2 className="text-3xl font-bold text-white mb-8 uppercase tracking-tight flex items-center gap-3">
+                <div className="w-2 h-8 bg-blue-500 rounded-full" /> {t('projects_page.projectDetails')}
               </h2>
               <div className="prose prose-invert prose-lg max-w-none text-gray-300 leading-relaxed font-medium">
                 {project.description ? (
                   <p>{project.description}</p>
                 ) : (
-                  <p>Thông tin tổng quan về dự án {project.projectName} đang được đội ngũ kỹ thuật của TPC Solar cập nhật. Dự án này được thiết kế với công suất {project.solarPower}kWp và khả năng lưu trữ {project.savingPower}kWh, mang lại hiệu quả vượt trội trong việc tiết kiệm điện và bảo vệ môi trường.</p>
+                  <p>{t('project_detail.overviewDesc', { projectName: project.projectName, solarPower: project.solarPower, savingPower: project.savingPower })}</p>
                 )}
               </div>
 
               <div className="mt-12 bg-white/5 border border-white/10 rounded-3xl p-8">
-                <h3 className="text-xl font-bold text-white mb-6 uppercase tracking-wider">Thông tin dự án</h3>
+                <h3 className="text-xl font-bold text-white mb-6 uppercase tracking-wider">{t('project_detail.projectInfo')}</h3>
                 <ul className="space-y-4">
                   <li className="flex items-center justify-between border-b border-white/10 pb-4">
-                    <span className="text-gray-400 flex items-center gap-2"><MapPin className="w-4 h-4" /> Địa chỉ</span>
+                    <span className="text-gray-400 flex items-center gap-2"><MapPin className="w-4 h-4" /> {t('project_detail.address')}</span>
                     <span className="text-white font-semibold text-right max-w-[60%]">{project.projectAddress}</span>
                   </li>
                   <li className="flex items-center justify-between border-b border-white/10 pb-4">
-                    <span className="text-gray-400 flex items-center gap-2"><Calendar className="w-4 h-4" /> Bắt đầu</span>
+                    <span className="text-gray-400 flex items-center gap-2"><Calendar className="w-4 h-4" /> {t('project_detail.startDate')}</span>
                     <span className="text-white font-semibold">{project.startDate || 'N/A'}</span>
                   </li>
                   <li className="flex items-center justify-between pb-2">
-                    <span className="text-gray-400 flex items-center gap-2"><CheckCircle2 className="w-4 h-4" /> Hoàn thành</span>
+                    <span className="text-gray-400 flex items-center gap-2"><CheckCircle2 className="w-4 h-4" /> {t('project_detail.endDate')}</span>
                     <span className="text-white font-semibold">{project.endDate || 'N/A'}</span>
                   </li>
                 </ul>
@@ -221,25 +223,21 @@ export default function ProjectDetailsPage() {
 
             {/* CỘT PHẢI - ẢNH CHI TIẾT CÁC GIAI ĐOẠN */}
             <div className="w-full lg:w-2/3">
-              <h2 className="text-3xl font-bold text-white mb-8 uppercase tracking-tight flex items-center gap-3">
-                <div className="w-2 h-8 bg-blue-500 rounded-full" /> Quá trình thực hiện
-              </h2>
-
               {project.details && project.details.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6">
                   {project.details.map((detail) => (
                     <div key={detail.projectDetailId} className="group cursor-pointer">
-                      <div className="relative h-64 md:h-72 w-full rounded-3xl overflow-hidden mb-4 shadow-xl border border-white/10">
+                      <div className="relative h-48 md:h-56 w-full rounded-3xl overflow-hidden mb-4 shadow-xl border border-white/10">
                         {detail.imageUrl && (detail.imageUrl.startsWith("http") || detail.imageUrl.startsWith("/upload")) ? (
                           <img
                             src={getImageSrc(detail.imageUrl, "")}
-                            alt="Chi tiết dự án"
+                            alt={t('project_detail.imageAlt')}
                             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                           />
                         ) : (
                           <Image
                             src={getImageSrc(detail.imageUrl, "/images/demo2.webp")}
-                            alt="Chi tiết dự án"
+                            alt={t('project_detail.imageAlt')}
                             fill
                             className="object-cover transition-transform duration-700 group-hover:scale-110"
                           />
@@ -253,7 +251,7 @@ export default function ProjectDetailsPage() {
                         )}
                       </div>
                       <p className="text-gray-300 font-medium px-2 group-hover:text-white transition-colors line-clamp-3">
-                        {detail.content || 'Đang cập nhật nội dung chi tiết thi công cho hạng mục này.'}
+                        {detail.content || t('project_detail.contentUpdating')}
                       </p>
                     </div>
                   ))}
@@ -261,7 +259,7 @@ export default function ProjectDetailsPage() {
               ) : (
                 <div className="w-full h-64 border-2 border-dashed border-white/10 rounded-3xl flex flex-col items-center justify-center text-gray-500 bg-white/5">
                   <Image src="/images/demo1.webp" width={80} height={80} alt="" className="opacity-20 mb-4 rounded-xl" />
-                  <p className="font-semibold text-lg">Đang cập nhật hình ảnh thi công</p>
+                  <p className="font-semibold text-lg">{t('project_detail.imageUpdating')}</p>
                 </div>
               )}
             </div>
