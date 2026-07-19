@@ -12,9 +12,9 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import Head from 'next/head';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from 'next-i18next/pages';
 import { GetStaticProps } from 'next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { serverSideTranslations } from 'next-i18next/pages/serverSideTranslations';
 
 type ErrorType = 'maintenance' | 'not-found' | 'server-error' | 'page-error';
 
