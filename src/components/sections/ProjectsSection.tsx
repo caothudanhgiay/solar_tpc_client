@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Zap, MapPin, ArrowRight } from "lucide-react";
 import { useTranslation } from "next-i18next/pages";
 import { useScrollAnimation } from "@/lib/utils/useScrollAnimation";
+import { API_URL } from "@/lib/utils/constants";
 
 import { useEffect, useState } from "react";
 import { apiClient } from "@/lib/utils/apiClient";
@@ -105,19 +106,16 @@ function ProjectCard({ project, idx, t }: { project: ProjectItem; idx: number; t
   return (
     <div
       ref={ref}
-      className={`flex flex-col lg:flex-row items-center gap-6 lg:gap-8 ${
-        project.isReverse ? "lg:flex-row-reverse" : ""
-      }`}
+      className={`flex flex-col lg:flex-row items-stretch gap-6 lg:gap-8 ${project.isReverse ? "lg:flex-row-reverse" : ""
+        }`}
     >
       {/* 1. COLUMN TEXT CARD */}
       <div
-        className={`w-full lg:w-1/2 flex justify-center ${
-          isTextLeft ? "lg:justify-end" : "lg:justify-start"
-        } ${isTextLeft ? "anim-slide-left" : "anim-slide-right"} ${
-          isVisible ? "is-visible" : ""
-        } anim-delay-1`}
+        className={`w-full lg:w-1/2 flex justify-center ${isTextLeft ? "lg:justify-end" : "lg:justify-start"
+          } ${isTextLeft ? "anim-slide-left" : "anim-slide-right"} ${isVisible ? "is-visible" : ""
+          } anim-delay-1`}
       >
-        <div className="w-full max-w-xl h-[300px] sm:h-[380px] bg-white/5 backdrop-blur-xl border-2 border-orange-500/40 rounded-3xl p-6 md:p-8 shadow-2xl relative group overflow-hidden flex flex-col justify-between hover:-translate-y-1.5 hover:shadow-[0_15px_30px_rgba(249,115,22,0.15)] transition-all duration-300">
+        <div className="w-full max-w-xl h-full min-h-[300px] sm:min-h-[380px] bg-white/5 backdrop-blur-xl border-2 border-orange-500/40 rounded-3xl p-6 md:p-8 shadow-2xl relative group flex flex-col justify-between hover:-translate-y-1.5 hover:shadow-[0_15px_30px_rgba(249,115,22,0.15)] transition-all duration-300">
           {/* Glowing Accent Corner */}
           <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-br from-orange-500/20 to-transparent rounded-bl-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
@@ -172,16 +170,14 @@ function ProjectCard({ project, idx, t }: { project: ProjectItem; idx: number; t
 
       {/* 2. COLUMN IMAGE */}
       <div
-        className={`w-full lg:w-1/2 flex justify-center ${
-          isTextLeft ? "lg:justify-start" : "lg:justify-end"
-        } ${isTextLeft ? "anim-slide-right" : "anim-slide-left"} ${
-          isVisible ? "is-visible" : ""
-        } anim-delay-2`}
+        className={`w-full lg:w-1/2 flex justify-center ${isTextLeft ? "lg:justify-start" : "lg:justify-end"
+          } ${isTextLeft ? "anim-slide-right" : "anim-slide-left"} ${isVisible ? "is-visible" : ""
+          } anim-delay-2`}
       >
-        <Link href={`/projects/${project.id}`} className="relative block h-[300px] sm:h-[380px] rounded-3xl overflow-hidden shadow-2xl border border-white/10 group cursor-pointer w-full max-w-xl hover:scale-[1.02] transition-transform duration-400">
+        <Link href={`/projects/${project.id}`} className="relative block h-full min-h-[300px] sm:min-h-[380px] rounded-3xl overflow-hidden shadow-2xl border border-white/10 group cursor-pointer w-full max-w-xl hover:scale-[1.02] transition-transform duration-400">
           {project.image.startsWith('http') || project.image.startsWith('/upload') ? (
             <img
-              src={project.image.startsWith('/upload') ? `http://localhost:8080${project.image}` : project.image}
+              src={project.image.startsWith('/upload') ? `${API_URL}${project.image}` : project.image}
               alt={project.name}
               className="object-cover transition-transform duration-1000 group-hover:scale-105 w-full h-full"
               loading="lazy"
