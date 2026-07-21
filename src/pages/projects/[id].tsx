@@ -170,18 +170,7 @@ export default function ProjectDetailsPage() {
 
             {/* CỘT TRÁI - TEXT */}
             <div className="w-full lg:w-1/3">
-              <h2 className="text-3xl font-bold text-white mb-8 uppercase tracking-tight flex items-center gap-3">
-                <div className="w-2 h-8 bg-blue-500 rounded-full" /> {t('projects_page.projectDetails')}
-              </h2>
-              <div className="prose prose-invert prose-lg max-w-none text-gray-300 leading-relaxed font-medium">
-                {project.description ? (
-                  <p>{project.description}</p>
-                ) : (
-                  <p>{t('project_detail.overviewDesc', { projectName: project.projectName, solarPower: project.solarPower, savingPower: project.savingPower })}</p>
-                )}
-              </div>
-
-              <div className="mt-12 bg-white/5 border border-white/10 rounded-3xl p-8">
+              <div className="bg-white/5 border border-white/10 rounded-3xl p-8">
                 <h3 className="text-xl font-bold text-white mb-6 uppercase tracking-wider">{t('project_detail.projectInfo')}</h3>
                 <ul className="space-y-4">
                   <li className="flex items-center justify-between border-b border-white/10 pb-4">
@@ -197,6 +186,17 @@ export default function ProjectDetailsPage() {
                     <span className="text-white font-semibold">{project.endDate || 'N/A'}</span>
                   </li>
                 </ul>
+              </div>
+
+              <div className="mt-12 bg-white/5 border border-white/10 rounded-3xl p-8">
+                <h3 className="text-xl font-bold text-white mb-6 uppercase tracking-wider">{t('projects_page.projectDetails')}</h3>
+                <div className="prose prose-invert prose-lg max-w-none text-gray-300 leading-relaxed font-medium">
+                  {project.description ? (
+                    <div dangerouslySetInnerHTML={{ __html: project.description }} className="rich-text-content" />
+                  ) : (
+                    <p>{t('project_detail.overviewDesc', { projectName: project.projectName, solarPower: project.solarPower, savingPower: project.savingPower })}</p>
+                  )}
+                </div>
               </div>
             </div>
 

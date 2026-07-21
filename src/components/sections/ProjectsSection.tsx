@@ -133,9 +133,10 @@ function ProjectCard({ project, idx, t }: { project: ProjectItem; idx: number; t
             <div className="h-0.5 w-16 bg-orange-500/50 group-hover:w-24 transition-all duration-300" />
 
             {/* Main Desc text */}
-            <p className="text-gray-200 text-base md:text-lg font-bold leading-relaxed">
-              {project.desc}
-            </p>
+            <div 
+              className="text-gray-200 text-base md:text-lg font-bold leading-relaxed line-clamp-4"
+              dangerouslySetInnerHTML={{ __html: project.desc }} 
+            />
 
             {/* Structural Details */}
             <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/10">

@@ -250,3 +250,14 @@ body.mobile-menu-open {
   animation: loadingBarComplete 0.3s ease-out forwards;
 }
 
+/* ═══════════════════════════════════════════════════════
+   Rich Text Formatting Overrides (Dark Theme)
+   ═══════════════════════════════════════════════════════ */
+.rich-text-content * {
+  background-color: transparent !important;
+}
+.rich-text-content *:not(a) {
+  color: inherit !important;
+}
+
+
