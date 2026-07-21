@@ -169,7 +169,7 @@ export default function ProjectDetailsPage() {
           <div className="flex flex-col lg:flex-row gap-16">
 
             {/* CỘT TRÁI - TEXT */}
-            <div className="w-full lg:w-1/3">
+            <div className="w-full lg:w-1/3 flex flex-col justify-between">
               <div className="bg-white/5 border border-white/10 rounded-3xl p-8">
                 <h3 className="text-xl font-bold text-white mb-6 uppercase tracking-wider">{t('project_detail.projectInfo')}</h3>
                 <ul className="space-y-4">
@@ -188,7 +188,7 @@ export default function ProjectDetailsPage() {
                 </ul>
               </div>
 
-              <div className="mt-12 bg-white/5 border border-white/10 rounded-3xl p-8">
+              <div className="mt-6 lg:mt-0 bg-white/5 border border-white/10 rounded-3xl p-8">
                 <h3 className="text-xl font-bold text-white mb-6 uppercase tracking-wider">{t('projects_page.projectDetails')}</h3>
                 <div className="prose prose-invert prose-lg max-w-none text-gray-300 leading-relaxed font-medium">
                   {project.description ? (
@@ -201,8 +201,8 @@ export default function ProjectDetailsPage() {
             </div>
 
             {/* CỘT PHẢI - ẢNH CHÍNH BẢN TO */}
-            <div className="w-full lg:w-2/3 flex items-start">
-              <div className="relative w-full h-[400px] md:h-[460px] rounded-3xl overflow-hidden shadow-2xl border border-white/10 group">
+            <div className="w-full lg:w-2/3 flex">
+              <div className="relative w-full flex-1 min-h-[300px] lg:min-h-0 rounded-3xl overflow-hidden shadow-2xl border border-white/10 group">
                 {project.featuredImage && (project.featuredImage.startsWith("http") || project.featuredImage.startsWith("/upload")) ? (
                   <img
                     src={featuredImg}

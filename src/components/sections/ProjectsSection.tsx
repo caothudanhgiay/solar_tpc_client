@@ -133,9 +133,9 @@ function ProjectCard({ project, idx, t }: { project: ProjectItem; idx: number; t
             <div className="h-0.5 w-16 bg-orange-500/50 group-hover:w-24 transition-all duration-300" />
 
             {/* Main Desc text */}
-            <div 
-              className="text-gray-200 text-base md:text-lg font-bold leading-relaxed line-clamp-4"
-              dangerouslySetInnerHTML={{ __html: project.desc }} 
+            <div
+              className="text-gray-200 text-base md:text-lg font-bold leading-relaxed rich-text-content"
+              dangerouslySetInnerHTML={{ __html: project.desc }}
             />
 
             {/* Structural Details */}
