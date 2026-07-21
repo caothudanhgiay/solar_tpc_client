@@ -1,5 +1,5 @@
 export const DEFAULT_BASE_URL = "http://localhost:8080";
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || DEFAULT_BASE_URL;
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'production' ? 'https://tpcsolar.vn' : DEFAULT_BASE_URL);
 
 export const API_BASE = '/api';
 
