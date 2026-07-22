@@ -48,4 +48,13 @@ export const tsoGetPricingOptions = (bill: number): TsoPricingResult => {
       isEffective: true,
     };
   }
+
+  // Fallback for bill > 8000000 (handled primarily by the UI component)
+  return {
+    proposedCapacity: "pricing.contactForPrice",
+    expectedComboPrice: "-",
+    estimatedMonthlySavings: "-",
+    expectedPaybackPeriod: "-",
+    isEffective: true,
+  };
 };
