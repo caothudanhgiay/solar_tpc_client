@@ -20,7 +20,6 @@
     "comingSoonTitle": "Coming Soon!",
     "comingSoonDesc": "This feature is under development and will be available soon. Thank you for your patience!",
     "comingSoonBtn": "Got it",
-
     "zalo": "Zalo",
     "facebook": "Facebook",
     "brandName": "TPC SOLAR RENEWABLE ENERGY",
@@ -184,7 +183,6 @@
     "roofTile": "Tile roof",
     "billLabel": "Current monthly electricity bill (*)",
     "billPlaceholder": "Enter electricity bill amount (VND)",
-    "lowConsumptionAlert": "Your electricity consumption is still low, installing a solar system is not yet efficient",
     "lowConsumptionTitle": "Low Electricity Consumption",
     "lowConsumptionDesc": "Your electricity consumption is still low, installing a solar system is not yet efficient.",
     "lowConsumptionTip": "If your monthly electricity bill is 1,500,000 VND or more, investment will bring clear benefits and a faster payback period.",
@@ -199,8 +197,14 @@
     "option2Price": "Electricity sales price from: 1,650 VND / kWh",
     "option3Title": "TPC invests 100% - Lease system",
     "option3Desc": "TPC installs system. Customer pays fixed monthly rent and uses generated electricity.",
-    "option3Price": "Rental fee from: 160,000 VND / 1 kWp / month",
-    "btnAdvice": "Get Detailed Advice"
+    "option3Price": "Lease fee from: 160,000 VND / 1 kWp / month",
+    "btnAdvice": "Get Detailed Advice",
+    "optProposedCapacity": "Proposed Capacity",
+    "optExpectedComboPrice": "Expected Combo Price",
+    "optEstimatedMonthlySavings": "Estimated Monthly Savings (VND)",
+    "optExpectedPaybackPeriod": "Expected Payback Period",
+    "contactForPrice": "Contact for detailed pricing",
+    "notSuitable": "Current electricity consumption is not suitable for Solar installation"
   },
   "chatbot": {
     "title": "Solar TPC Advisor",

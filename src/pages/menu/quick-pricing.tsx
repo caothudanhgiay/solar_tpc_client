@@ -2,11 +2,12 @@ import { useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
-import { Calculator, Zap, DollarSign, Settings, Home, Building2, Factory, ArrowRight, AlertCircle, Info } from "lucide-react";
+import { Calculator, Zap, DollarSign, Settings, Home, Building2, Factory, ArrowRight, AlertCircle, Info, BatteryCharging, Tag, PiggyBank, Clock } from "lucide-react";
 import { cn } from "@/lib/utils/utils";
 import { useTranslation } from "next-i18next/pages";
 import { serverSideTranslations } from "next-i18next/pages/serverSideTranslations";
 import { GetStaticProps } from "next";
+import { tsoGetPricingOptions } from "@/lib/helpers/TsoPricingHelper";
 
 // Helper to format currency
 const formatVND = (value: number) => {
@@ -23,10 +24,10 @@ export default function QuickPricingPage() {
   const { t } = useTranslation("common");
   const [purpose, setPurpose] = useState("sinh-hoat");
   const [roofType, setRoofType] = useState("mai-ton");
-  const [bill, setBill] = useState<number>(500000); // Default 500k
+  const [bill, setBill] = useState<number>(1500000); // Default 1500k
 
   // Calculations
-  const isEffective = bill >= 500000;
+  const isEffective = bill >= 1500000;
 
   // Estimate: 1 kWp generates ~120 kWh/month. Avg electricity price = ~3000 VND/kWh
   // 1 kWp saves ~ 360,000 VND/month
@@ -35,6 +36,8 @@ export default function QuickPricingPage() {
 
   // Tiết kiệm khoảng 85-90% tiền điện
   const estimatedSavings = isEffective ? bill * 0.85 : 0;
+
+  const pricingResult = tsoGetPricingOptions(bill);
 
   return (
     <>
@@ -158,13 +161,6 @@ export default function QuickPricingPage() {
                       VNĐ
                     </div>
                   </div>
-
-                  {!isEffective && bill > 0 && (
-                    <div className="flex items-start gap-2 text-amber-500 text-sm mt-3 bg-amber-500/10 border border-amber-500/20 p-4 rounded-2xl leading-relaxed">
-                      <AlertCircle className="w-5 h-5 shrink-0 text-amber-500 mt-0.5" />
-                      <span>{t("pricing.lowConsumptionAlert")}</span>
-                    </div>
-                  )}
                 </div>
 
               </div>
@@ -228,58 +224,65 @@ export default function QuickPricingPage() {
                       {t("pricing.investmentOptions")}
                     </h3>
 
-                    <div className="space-y-4">
-                      {[
-                        {
-                          title: t("pricing.option1Title"),
-                          desc: t("pricing.option1Desc"),
-                          price: t("pricing.option1Price"),
-                          highlight: true,
-                          color: "orange"
-                        },
-                        {
-                          title: t("pricing.option2Title"),
-                          desc: t("pricing.option2Desc"),
-                          price: t("pricing.option2Price"),
-                          highlight: false,
-                          color: "blue"
-                        },
-                        {
-                          title: t("pricing.option3Title"),
-                          desc: t("pricing.option3Desc"),
-                          price: t("pricing.option3Price"),
-                          highlight: false,
-                          color: "teal"
-                        }
-                      ].map((option, idx) => (
-                        <div
-                          key={idx}
-                          className={cn(
-                            "p-5 rounded-2xl border transition-all hover:-translate-y-1 duration-300",
-                            option.highlight
-                                  ? "bg-gradient-to-r from-orange-500/10 to-transparent border-orange-500/50 shadow-[0_4px_20px_rgba(249,115,22,0.1)]"
-                                  : "bg-white/5 border-white/10 hover:border-white/30"
-                          )}
-                        >
-                          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                            <div className="flex-1">
-                              <h4 className={cn(
-                                "font-bold text-base mb-1",
-                                option.color === "orange" ? "text-orange-400" : option.color === "blue" ? "text-blue-400" : "text-teal-400"
-                              )}>
-                                {option.title}
-                              </h4>
-                              <p className="text-gray-400 text-sm leading-relaxed">{option.desc}</p>
-                            </div>
-                            <div className={cn(
-                              "shrink-0 py-2 px-4 rounded-xl font-bold text-sm whitespace-nowrap text-center",
-                              option.highlight ? "bg-orange-500 text-white shadow-lg shadow-orange-500/30" : "bg-white/10 text-white"
-                            )}>
-                              {option.price}
-                            </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      {/* Công suất đề xuất */}
+                      <div className="bg-gradient-to-br from-cyan-900/40 to-cyan-800/20 border border-cyan-500/30 rounded-3xl p-6 relative overflow-hidden group">
+                        <div className="absolute -right-4 -top-4 w-24 h-24 bg-cyan-500/20 rounded-full blur-2xl group-hover:bg-cyan-500/30 transition-colors" />
+                        <div className="flex items-center gap-3 mb-4">
+                          <div className="bg-cyan-500/20 p-2.5 rounded-xl relative z-10">
+                            <BatteryCharging className="w-6 h-6 text-cyan-400" />
                           </div>
+                          <h3 className="text-gray-300 font-medium text-sm relative z-10">{t("pricing.optProposedCapacity")}</h3>
                         </div>
-                      ))}
+                        <div className="flex items-baseline gap-2 relative z-10">
+                          <span className="text-2xl font-black text-white">
+                            {pricingResult.proposedCapacity.startsWith("pricing.") ? t(pricingResult.proposedCapacity) : pricingResult.proposedCapacity}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Giá combo dự kiến */}
+                      <div className="bg-gradient-to-br from-orange-900/40 to-orange-800/20 border border-orange-500/30 rounded-3xl p-6 relative overflow-hidden group">
+                        <div className="absolute -right-4 -top-4 w-24 h-24 bg-orange-500/20 rounded-full blur-2xl group-hover:bg-orange-500/30 transition-colors" />
+                        <div className="flex items-center gap-3 mb-4">
+                          <div className="bg-orange-500/20 p-2.5 rounded-xl relative z-10">
+                            <Tag className="w-6 h-6 text-orange-400" />
+                          </div>
+                          <h3 className="text-gray-300 font-medium text-sm relative z-10">{t("pricing.optExpectedComboPrice")}</h3>
+                        </div>
+                        <div className="flex items-baseline gap-2 relative z-10">
+                          <span className="text-2xl font-black text-white">{pricingResult.expectedComboPrice}</span>
+                          {pricingResult.expectedComboPrice !== "-" && <span className="text-orange-400 font-bold">VNĐ</span>}
+                        </div>
+                      </div>
+
+                      {/* Dự kiến tiết kiệm */}
+                      <div className="bg-gradient-to-br from-rose-900/40 to-rose-800/20 border border-rose-500/30 rounded-3xl p-6 relative overflow-hidden group">
+                        <div className="absolute -right-4 -top-4 w-24 h-24 bg-rose-500/20 rounded-full blur-2xl group-hover:bg-rose-500/30 transition-colors" />
+                        <div className="flex items-center gap-3 mb-4">
+                          <div className="bg-rose-500/20 p-2.5 rounded-xl relative z-10">
+                            <PiggyBank className="w-6 h-6 text-rose-400" />
+                          </div>
+                          <h3 className="text-gray-300 font-medium text-sm relative z-10">{t("pricing.optEstimatedMonthlySavings")}</h3>
+                        </div>
+                        <div className="flex items-baseline gap-2 relative z-10">
+                          <span className="text-2xl font-black text-white">{pricingResult.estimatedMonthlySavings}</span>
+                        </div>
+                      </div>
+
+                      {/* Thời gian hoàn vốn */}
+                      <div className="bg-gradient-to-br from-purple-900/40 to-purple-800/20 border border-purple-500/30 rounded-3xl p-6 relative overflow-hidden group">
+                        <div className="absolute -right-4 -top-4 w-24 h-24 bg-purple-500/20 rounded-full blur-2xl group-hover:bg-purple-500/30 transition-colors" />
+                        <div className="flex items-center gap-3 mb-4">
+                          <div className="bg-purple-500/20 p-2.5 rounded-xl relative z-10">
+                            <Clock className="w-6 h-6 text-purple-400" />
+                          </div>
+                          <h3 className="text-gray-300 font-medium text-sm relative z-10">{t("pricing.optExpectedPaybackPeriod")}</h3>
+                        </div>
+                        <div className="flex items-baseline gap-2 relative z-10">
+                          <span className="text-2xl font-black text-white">{pricingResult.expectedPaybackPeriod}</span>
+                        </div>
+                      </div>
                     </div>
 
                     <div className="mt-8 text-center">

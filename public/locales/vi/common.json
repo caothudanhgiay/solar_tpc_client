@@ -183,9 +183,8 @@
     "roofTile": "Mái ngói",
     "billLabel": "Tiền điện hiện tại/tháng (*)",
     "billPlaceholder": "Nhập số tiền điện (VND)",
-    "lowConsumptionAlert": "Số tiền điện tiêu thụ của bạn còn thấp, việc lắp đặt hệ thống năng lượng mặt trời chưa hiệu quả",
     "lowConsumptionTitle": "Tiêu thụ điện còn thấp",
-    "lowConsumptionDesc": "Số tiền điện tiêu thụ của bạn còn thấp, việc lắp đặt hệ thống năng lượng mặt trời chưa hiệu quả.",
+    "lowConsumptionDesc": "Tiền điện tiêu thụ cũa quý khách còn thấp, chưa phù hợp cho việc đầu tư hệ thống Solar.",
     "lowConsumptionTip": "Nếu hóa đơn tiền điện của bạn từ 1.500.000đ/tháng trở lên, việc đầu tư sẽ mang lại lợi ích rõ rệt và thời gian hoàn vốn nhanh hơn.",
     "recommendedCapacity": "Công suất đề xuất",
     "estimatedSavings": "Dự kiến tiết kiệm/tháng",
@@ -199,7 +198,13 @@
     "option3Title": "TPC đầu tư 100% - Cho thuê hệ thống",
     "option3Desc": "TPC lắp đặt hệ thống. Khách hàng trả tiền thuê cố định hàng tháng và tự dùng điện.",
     "option3Price": "Phí thuê từ: 160.000đ / 1 kWp / tháng",
-    "btnAdvice": "Nhận Tư Vấn Chi Tiết"
+    "btnAdvice": "Nhận Tư Vấn Chi Tiết",
+    "optProposedCapacity": "Công suất đề xuất",
+    "optExpectedComboPrice": "Giá combo dự kiến",
+    "optEstimatedMonthlySavings": "Dự kiến tiết kiệm điện(đ)/tháng",
+    "optExpectedPaybackPeriod": "Thời gian hoàn vốn dự kiến",
+    "contactForPrice": "Liên hệ để được báo giá chi tiết",
+    "notSuitable": "Giá tiêu thụ điện chưa phù hợp để lắp Solar"
   },
   "chatbot": {
     "title": "Tư Vấn Solar TPC",
