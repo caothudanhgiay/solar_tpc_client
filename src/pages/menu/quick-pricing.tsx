@@ -28,15 +28,7 @@ export default function QuickPricingPage() {
 
   // Calculations
   const isEffective = bill >= 1500000;
-
-  // Estimate: 1 kWp generates ~120 kWh/month. Avg electricity price = ~3000 VND/kWh
-  // 1 kWp saves ~ 360,000 VND/month
-  const estimatedPower = isEffective ? bill / 360000 : 0;
-  const roundedPower = Math.round(estimatedPower * 10) / 10;
-
-  // Tiết kiệm khoảng 85-90% tiền điện
-  const estimatedSavings = isEffective ? bill * 0.85 : 0;
-
+  const isMax = bill > 8000000;
   const pricingResult = tsoGetPricingOptions(bill);
 
   return (
@@ -168,7 +160,24 @@ export default function QuickPricingPage() {
 
             {/* RIGHT COLUMN: Results — CSS animation thay AnimatePresence */}
             <div className="lg:col-span-7 flex flex-col h-full page-animate-delay-2">
-              {!isEffective ? (
+              {isMax ? (
+                <div className="bg-amber-500/10 border border-amber-500/30 rounded-3xl p-8 h-full flex flex-col items-center justify-center text-center space-y-4">
+                  <div className="bg-amber-500/20 p-4 rounded-full mb-2">
+                    <AlertCircle className="w-10 h-10 text-amber-500" />
+                  </div>
+
+                  <p className="text-gray-300 max-w-sm leading-relaxed">
+                    {t("pricing.contactForPrice")}
+                  </p>
+
+                  <Link
+                    href="/menu/contact"
+                    className="inline-flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-8 py-3.5 rounded-full font-bold text-sm transition-all shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 hover:-translate-y-0.5 uppercase tracking-wider"
+                  >
+                    {t("pricing.btnAdvice")} <ArrowRight className="w-4 h-4" />
+                  </Link>
+                </div>
+              ) : !isEffective ? (
                 <div className="bg-amber-500/10 border border-amber-500/30 rounded-3xl p-8 h-full flex flex-col items-center justify-center text-center space-y-4">
                   <div className="bg-amber-500/20 p-4 rounded-full mb-2">
                     <AlertCircle className="w-10 h-10 text-amber-500" />
@@ -186,36 +195,6 @@ export default function QuickPricingPage() {
                 </div>
               ) : (
                 <div className="space-y-6">
-                  {/* Primary Calculation Output */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="bg-gradient-to-br from-blue-900/40 to-blue-800/20 border border-blue-500/30 rounded-3xl p-6 relative overflow-hidden group">
-                      <div className="absolute -right-4 -top-4 w-24 h-24 bg-blue-500/20 rounded-full blur-2xl group-hover:bg-blue-500/30 transition-colors" />
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="bg-blue-500/20 p-2.5 rounded-xl">
-                          <Zap className="w-6 h-6 text-blue-400" />
-                        </div>
-                        <h3 className="text-gray-300 font-medium text-sm">{t("pricing.recommendedCapacity")}</h3>
-                      </div>
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-4xl font-black text-white">{roundedPower}</span>
-                        <span className="text-blue-400 font-bold">kWp</span>
-                      </div>
-                    </div>
-
-                    <div className="bg-gradient-to-br from-green-900/40 to-green-800/20 border border-green-500/30 rounded-3xl p-6 relative overflow-hidden group">
-                      <div className="absolute -right-4 -top-4 w-24 h-24 bg-green-500/20 rounded-full blur-2xl group-hover:bg-green-500/30 transition-colors" />
-                      <div className="flex items-center gap-3 mb-4">
-                        <div className="bg-green-500/20 p-2.5 rounded-xl">
-                          <DollarSign className="w-6 h-6 text-green-400" />
-                        </div>
-                        <h3 className="text-gray-300 font-medium text-sm">{t("pricing.estimatedSavings")}</h3>
-                      </div>
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-3xl font-black text-white">{formatVND(estimatedSavings).replace("₫", "")}</span>
-                        <span className="text-green-400 font-bold">VNĐ</span>
-                      </div>
-                    </div>
-                  </div>
 
                   {/* Investment Options */}
                   <div className="bg-white/5 border border-white/10 rounded-3xl p-6">

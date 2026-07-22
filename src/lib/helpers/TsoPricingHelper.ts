@@ -47,14 +47,5 @@ export const tsoGetPricingOptions = (bill: number): TsoPricingResult => {
       expectedPaybackPeriod: "~ 4 năm",
       isEffective: true,
     };
-  } else {
-    // > 8tr
-    return {
-      proposedCapacity: "pricing.contactForPrice",
-      expectedComboPrice: "-",
-      estimatedMonthlySavings: "-",
-      expectedPaybackPeriod: "-",
-      isEffective: true,
-    };
   }
 };
