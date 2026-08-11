@@ -160,7 +160,7 @@ export default function ContactPage() {
                     <div>
                       <h3 className="font-bold text-white mb-1">{t("contact.officeTitle")}</h3>
                       <p className="text-gray-300 leading-relaxed text-sm">
-                        {t("common.address")}
+                        {t("footer.addressValue")}
                       </p>
                     </div>
                   </div>
