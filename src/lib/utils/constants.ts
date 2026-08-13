@@ -14,7 +14,7 @@ export const API_CHATBOT_ASK = `${API_BASE}/chatbot/ask`;
 export const API_CHATBOT_ASK_STREAM = `${API_BASE}/chatbot/ask/stream`;
 
 // Zalo deep link
-export const ZALO_PHONE = '0035832304';
+export const ZALO_PHONE = '0397937019';
 export const ZALO_CHAT_URL = `https://zalo.me/${ZALO_PHONE}`;
 
 // Các hằng số HTTP Methods

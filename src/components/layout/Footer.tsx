@@ -5,6 +5,7 @@ import { Mail, Phone, MapPin, Globe, ChevronRight, Wrench } from "lucide-react";
 
 import { useTranslation } from "next-i18next/pages";
 import { useScrollAnimation } from "@/lib/utils/useScrollAnimation";
+import { ZALO_CHAT_URL } from "@/lib/utils/constants";
 
 export default function Footer() {
   const { t } = useTranslation("common");
@@ -113,7 +114,7 @@ export default function Footer() {
                     <div className="relative h-5 w-5 shrink-0">
                       <Image src="/images/zalo-icon.webp" alt="Zalo" fill className="object-contain" sizes="20px" />
                     </div>
-                    <a href="#" className="hover:text-orange-400 transition-colors">Zalo</a>
+                    <a href={ZALO_CHAT_URL} target="_blank" rel="noopener noreferrer" className="hover:text-orange-400 transition-colors">Zalo</a>
                   </li>
                 </ul>
               </div>
