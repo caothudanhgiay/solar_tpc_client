@@ -13,7 +13,7 @@ import {
 import Link from 'next/link';
 import Head from 'next/head';
 import { useTranslation } from 'next-i18next/pages';
-import { GetStaticProps } from 'next';
+import { GetServerSideProps } from 'next';
 import { serverSideTranslations } from 'next-i18next/pages/serverSideTranslations';
 
 type ErrorType = 'maintenance' | 'not-found' | 'server-error' | 'page-error';
@@ -152,7 +152,7 @@ export default function ErrorPage() {
                 {current.buttonText}
               </button>
 
-              <Link href="/menu/contact" className="flex items-center justify-center gap-2 px-8 py-3.5 rounded-full font-medium text-white bg-slate-700/50 hover:bg-slate-700 border border-slate-600 transition-all hover:scale-105 active:scale-95">
+              <Link prefetch={false} href="/menu/contact" className="flex items-center justify-center gap-2 px-8 py-3.5 rounded-full font-medium text-white bg-slate-700/50 hover:bg-slate-700 border border-slate-600 transition-all hover:scale-105 active:scale-95">
                 <PhoneCall className="w-5 h-5" />
                 {t('contact.title', 'Liên Hệ Hỗ Trợ')}
               </Link>
@@ -198,7 +198,7 @@ export default function ErrorPage() {
   );
 }
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => {
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
   return {
     props: {
       ...(await serverSideTranslations(locale || 'vi', ['common'])),

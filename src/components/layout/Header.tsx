@@ -199,7 +199,7 @@ function Header({ initialMenus }: { initialMenus?: NavigationItem[] }) {
     >
       <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center group shrink-0">
+        <Link prefetch={false} href="/" className="flex items-center group shrink-0">
           <div className="relative w-56 md:w-64 lg:w-72 h-16 md:h-20 transition-transform group-hover:scale-105">
             <Image
               src="/images/logo_tpc.webp"
@@ -218,7 +218,7 @@ function Header({ initialMenus }: { initialMenus?: NavigationItem[] }) {
           {navigation.map((item) => (
             item.submenu ? (
               <div key={item.name} className="relative group">
-                <Link
+                <Link prefetch={false}
                   href={item.href}
                   className="text-sm font-bold transition-colors hover:text-orange-500 text-white/90 hover:text-white flex items-center gap-1 uppercase tracking-wider"
                 >
@@ -241,7 +241,7 @@ function Header({ initialMenus }: { initialMenus?: NavigationItem[] }) {
                 </div>
               </div>
             ) : (
-              <Link
+              <Link prefetch={false}
                 key={item.name}
                 href={item.href}
                 className="text-sm font-bold transition-colors hover:text-orange-500 text-white/90 hover:text-white uppercase tracking-wider"
@@ -254,7 +254,7 @@ function Header({ initialMenus }: { initialMenus?: NavigationItem[] }) {
 
         {/* Action Button & Language Switcher */}
         <div className="hidden lg:flex items-center gap-6">
-          <Link
+          <Link prefetch={false}
             href="/menu/contact#ho-va-ten"
             onClick={handleQuoteClick}
             className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2.5 rounded-full text-xs font-bold transition-all shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 hover:-translate-y-0.5 uppercase tracking-wider"
@@ -334,7 +334,7 @@ function Header({ initialMenus }: { initialMenus?: NavigationItem[] }) {
                   )}>
                     <div className="pl-6 flex flex-col space-y-1 pb-2 pt-1">
                       {/* Link tới trang chính của menu cha */}
-                      <Link
+                      <Link prefetch={false}
                         href={item.href}
                         onClick={closeMobileMenu}
                         className="block text-orange-400 hover:text-orange-500 hover:bg-white/5 px-4 py-2 rounded-lg text-xs font-bold transition-colors uppercase tracking-wide"
@@ -357,7 +357,7 @@ function Header({ initialMenus }: { initialMenus?: NavigationItem[] }) {
                 </>
               ) : (
                 /* Item không có submenu: navigate trực tiếp */
-                <Link
+                <Link prefetch={false}
                   href={item.href}
                   onClick={closeMobileMenu}
                   className="block text-white hover:text-orange-500 hover:bg-white/5 px-4 py-3 rounded-lg text-sm font-semibold transition-colors uppercase tracking-wider"
@@ -369,7 +369,7 @@ function Header({ initialMenus }: { initialMenus?: NavigationItem[] }) {
           ))}
 
           <div className="pt-4 pb-2 px-2">
-            <Link
+            <Link prefetch={false}
               href="/menu/contact#ho-va-ten"
               onClick={(e) => { handleQuoteClick(e); closeMobileMenu(); }}
               className="block w-full text-center bg-orange-500 hover:bg-orange-600 text-white px-5 py-3.5 rounded-xl text-sm font-bold transition-colors shadow-lg shadow-orange-500/30 uppercase tracking-wider mb-4"

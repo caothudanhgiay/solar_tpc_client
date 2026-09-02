@@ -116,7 +116,7 @@ export default function ServicesSection() {
                   </div>
 
                   <div className="pt-2">
-                    <Link
+                    <Link prefetch={false}
                       href={service.href}
                       className="inline-flex items-center gap-1 text-[11px] font-black text-orange-400 group-hover:translate-x-1.5 transition-transform duration-300 hover:underline"
                     >

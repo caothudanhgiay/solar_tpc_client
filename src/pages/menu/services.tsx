@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useTranslation } from "next-i18next/pages";
 import { serverSideTranslations } from "next-i18next/pages/serverSideTranslations";
-import { GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 
 export default function ServicesPage() {
   const { t } = useTranslation("common");
@@ -113,7 +113,7 @@ export default function ServicesPage() {
           <div className="mb-10 pb-6 border-b border-white/10 page-animate">
             <h1 className="text-3xl font-bold text-white uppercase tracking-wider">{t("services_page.title")}</h1>
             <div className="flex items-center gap-2 mt-3 text-sm text-gray-400">
-              <Link href="/" className="hover:text-orange-500 transition-colors">{t("header.home")}</Link>
+              <Link prefetch={false} href="/" className="hover:text-orange-500 transition-colors">{t("header.home")}</Link>
               <ChevronRight className="w-4 h-4" />
               <span className="text-orange-500 font-medium">{t("header.services")}</span>
             </div>
@@ -212,7 +212,7 @@ export default function ServicesPage() {
 
                       <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/10">
                         <span className="text-orange-400 font-bold text-lg">{service.price}</span>
-                        <Link
+                        <Link prefetch={false}
                           href={`/menu/contact`}
                           className="text-xs font-bold uppercase tracking-wider text-white bg-white/10 hover:bg-orange-500 px-4 py-2 rounded-lg transition-colors"
                         >
@@ -238,7 +238,7 @@ export default function ServicesPage() {
   );
 }
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => {
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
   return {
     props: {
       ...(await serverSideTranslations(locale || "vi", ["common"])),

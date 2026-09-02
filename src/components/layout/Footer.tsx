@@ -59,7 +59,7 @@ export default function Footer() {
 
             {/* Column 1: Brand & Social */}
             <div className="space-y-6">
-              <Link href="/" className="flex flex-col items-start group mb-2">
+              <Link prefetch={false} href="/" className="flex flex-col items-start group mb-2">
                 <div className="relative w-48 md:w-64 lg:w-72 h-14 md:h-20 transition-transform group-hover:scale-105 bg-white/5 p-2 rounded-xl border border-white/10">
                   <Image
                     src="/images/logo_tpc.webp"

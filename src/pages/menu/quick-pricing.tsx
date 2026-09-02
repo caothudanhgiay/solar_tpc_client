@@ -6,7 +6,7 @@ import { Calculator, Zap, DollarSign, Settings, Home, Building2, Factory, ArrowR
 import { cn } from "@/lib/utils/utils";
 import { useTranslation } from "next-i18next/pages";
 import { serverSideTranslations } from "next-i18next/pages/serverSideTranslations";
-import { GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 import { tsoGetPricingOptions } from "@/lib/helpers/TsoPricingHelper";
 
 // Helper to format currency
@@ -170,7 +170,7 @@ export default function QuickPricingPage() {
                     {t("pricing.contactForPrice")}
                   </p>
 
-                  <Link
+                  <Link prefetch={false}
                     href="/menu/contact"
                     className="inline-flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-8 py-3.5 rounded-full font-bold text-sm transition-all shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 hover:-translate-y-0.5 uppercase tracking-wider"
                   >
@@ -265,7 +265,7 @@ export default function QuickPricingPage() {
                     </div>
 
                     <div className="mt-8 text-center">
-                      <Link
+                      <Link prefetch={false}
                         href="/menu/contact"
                         className="inline-flex items-center justify-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-8 py-3.5 rounded-full font-bold text-sm transition-all shadow-lg shadow-orange-500/30 hover:shadow-orange-500/50 hover:-translate-y-0.5 uppercase tracking-wider"
                       >
@@ -284,7 +284,7 @@ export default function QuickPricingPage() {
   );
 }
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => {
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
   return {
     props: {
       ...(await serverSideTranslations(locale || "vi", ["common"])),

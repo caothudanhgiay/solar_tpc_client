@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 import HeroSection from "@/components/sections/HeroSection";
 import { serverSideTranslations } from "next-i18next/pages/serverSideTranslations";
 
-import { GetStaticProps } from "next";
+import { GetServerSideProps } from "next";
 import { useTranslation } from "next-i18next/pages";
 
 // Lazy load các sections below-the-fold — chỉ HeroSection cần tải ngay
@@ -30,7 +30,7 @@ export default function Home() {
   );
 }
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => {
+export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
   return {
     props: {
       ...(await serverSideTranslations(locale || "vi", ["common"])),

@@ -159,7 +159,7 @@ function ProjectCard({ project, idx, t }: { project: ProjectItem; idx: number; t
             </div>
 
             <div className="pt-2">
-              <Link href={`/projects/${project.id}`}>
+              <Link prefetch={false} href={`/projects/${project.id}`}>
                 <span className="inline-flex items-center gap-2 text-xs font-extrabold text-orange-400 group-hover:translate-x-2 transition-transform duration-300 cursor-pointer">
                   {t("projects.details")} <ArrowRight className="w-4 h-4" />
                 </span>
@@ -175,7 +175,7 @@ function ProjectCard({ project, idx, t }: { project: ProjectItem; idx: number; t
           } ${isTextLeft ? "anim-slide-right" : "anim-slide-left"} ${isVisible ? "is-visible" : ""
           } anim-delay-2`}
       >
-        <Link href={`/projects/${project.id}`} className="relative block h-full min-h-[300px] sm:min-h-[380px] rounded-3xl overflow-hidden shadow-2xl border border-white/10 group cursor-pointer w-full max-w-xl hover:scale-[1.02] transition-transform duration-400">
+        <Link prefetch={false} href={`/projects/${project.id}`} className="relative block h-full min-h-[300px] sm:min-h-[380px] rounded-3xl overflow-hidden shadow-2xl border border-white/10 group cursor-pointer w-full max-w-xl hover:scale-[1.02] transition-transform duration-400">
           {project.image.startsWith('http') || project.image.startsWith('/upload') ? (
             <img
               src={project.image.startsWith('/upload') ? `${API_URL}${project.image}` : project.image}

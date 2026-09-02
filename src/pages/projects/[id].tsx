@@ -80,7 +80,7 @@ export default function ProjectDetailsPage() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-slate-950 text-white">
         <h1 className="text-4xl font-bold mb-4">{t('project_detail.notFound')}</h1>
-        <Link href="/" className="text-orange-400 hover:underline flex items-center gap-2">
+        <Link prefetch={false} href="/" className="text-orange-400 hover:underline flex items-center gap-2">
           <ChevronLeft className="w-5 h-5" /> {t('project_detail.backToHome')}
         </Link>
       </div>
@@ -100,7 +100,7 @@ export default function ProjectDetailsPage() {
         {/* HERO SECTION */}
         <section className="relative w-full pt-[150px] pb-16 bg-slate-950">
           <div className="container mx-auto px-6 md:px-12 xl:px-24 relative z-10">
-            <Link href="/" className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-6 bg-white/5 px-4 py-2 rounded-full text-sm font-semibold border border-white/10">
+            <Link prefetch={false} href="/" className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-6 bg-white/5 px-4 py-2 rounded-full text-sm font-semibold border border-white/10">
               <ChevronLeft className="w-4 h-4" /> {t('project_detail.backToHomeShort')}
             </Link>
 
