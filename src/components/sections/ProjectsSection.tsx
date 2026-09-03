@@ -7,10 +7,6 @@ import { useTranslation } from "next-i18next/pages";
 import { useScrollAnimation } from "@/lib/utils/useScrollAnimation";
 import { API_URL } from "@/lib/utils/constants";
 
-import { useEffect, useState } from "react";
-import { apiClient } from "@/lib/utils/apiClient";
-import { API_PROJECTS } from "@/lib/utils/constants";
-
 interface ProjectItem {
   id: string;
   name: string;
@@ -21,42 +17,28 @@ interface ProjectItem {
   isReverse: boolean;
 }
 
-export default function ProjectsSection() {
+export default function ProjectsSection({ projects: rawProjects = [] }: { projects?: any[] }) {
   const { t } = useTranslation("common");
 
   // Scroll animation refs
   const titleRef = useScrollAnimation(0.2);
 
-  const [projects, setProjects] = useState<ProjectItem[]>([]);
+  const projects: ProjectItem[] = rawProjects.slice(0, 4).map((item: any, idx: number) => {
+    const powerText = [
+      item.solarPower ? `${item.solarPower}kWp` : "",
+      item.savingPower ? `lưu trữ ${item.savingPower}kWh` : ""
+    ].filter(Boolean).join(" ");
 
-  useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const res: any = await apiClient.get(`${API_PROJECTS}/featured`);
-        const data = Array.isArray(res.data) ? res.data.slice(0, 4) : [];
-        const mapped = data.map((item: any, idx: number) => {
-          const powerText = [
-            item.solarPower ? `${item.solarPower}kWp` : "",
-            item.savingPower ? `lưu trữ ${item.savingPower}kWh` : ""
-          ].filter(Boolean).join(" ");
-
-          return {
-            id: String(item.projectId),
-            name: item.projectName || item.projectTitle || "",
-            power: powerText || "N/A",
-            location: item.projectAddress || "",
-            desc: item.description || "",
-            image: item.featuredImage || `/images/demo${(idx % 3) + 1}.webp`,
-            isReverse: idx % 2 !== 0,
-          };
-        });
-        setProjects(mapped);
-      } catch (error) {
-        console.error("Failed to fetch featured projects:", error);
-      }
+    return {
+      id: String(item.projectId),
+      name: item.projectName || item.projectTitle || "",
+      power: powerText || "N/A",
+      location: item.projectAddress || "",
+      desc: item.description || "",
+      image: item.featuredImage || `/images/demo${(idx % 3) + 1}.webp`,
+      isReverse: idx % 2 !== 0,
     };
-    fetchProjects();
-  }, []);
+  });
 
   return (
     <section id="featured-projects" className="relative py-24 overflow-hidden">

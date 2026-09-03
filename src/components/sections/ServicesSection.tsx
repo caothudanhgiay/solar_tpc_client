@@ -5,43 +5,28 @@ import Link from "next/link";
 import { Zap, Wrench, Sparkles, Activity, ShieldCheck, ArrowRight } from "lucide-react";
 import { useTranslation } from "next-i18next/pages";
 import { useScrollAnimation, useScrollAnimationGroup } from "@/lib/utils/useScrollAnimation";
+import { API_URL } from "@/lib/utils/constants";
 
-export default function ServicesSection() {
+// Backend không có field icon riêng cho từng dịch vụ — lặp vòng qua bộ icon cố định này
+const SERVICE_ICONS = [Zap, Wrench, Sparkles, Activity];
+const FALLBACK_IMAGES = ["/images/demo2.webp", "/images/demo3.webp", "/images/demo1.webp", "/images/demo4.webp"];
+
+export default function ServicesSection({ services: rawServices = [] }: { services?: any[] }) {
   const { t } = useTranslation("common");
 
   const titleRef = useScrollAnimation(0.2);
   const gridRef = useScrollAnimationGroup(0.1);
 
-  const services = [
-    {
-      icon: Zap,
-      title: t("services.item1.title"),
-      desc: t("services.item1.desc"),
-      image: "/images/demo2.webp",
-      href: "/menu/services?category=lap-dat",
-    },
-    {
-      icon: Wrench,
-      title: t("services.item2.title"),
-      desc: t("services.item2.desc"),
-      image: "/images/demo3.webp",
-      href: "/menu/services?category=om",
-    },
-    {
-      icon: Sparkles,
-      title: t("services.item3.title"),
-      desc: t("services.item3.desc"),
-      image: "/images/demo1.webp",
-      href: "/menu/services?category=ve-sinh",
-    },
-    {
-      icon: Activity,
-      title: t("services.item4.title"),
-      desc: t("services.item4.desc"),
-      image: "/images/demo4.webp",
-      href: "/menu/services?category=scada",
-    },
-  ];
+  const services = rawServices.slice(0, 8).map((item: any, idx: number) => ({
+    id: String(item.serviceId ?? idx),
+    icon: SERVICE_ICONS[idx % SERVICE_ICONS.length],
+    title: item.serviceName || "",
+    desc: item.serviceDescription || "",
+    image: item.serviceImage
+      ? (item.serviceImage.startsWith("/upload") ? `${API_URL}${item.serviceImage}` : item.serviceImage)
+      : FALLBACK_IMAGES[idx % FALLBACK_IMAGES.length],
+    href: "/menu/services",
+  }));
 
   return (
     <section id="our-services" className="relative py-24 overflow-hidden">
@@ -82,19 +67,28 @@ export default function ServicesSection() {
             const Icon = service.icon;
             return (
               <div
-                key={service.title}
+                key={service.id}
                 className={`flex flex-col gap-4 group anim-fade-up ${gridRef.isVisible ? "is-visible" : ""} anim-delay-${index + 1}`}
               >
                 {/* 1. Image block on top */}
                 <div className="relative h-[200px] rounded-2xl overflow-hidden shadow-xl border border-white/10 cursor-pointer hover:scale-[1.02] transition-transform duration-300">
-                  <Image
-                    src={service.image}
-                    alt={service.title}
-                    fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 300px"
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    loading="lazy"
-                  />
+                  {service.image.startsWith("http") ? (
+                    <img
+                      src={service.image}
+                      alt={service.title}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <Image
+                      src={service.image}
+                      alt={service.title}
+                      fill
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 300px"
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      loading="lazy"
+                    />
+                  )}
                   {/* Subtle dark filter on top of image */}
                   <div className="absolute inset-0 bg-slate-950/20 group-hover:bg-transparent transition-colors duration-300" />
                 </div>
@@ -110,9 +104,11 @@ export default function ServicesSection() {
                         {service.title}
                       </h3>
                     </div>
-                    <p className="text-gray-400 text-xs md:text-sm leading-relaxed line-clamp-3">
-                      {service.desc}
-                    </p>
+                    {service.desc && (
+                      <p className="text-gray-400 text-xs md:text-sm leading-relaxed line-clamp-3">
+                        {service.desc}
+                      </p>
+                    )}
                   </div>
 
                   <div className="pt-2">

@@ -18,7 +18,7 @@ interface SubMenu {
   menuUrl: string;
 }
 
-interface MenuItem {
+export interface MenuItem {
   menuName: string;
   menuNameEng?: string;
   menuUrl: string;
@@ -34,14 +34,14 @@ interface NavigationItem {
   }[];
 }
 
-function Header({ initialMenus }: { initialMenus?: NavigationItem[] }) {
+function Header({ initialMenuData }: { initialMenuData?: MenuItem[] }) {
   const router = useRouter();
   const { locale } = router;
   const { t } = useTranslation("common");
 
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [menuItems, setMenuItems] = useState<MenuItem[]>(initialMenuData ?? []);
   // State cho submenu toggle trên mobile — lưu tên menu đang mở
   const [openSubmenu, setOpenSubmenu] = useState<string | null>(null);
 
@@ -92,7 +92,7 @@ function Header({ initialMenus }: { initialMenus?: NavigationItem[] }) {
   const languages = languagesUtils.getLanguages();
 
   useEffect(() => {
-    if (initialMenus && initialMenus.length > 0) return;
+    if (initialMenuData && initialMenuData.length > 0) return;
 
     // Kiểm tra cache từ sessionStorage trước — tránh gọi API mỗi lần navigate
     const MENU_CACHE_KEY = 'tso_menu_cache';
@@ -140,12 +140,11 @@ function Header({ initialMenus }: { initialMenus?: NavigationItem[] }) {
       clearTimeout(timeout);
       controller.abort();
     };
-  }, [initialMenus]);
+  }, [initialMenuData]);
 
   // Sinh navigation đã được dịch tự động
   // Memoize navigation — tránh tạo mới array mỗi render (scroll, hover, ...)
   const navigation: NavigationItem[] = useMemo(() => {
-    if (initialMenus && initialMenus.length > 0) return initialMenus;
     if (menuItems.length > 0) {
       return menuItems
         .filter((item) => item.menuUrl !== "/menu/installation")
@@ -163,7 +162,7 @@ function Header({ initialMenus }: { initialMenus?: NavigationItem[] }) {
         }));
     }
     return initialNavigation;
-  }, [initialMenus, menuItems, locale, initialNavigation]);
+  }, [menuItems, locale, initialNavigation]);
 
   const handleQuoteClick = (e: React.MouseEvent) => {
     if (window.location.pathname.endsWith("/menu/contact")) {

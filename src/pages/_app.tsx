@@ -55,7 +55,7 @@ function App({ Component, pageProps }: AppProps) {
       {/* Loading bar — hiển thị khi đang navigate giữa các trang */}
       {loadingState === 'loading' && <div className="loading-bar" />}
       {loadingState === 'completing' && <div className="loading-bar loading-bar-complete" />}
-      <Layout>
+      <Layout initialMenuData={pageProps.menus}>
         <Component {...pageProps} />
       </Layout>
     </>
