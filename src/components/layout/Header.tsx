@@ -74,16 +74,7 @@ function Header({ initialMenuData }: { initialMenuData?: MenuItem[] }) {
   // Giữ lại menu mặc định làm fallback khi API lỗi hoặc đang load
   const initialNavigation: NavigationItem[] = [
     { name: t("header.home"), href: "/" },
-    {
-      name: t("header.services"),
-      href: "/menu/services",
-      submenu: [
-        { name: t("services.item1.title"), href: "/menu/services?category=lap-dat" },
-        { name: t("services.item2.title"), href: "/menu/services?category=om" },
-        { name: t("services.item3.title"), href: "/menu/services?category=ve-sinh" },
-        { name: t("services.item4.title"), href: "/menu/services?category=scada" },
-      ]
-    },
+    { name: t("header.services"), href: "/menu/services" },
     { name: t("header.projects"), href: "/menu/projects" },
     { name: t("header.pricing"), href: "/menu/quick-pricing" },
     { name: t("header.contact"), href: "/menu/contact" },

@@ -12,6 +12,12 @@ export const API_PROJECTS = `${API_BASE}/projects`;
 // API tổng hợp dữ liệu trang chủ (menu + project + service...)
 export const API_HOME = `${API_BASE}/home`;
 
+// API công khai: danh sách dịch vụ đang hoạt động
+export const API_SERVICES = `${API_BASE}/services`;
+
+// API danh mục chung
+export const API_ITEM_GROUPS = `${API_BASE}/v1/items/groups`;
+
 // Chatbot AI
 export const API_CHATBOT_ASK = `${API_BASE}/chatbot/ask`;
 export const API_CHATBOT_ASK_STREAM = `${API_BASE}/chatbot/ask/stream`;

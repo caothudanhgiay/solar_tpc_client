@@ -8,70 +8,41 @@ import { useSearchParams } from "next/navigation";
 import { useTranslation } from "next-i18next/pages";
 import { serverSideTranslations } from "next-i18next/pages/serverSideTranslations";
 import { GetServerSideProps } from "next";
+import { apiClient } from "@/lib/utils/apiClient";
+import { API_SERVICES, API_ITEM_GROUPS, API_URL } from "@/lib/utils/constants";
 
-export default function ServicesPage() {
+// Backend không có field icon riêng cho từng nhóm dịch vụ — lặp vòng qua bộ icon cố định này
+const CATEGORY_ICONS = [Zap, Settings, ShieldCheck, Wrench];
+const FALLBACK_IMAGES = ["/images/demo2.webp", "/images/demo3.webp", "/images/demo1.webp", "/images/demo4.webp"];
+
+interface ServiceItem {
+  id: string;
+  group: string;
+  title: string;
+  image: string;
+  desc: string;
+}
+
+export default function ServicesPage({ services: rawServices = [], groups = [] }: { services?: any[], groups?: any[] }) {
   const { t } = useTranslation("common");
   const searchParams = useSearchParams();
   const [activeCategory, setActiveCategory] = useState<string>("all");
 
-  const categories = [
-    { id: "lap-dat", name: t("services.item1.title"), icon: Zap },
-    { id: "om", name: t("services.item2.title"), icon: Settings },
-    { id: "ve-sinh", name: t("services.item3.title"), icon: ShieldCheck },
-    { id: "scada", name: t("services.item4.title"), icon: Wrench },
-  ];
+  const services: ServiceItem[] = rawServices.map((item: any, idx: number) => ({
+    id: String(item.serviceId ?? idx),
+    group: item.serviceGroup || "",
+    title: item.serviceName || "",
+    desc: item.serviceDescription || "",
+    image: item.serviceImage
+      ? (item.serviceImage.startsWith("/upload") ? `${API_URL}${item.serviceImage}` : item.serviceImage)
+      : FALLBACK_IMAGES[idx % FALLBACK_IMAGES.length],
+  }));
 
-  const services = [
-    {
-      id: "lap-dat",
-      title: t("services.item1.title"),
-      image: "/images/demo2.webp",
-      desc: t("services.item1.desc"),
-      price: t("services_page.contactPrice"),
-    },
-    {
-      id: "om",
-      title: t("services.item2.title"),
-      image: "/images/demo3.webp",
-      desc: t("services.item2.desc"),
-      price: t("services_page.contactPrice"),
-    },
-    {
-      id: "ve-sinh",
-      title: t("services.item3.title"),
-      image: "/images/clean_solar_panels/csp_1.webp",
-      desc: t("services.item3.desc"),
-      price: t("services_page.contactPrice"),
-    },
-    {
-      id: "ve-sinh",
-      title: t("services.item3.title"),
-      image: "/images/clean_solar_panels/csp_2.webp",
-      desc: t("services.item3.desc"),
-      price: t("services_page.contactPrice"),
-    },
-    {
-      id: "ve-sinh",
-      title: t("services.item3.title"),
-      image: "/images/clean_solar_panels/csp_3.webp",
-      desc: t("services.item3.desc"),
-      price: t("services_page.contactPrice"),
-    },
-    {
-      id: "ve-sinh",
-      title: t("services.item3.title"),
-      image: "/images/clean_solar_panels/csp_4.webp",
-      desc: t("services.item3.desc"),
-      price: t("services_page.contactPrice"),
-    },
-    {
-      id: "scada",
-      title: t("services.item4.title"),
-      image: "/images/demo4.webp",
-      desc: t("services.item4.desc"),
-      price: t("services_page.contactPrice"),
-    }
-  ];
+  // Danh mục lấy từ backend bảng tso_item_mst
+  const categories = groups.map((g: any) => ({
+    code: g.groupItemCode,
+    name: g.groupItemName,
+  }));
 
   useEffect(() => {
     const category = searchParams?.get("category");
@@ -81,8 +52,8 @@ export default function ServicesPage() {
   }, [searchParams]);
 
   const filteredServices = activeCategory === "all"
-    ? services.filter((s, idx, arr) => arr.findIndex(x => x.id === s.id) === idx)
-    : services.filter(s => s.id === activeCategory);
+    ? services
+    : services.filter((s) => s.group === activeCategory);
 
 
   return (
@@ -144,13 +115,13 @@ export default function ServicesPage() {
                     )} />
                   </button>
 
-                  {categories.map((cat) => (
+                  {categories.map((cat, idx) => (
                     <button
-                      key={cat.id}
-                      onClick={() => setActiveCategory(cat.id)}
+                      key={cat.code}
+                      onClick={() => setActiveCategory(cat.code)}
                       className={cn(
                         "w-full flex items-center justify-between px-4 py-3 rounded-xl text-left text-sm font-medium transition-all duration-200 group mb-1",
-                        activeCategory === cat.id
+                        activeCategory === cat.code
                           ? "bg-white/10 text-orange-400"
                           : "text-gray-300 hover:bg-white/5 hover:text-white"
                       )}
@@ -158,7 +129,7 @@ export default function ServicesPage() {
                       <span className="flex-1 pr-4 line-clamp-2">{cat.name}</span>
                       <ChevronRight className={cn(
                         "w-4 h-4 shrink-0 transition-transform",
-                        activeCategory === cat.id ? "translate-x-1 text-orange-400" : "text-gray-500 group-hover:translate-x-1"
+                        activeCategory === cat.code ? "translate-x-1 text-orange-400" : "text-gray-500 group-hover:translate-x-1"
                       )} />
                     </button>
                   ))}
@@ -168,60 +139,67 @@ export default function ServicesPage() {
 
             {/* Main Content (Grid) — CSS transition thay Framer Motion layout */}
             <div className="lg:w-3/4">
-              <div className={activeCategory === "ve-sinh"
+              <div className={filteredServices.length >= 4
                 ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
-                : filteredServices.length >= 4
-                  ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
-                  : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                : "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
               }>
-                {filteredServices.map((service, idx) => (
-                  <div
-                    key={`${service.id}-${idx}`}
-                    className="bg-slate-900 border border-white/10 rounded-2xl overflow-hidden group hover:border-orange-500/50 hover:shadow-[0_8px_30px_rgba(249,115,22,0.15)] transition-all duration-300 flex flex-col page-animate"
-                    style={{ animationDelay: `${idx * 0.1}s` }}
-                  >
-                    {/* Image */}
-                    <div className="relative h-48 w-full overflow-hidden">
-                      <Image
-                        src={service.image}
-                        alt={service.title}
-                        fill
-                        className="object-cover transition-transform duration-700 group-hover:scale-110"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        loading="lazy"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent opacity-80" />
-                    </div>
-
-                    {/* Content */}
-                    <div className="p-5 flex flex-col flex-grow relative">
-                      <div className="absolute -top-6 right-5 bg-orange-500 p-2.5 rounded-xl shadow-lg shadow-orange-500/30 group-hover:-translate-y-1 transition-transform">
-                        {(() => {
-                          const Icon = categories.find(c => c.id === service.id)?.icon || Settings;
-                          return <Icon className="w-5 h-5 text-white" />;
-                        })()}
+                {filteredServices.map((service, idx) => {
+                  const Icon = CATEGORY_ICONS[idx % CATEGORY_ICONS.length];
+                  return (
+                    <div
+                      key={service.id}
+                      className="bg-slate-900 border border-white/10 rounded-2xl overflow-hidden group hover:border-orange-500/50 hover:shadow-[0_8px_30px_rgba(249,115,22,0.15)] transition-all duration-300 flex flex-col page-animate"
+                      style={{ animationDelay: `${idx * 0.1}s` }}
+                    >
+                      {/* Image */}
+                      <div className="relative h-48 w-full overflow-hidden">
+                        {service.image.startsWith("http") ? (
+                          <img
+                            src={service.image}
+                            alt={service.title}
+                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                            loading="lazy"
+                          />
+                        ) : (
+                          <Image
+                            src={service.image}
+                            alt={service.title}
+                            fill
+                            className="object-cover transition-transform duration-700 group-hover:scale-110"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                            loading="lazy"
+                          />
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent opacity-80" />
                       </div>
 
-                      <h3 className="text-lg font-bold text-white mb-3 mt-2 line-clamp-2 group-hover:text-orange-400 transition-colors uppercase leading-snug">
-                        {service.title}
-                      </h3>
+                      {/* Content */}
+                      <div className="p-5 flex flex-col flex-grow relative">
+                        <div className="absolute -top-6 right-5 bg-orange-500 p-2.5 rounded-xl shadow-lg shadow-orange-500/30 group-hover:-translate-y-1 transition-transform">
+                          <Icon className="w-5 h-5 text-white" />
+                        </div>
 
-                      <p className="text-sm text-gray-400 mb-6 line-clamp-3 flex-grow">
-                        {service.desc}
-                      </p>
+                        <h3 className="text-lg font-bold text-white mb-3 mt-2 line-clamp-2 group-hover:text-orange-400 transition-colors uppercase leading-snug">
+                          {service.title}
+                        </h3>
 
-                      <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/10">
-                        <span className="text-orange-400 font-bold text-lg">{service.price}</span>
-                        <Link prefetch={false}
-                          href={`/menu/contact`}
-                          className="text-xs font-bold uppercase tracking-wider text-white bg-white/10 hover:bg-orange-500 px-4 py-2 rounded-lg transition-colors"
-                        >
-                          {t("services_page.btnDetails")}
-                        </Link>
+                        <p className="text-sm text-gray-400 mb-6 line-clamp-3 flex-grow">
+                          {service.desc}
+                        </p>
+
+                        <div className="flex items-center justify-between mt-auto pt-4 border-t border-white/10">
+                          <span className="text-orange-400 font-bold text-lg">{t("services_page.contactPrice")}</span>
+                          <Link prefetch={false}
+                            href={`/menu/contact`}
+                            className="text-xs font-bold uppercase tracking-wider text-white bg-white/10 hover:bg-orange-500 px-4 py-2 rounded-lg transition-colors"
+                          >
+                            {t("services_page.btnDetails")}
+                          </Link>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
 
               {filteredServices.length === 0 && (
@@ -239,8 +217,41 @@ export default function ServicesPage() {
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
+  let services: any[] = [];
+  let groups: any[] = [];
+
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
+    
+    const [servicesRes, groupsRes]: [any, any] = await Promise.all([
+      apiClient.get(API_SERVICES, { signal: controller.signal }).catch(e => {
+        console.warn("Failed to fetch services:", e);
+        return { data: [] };
+      }),
+      apiClient.get(`${API_ITEM_GROUPS}?itemCode=10001`, { signal: controller.signal }).catch(e => {
+        console.warn("Failed to fetch groups:", e);
+        return { data: { data: [] } }; // the response is nested { statusCode: 200, data: [...] }
+      })
+    ]);
+    
+    clearTimeout(timeout);
+    services = servicesRes?.data ?? [];
+    
+    // TsoApiResponse structure wraps the array in data.data
+    if (groupsRes?.data?.data) {
+      groups = groupsRes.data.data;
+    } else if (Array.isArray(groupsRes?.data)) {
+      groups = groupsRes.data;
+    }
+  } catch (error) {
+    console.warn("Failed to fetch data:", error);
+  }
+
   return {
     props: {
+      services,
+      groups,
       ...(await serverSideTranslations(locale || "vi", ["common"])),
     },
   };
