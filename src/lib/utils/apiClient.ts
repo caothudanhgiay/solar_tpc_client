@@ -1,8 +1,10 @@
-import { API_URL } from "@/lib/utils/constants";
+import { API_URL, INTERNAL_API_URL } from "@/lib/utils/constants";
 import { ApiException, handleApiResponse } from "../exception/exception";
 import { AppError } from "../exception/error";
 
-const DEFAULT_BASE_URL = API_URL;
+// Server-side (SSR/SSG/ISR, không có `window`) gọi qua network nội bộ Docker (INTERNAL_API_URL);
+// client-side (browser) luôn gọi qua domain công khai (API_URL).
+const DEFAULT_BASE_URL = typeof window === "undefined" ? INTERNAL_API_URL : API_URL;
 
 class ApiClient {
   private baseUrl: string;

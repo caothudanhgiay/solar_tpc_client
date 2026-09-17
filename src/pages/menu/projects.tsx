@@ -5,7 +5,7 @@ import { useTranslation } from "next-i18next/pages";
 import { serverSideTranslations } from "next-i18next/pages/serverSideTranslations";
 import { GetStaticProps } from "next";
 import { apiClient } from "@/lib/utils/apiClient";
-import { API_PROJECTS } from "@/lib/utils/constants";
+import { API_PROJECTS, API_SSR_TIMEOUT_MS } from "@/lib/utils/constants";
 import { resolveImageUrl, isOptimizableImage } from "@/lib/utils/TsoImageUtils";
 
 interface ProjectItem {
@@ -111,12 +111,16 @@ interface ApiResponse {
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   let mapped: ProjectItem[] = [];
   try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), API_SSR_TIMEOUT_MS);
     const res = await apiClient.get<ApiResponse>(API_PROJECTS, {
       headers: {
         'Accept-Language': locale || 'vi'
-      }
+      },
+      signal: controller.signal,
     });
-    
+    clearTimeout(timeout);
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const responseData = (res as any).data || res;
     const data = Array.isArray(responseData) ? responseData : [];

@@ -6,7 +6,7 @@ import { serverSideTranslations } from "next-i18next/pages/serverSideTranslation
 import { GetStaticProps } from "next";
 import { useTranslation } from "next-i18next/pages";
 import { apiClient } from "@/lib/utils/apiClient";
-import { API_HOME } from "@/lib/utils/constants";
+import { API_HOME, API_SSR_TIMEOUT_MS } from "@/lib/utils/constants";
 
 // Lazy load các sections below-the-fold — chỉ HeroSection cần tải ngay
 const AboutSection = dynamic(() => import("@/components/sections/AboutSection"));
@@ -44,7 +44,7 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
 
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 5000);
+    const timeout = setTimeout(() => controller.abort(), API_SSR_TIMEOUT_MS);
     const res: any = await apiClient.get(API_HOME, { signal: controller.signal });
     clearTimeout(timeout);
     menus = res?.data?.menus ?? [];

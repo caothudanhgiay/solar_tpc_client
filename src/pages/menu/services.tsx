@@ -9,7 +9,7 @@ import { useTranslation } from "next-i18next/pages";
 import { serverSideTranslations } from "next-i18next/pages/serverSideTranslations";
 import { GetStaticProps } from "next";
 import { apiClient } from "@/lib/utils/apiClient";
-import { API_SERVICES, API_ITEM_GROUPS, API_URL } from "@/lib/utils/constants";
+import { API_SERVICES, API_ITEM_GROUPS, API_URL, API_SSR_TIMEOUT_MS } from "@/lib/utils/constants";
 
 // Backend không có field icon riêng cho từng nhóm dịch vụ — lặp vòng qua bộ icon cố định này
 const CATEGORY_ICONS = [Zap, Settings, ShieldCheck, Wrench];
@@ -222,7 +222,7 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
 
   try {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 5000);
+    const timeout = setTimeout(() => controller.abort(), API_SSR_TIMEOUT_MS);
     
     const [servicesRes, groupsRes]: [any, any] = await Promise.all([
       apiClient.get(API_SERVICES, { signal: controller.signal }).catch(e => {
