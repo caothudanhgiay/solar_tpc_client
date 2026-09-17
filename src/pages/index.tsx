@@ -3,7 +3,7 @@ import dynamic from "next/dynamic";
 import HeroSection from "@/components/sections/HeroSection";
 import { serverSideTranslations } from "next-i18next/pages/serverSideTranslations";
 
-import { GetServerSideProps } from "next";
+import { GetStaticProps } from "next";
 import { useTranslation } from "next-i18next/pages";
 import { apiClient } from "@/lib/utils/apiClient";
 import { API_HOME } from "@/lib/utils/constants";
@@ -37,7 +37,7 @@ export default function Home({ projects, services }: HomeProps) {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
   let menus: any[] = [];
   let projects: any[] = [];
   let services: any[] = [];
@@ -61,5 +61,7 @@ export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
       services,
       ...(await serverSideTranslations(locale || "vi", ["common"])),
     },
+    // ISR: cache HTML tĩnh ở Cloudflare, chỉ render lại ngầm sau mỗi 60s thay vì mỗi request
+    revalidate: 60,
   };
 };

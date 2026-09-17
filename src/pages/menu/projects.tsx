@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useTranslation } from "next-i18next/pages";
 import { serverSideTranslations } from "next-i18next/pages/serverSideTranslations";
-import { GetServerSideProps } from "next";
+import { GetStaticProps } from "next";
 import { apiClient } from "@/lib/utils/apiClient";
 import { API_PROJECTS } from "@/lib/utils/constants";
 import { resolveImageUrl, isOptimizableImage } from "@/lib/utils/TsoImageUtils";
@@ -108,7 +108,7 @@ interface ApiResponse {
   data: ApiProject[];
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
   let mapped: ProjectItem[] = [];
   try {
     const res = await apiClient.get<ApiResponse>(API_PROJECTS, {
@@ -135,5 +135,6 @@ export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
       ...(await serverSideTranslations(locale || "vi", ["common"])),
       projects: mapped,
     },
+    revalidate: 60,
   };
 };

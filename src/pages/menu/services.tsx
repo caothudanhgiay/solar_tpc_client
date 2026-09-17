@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useTranslation } from "next-i18next/pages";
 import { serverSideTranslations } from "next-i18next/pages/serverSideTranslations";
-import { GetServerSideProps } from "next";
+import { GetStaticProps } from "next";
 import { apiClient } from "@/lib/utils/apiClient";
 import { API_SERVICES, API_ITEM_GROUPS, API_URL } from "@/lib/utils/constants";
 
@@ -216,7 +216,7 @@ export default function ServicesPage({ services: rawServices = [], groups = [] }
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
   let services: any[] = [];
   let groups: any[] = [];
 
@@ -254,5 +254,6 @@ export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
       groups,
       ...(await serverSideTranslations(locale || "vi", ["common"])),
     },
+    revalidate: 60,
   };
 };

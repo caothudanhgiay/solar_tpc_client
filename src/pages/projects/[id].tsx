@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { useTranslation } from "next-i18next/pages";
 import { serverSideTranslations } from "next-i18next/pages/serverSideTranslations";
-import { GetServerSideProps } from "next";
+import { GetStaticPaths, GetStaticProps } from "next";
 import { Zap, MapPin, Calendar, CheckCircle2, ChevronLeft, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
@@ -271,7 +271,13 @@ export default function ProjectDetailsPage() {
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
+// Dữ liệu dự án thực tế được fetch client-side (useEffect) theo router.query.id,
+// nên trang shell này không phụ thuộc data server-side — an toàn để static hóa hoàn toàn.
+export const getStaticPaths: GetStaticPaths = async () => {
+  return { paths: [], fallback: "blocking" };
+};
+
+export const getStaticProps: GetStaticProps = async ({ locale }) => {
   return {
     props: {
       ...(await serverSideTranslations(locale || "vi", ["common"])),
