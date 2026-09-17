@@ -10,6 +10,7 @@ import Link from "next/link";
 
 import { apiClient } from "@/lib/utils/apiClient";
 import { API_PROJECTS, API_URL } from "@/lib/utils/constants";
+import { isOptimizableImage } from "@/lib/utils/TsoImageUtils";
 
 interface ProjectDetail {
   projectDetailId: number;
@@ -203,18 +204,19 @@ export default function ProjectDetailsPage() {
             {/* CỘT PHẢI - ẢNH CHÍNH BẢN TO */}
             <div className="w-full lg:w-2/3 flex">
               <div className="relative w-full flex-1 min-h-[300px] lg:min-h-0 rounded-3xl overflow-hidden shadow-2xl border border-white/10 group">
-                {project.featuredImage && (project.featuredImage.startsWith("http") || project.featuredImage.startsWith("/upload")) ? (
-                  <img
-                    src={featuredImg}
-                    alt={project.projectName}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                  />
-                ) : (
+                {isOptimizableImage(featuredImg) ? (
                   <Image
                     src={featuredImg}
                     alt={project.projectName}
                     fill
+                    sizes="(max-width: 1024px) 100vw, 66vw"
                     className="object-cover group-hover:scale-105 transition-transform duration-700"
+                  />
+                ) : (
+                  <img
+                    src={featuredImg}
+                    alt={project.projectName}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                 )}
               </div>
@@ -230,22 +232,26 @@ export default function ProjectDetailsPage() {
               {project.details.map((detail) => (
                 <div key={detail.projectDetailId} className="group cursor-pointer">
                   <div className="relative h-48 md:h-56 w-full rounded-3xl overflow-hidden mb-4 shadow-xl border border-white/10 bg-white/5">
-                    {detail.imageUrl && (detail.imageUrl.startsWith("http") || detail.imageUrl.startsWith("/upload")) ? (
-                      <img
-                        src={getImageSrc(detail.imageUrl, "")}
-                        alt={t('project_detail.imageAlt')}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <Image
-                        src={getImageSrc(detail.imageUrl, "/images/demo2.webp")}
-                        alt={t('project_detail.imageAlt')}
-                        fill
-                        className="object-cover transition-transform duration-700 group-hover:scale-110"
-                        loading="lazy"
-                      />
-                    )}
+                    {(() => {
+                      const detailImg = getImageSrc(detail.imageUrl, "/images/demo2.webp");
+                      return isOptimizableImage(detailImg) ? (
+                        <Image
+                          src={detailImg}
+                          alt={t('project_detail.imageAlt')}
+                          fill
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                          className="object-cover transition-transform duration-700 group-hover:scale-110"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <img
+                          src={detailImg}
+                          alt={t('project_detail.imageAlt')}
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                          loading="lazy"
+                        />
+                      );
+                    })()}
                     <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent opacity-80" />
 
                     {detail.constructionDate && (

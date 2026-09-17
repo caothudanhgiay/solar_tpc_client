@@ -5,7 +5,8 @@ import { useTranslation } from "next-i18next/pages";
 import { serverSideTranslations } from "next-i18next/pages/serverSideTranslations";
 import { GetServerSideProps } from "next";
 import { apiClient } from "@/lib/utils/apiClient";
-import { API_PROJECTS, API_URL } from "@/lib/utils/constants";
+import { API_PROJECTS } from "@/lib/utils/constants";
+import { resolveImageUrl, isOptimizableImage } from "@/lib/utils/TsoImageUtils";
 
 interface ProjectItem {
   id: string;
@@ -55,23 +56,26 @@ export default function ProjectsPage({ projects }: ProjectsPageProps) {
             {projects.map((project) => (
               <Link prefetch={false} key={project.id} href={`/projects/${project.id}`} className="group cursor-pointer block bg-slate-800/80 backdrop-blur-md rounded-xl shadow-md overflow-hidden hover:shadow-orange-500/20 transition-all duration-300 hover:-translate-y-1 border border-white/10">
                 <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-200">
-                  {project.image.startsWith('http') || project.image.startsWith('/upload') ? (
-                    <img
-                      src={project.image.startsWith('/upload') ? `${API_URL}${project.image}` : project.image}
-                      alt={project.name}
-                      className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <Image
-                      src={project.image}
-                      alt={project.name}
-                      fill
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
-                      loading="lazy"
-                    />
-                  )}
+                  {(() => {
+                    const resolvedSrc = resolveImageUrl(project.image);
+                    return isOptimizableImage(resolvedSrc) ? (
+                      <Image
+                        src={resolvedSrc}
+                        alt={project.name}
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <img
+                        src={resolvedSrc}
+                        alt={project.name}
+                        className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
+                        loading="lazy"
+                      />
+                    );
+                  })()}
                 </div>
                 <div className="p-4">
                   <h3 className="text-lg font-bold text-white line-clamp-2 group-hover:text-orange-500 transition-colors">

@@ -22,12 +22,26 @@ const nextConfig: NextConfig = {
     // Tối ưu kích thước device
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    // Chất lượng ảnh cho phép
-    qualities: [60, 75],
+    // Chất lượng ảnh cho phép — 50 dùng cho ảnh nền trang trí (opacity thấp)
+    qualities: [50, 60, 75],
+    // Next.js 16 mặc định chặn tối ưu ảnh từ IP nội bộ (chống SSRF).
+    // Backend dev chạy trên localhost nên chỉ mở cờ này khi NODE_ENV !== production.
+    dangerouslyAllowLocalIP: process.env.NODE_ENV !== 'production',
     remotePatterns: [
       {
         protocol: 'https',
         hostname: 'images.unsplash.com',
+      },
+      {
+        // Backend production (ảnh dự án/dịch vụ do admin upload)
+        protocol: 'https',
+        hostname: 'tpcsolar.vn',
+      },
+      {
+        // Backend local khi chạy dev
+        protocol: 'http',
+        hostname: 'localhost',
+        port: '8080',
       },
     ],
   },

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Zap, Wrench, Sparkles, Activity, ShieldCheck, ArrowRight } from "lucide-react";
 import { useTranslation } from "next-i18next/pages";
 import { useScrollAnimation, useScrollAnimationGroup } from "@/lib/utils/useScrollAnimation";
-import { API_URL } from "@/lib/utils/constants";
+import { resolveImageUrl, isOptimizableImage } from "@/lib/utils/TsoImageUtils";
 
 // Backend không có field icon riêng cho từng dịch vụ — lặp vòng qua bộ icon cố định này
 const SERVICE_ICONS = [Zap, Wrench, Sparkles, Activity];
@@ -23,7 +23,7 @@ export default function ServicesSection({ services: rawServices = [] }: { servic
     title: item.serviceName || "",
     desc: item.serviceDescription || "",
     image: item.serviceImage
-      ? (item.serviceImage.startsWith("/upload") ? `${API_URL}${item.serviceImage}` : item.serviceImage)
+      ? resolveImageUrl(item.serviceImage)
       : FALLBACK_IMAGES[idx % FALLBACK_IMAGES.length],
     href: "/menu/services",
   }));
@@ -72,20 +72,20 @@ export default function ServicesSection({ services: rawServices = [] }: { servic
               >
                 {/* 1. Image block on top */}
                 <div className="relative h-[200px] rounded-2xl overflow-hidden shadow-xl border border-white/10 cursor-pointer hover:scale-[1.02] transition-transform duration-300">
-                  {service.image.startsWith("http") ? (
-                    <img
-                      src={service.image}
-                      alt={service.title}
-                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                      loading="lazy"
-                    />
-                  ) : (
+                  {isOptimizableImage(service.image) ? (
                     <Image
                       src={service.image}
                       alt={service.title}
                       fill
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 300px"
                       className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <img
+                      src={service.image}
+                      alt={service.title}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                       loading="lazy"
                     />
                   )}

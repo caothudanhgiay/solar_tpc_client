@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Zap, MapPin, ArrowRight } from "lucide-react";
 import { useTranslation } from "next-i18next/pages";
 import { useScrollAnimation } from "@/lib/utils/useScrollAnimation";
-import { API_URL } from "@/lib/utils/constants";
+import { resolveImageUrl, isOptimizableImage } from "@/lib/utils/TsoImageUtils";
 
 interface ProjectItem {
   id: string;
@@ -158,23 +158,26 @@ function ProjectCard({ project, idx, t }: { project: ProjectItem; idx: number; t
           } anim-delay-2`}
       >
         <Link prefetch={false} href={`/projects/${project.id}`} className="relative block h-full min-h-[300px] sm:min-h-[380px] rounded-3xl overflow-hidden shadow-2xl border border-white/10 group cursor-pointer w-full max-w-xl hover:scale-[1.02] transition-transform duration-400">
-          {project.image.startsWith('http') || project.image.startsWith('/upload') ? (
-            <img
-              src={project.image.startsWith('/upload') ? `${API_URL}${project.image}` : project.image}
-              alt={project.name}
-              className="object-cover transition-transform duration-1000 group-hover:scale-105 w-full h-full"
-              loading="lazy"
-            />
-          ) : (
-            <Image
-              src={project.image}
-              alt={project.name}
-              fill
-              sizes="(max-width: 768px) 100vw, 600px"
-              className="object-cover transition-transform duration-1000 group-hover:scale-105"
-              loading="lazy"
-            />
-          )}
+          {(() => {
+            const resolvedSrc = resolveImageUrl(project.image);
+            return isOptimizableImage(resolvedSrc) ? (
+              <Image
+                src={resolvedSrc}
+                alt={project.name}
+                fill
+                sizes="(max-width: 768px) 100vw, 600px"
+                className="object-cover transition-transform duration-1000 group-hover:scale-105"
+                loading="lazy"
+              />
+            ) : (
+              <img
+                src={resolvedSrc}
+                alt={project.name}
+                className="object-cover transition-transform duration-1000 group-hover:scale-105 w-full h-full"
+                loading="lazy"
+              />
+            );
+          })()}
           {/* Shadow overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-slate-950/20" />
           {/* Glowing hover light */}
