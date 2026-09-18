@@ -160,6 +160,7 @@ function ProjectCard({ project, idx, t }: { project: ProjectItem; idx: number; t
         <Link prefetch={false} href={`/projects/${project.id}`} className="relative block h-full min-h-[300px] sm:min-h-[380px] rounded-3xl overflow-hidden shadow-2xl border border-white/10 group cursor-pointer w-full max-w-xl hover:scale-[1.02] transition-transform duration-400">
           {(() => {
             const resolvedSrc = resolveImageUrl(project.image);
+            const isFirst = idx === 0;
             return isOptimizableImage(resolvedSrc) ? (
               <Image
                 src={resolvedSrc}
@@ -167,14 +168,15 @@ function ProjectCard({ project, idx, t }: { project: ProjectItem; idx: number; t
                 fill
                 sizes="(max-width: 768px) 100vw, 600px"
                 className="object-cover transition-transform duration-1000 group-hover:scale-105"
-                loading="lazy"
+                priority={isFirst}
+                loading={isFirst ? undefined : "lazy"}
               />
             ) : (
               <img
                 src={resolvedSrc}
                 alt={project.name}
                 className="object-cover transition-transform duration-1000 group-hover:scale-105 w-full h-full"
-                loading="lazy"
+                loading={isFirst ? "eager" : "lazy"}
               />
             );
           })()}
