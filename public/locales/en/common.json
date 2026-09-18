@@ -222,8 +222,6 @@
     "poweredBy": "Powered by Gemini AI"
   },
   "project_detail": {
-    "notFound": "Project not found",
-    "backToHome": "Back to Home",
     "backToHomeShort": "Back to home",
     "featuredProject": "Featured Project",
     "solarPower": "Solar Power",

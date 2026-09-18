@@ -1,16 +1,15 @@
 import Head from "next/head";
 import Image from "next/image";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 import { useTranslation } from "next-i18next/pages";
 import { serverSideTranslations } from "next-i18next/pages/serverSideTranslations";
-import { GetStaticPaths, GetStaticProps } from "next";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { Zap, MapPin, Calendar, CheckCircle2, ChevronLeft, ArrowRight } from "lucide-react";
 import Link from "next/link";
 
 import { apiClient } from "@/lib/utils/apiClient";
-import { API_PROJECTS, API_URL } from "@/lib/utils/constants";
-import { isOptimizableImage } from "@/lib/utils/TsoImageUtils";
+import { API_PROJECTS, API_SSR_TIMEOUT_MS } from "@/lib/utils/constants";
+import { isOptimizableImage, resolveImageUrl } from "@/lib/utils/TsoImageUtils";
+import { ApiException } from "@/lib/exception/exception";
 
 interface ProjectDetail {
   projectDetailId: number;
@@ -38,55 +37,12 @@ interface ProjectData {
   details: ProjectDetail[];
 }
 
-export default function ProjectDetailsPage() {
-  const router = useRouter();
-  const { id } = router.query;
+export default function ProjectDetailsPage({ project }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const { t } = useTranslation("common");
 
-  const [project, setProject] = useState<ProjectData | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    if (!id) return;
-    const fetchProject = async () => {
-      try {
-        setLoading(true);
-        const res: any = await apiClient.get(`${API_PROJECTS}/${id}`);
-        setProject(res.data);
-      } catch (error) {
-        console.error("Failed to fetch project:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProject();
-  }, [id]);
-
   const getImageSrc = (url: string | undefined, defaultImg: string) => {
-    if (!url) return defaultImg;
-    if (url.startsWith("http")) return url;
-    if (url.startsWith("/upload")) return `${API_URL}${url}`; // Mặc định ở backend là localhost:8080
-    return url;
+    return url ? resolveImageUrl(url) : defaultImg;
   };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-950">
-        <div className="w-16 h-16 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
-  }
-
-  if (!project) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-slate-950 text-white">
-        <h1 className="text-4xl font-bold mb-4">{t('project_detail.notFound')}</h1>
-        <Link prefetch={false} href="/" className="text-orange-400 hover:underline flex items-center gap-2">
-          <ChevronLeft className="w-5 h-5" /> {t('project_detail.backToHome')}
-        </Link>
-      </div>
-    );
-  }
 
   const featuredImg = getImageSrc(project.featuredImage, "/images/bg_page.avif");
 
@@ -209,6 +165,7 @@ export default function ProjectDetailsPage() {
                     src={featuredImg}
                     alt={project.projectName}
                     fill
+                    priority
                     sizes="(max-width: 1024px) 100vw, 66vw"
                     className="object-cover group-hover:scale-105 transition-transform duration-700"
                   />
@@ -271,16 +228,47 @@ export default function ProjectDetailsPage() {
   );
 }
 
-// Dữ liệu dự án thực tế được fetch client-side (useEffect) theo router.query.id,
-// nên trang shell này không phụ thuộc data server-side — an toàn để static hóa hoàn toàn.
-export const getStaticPaths: GetStaticPaths = async () => {
-  return { paths: [], fallback: "blocking" };
-};
+interface ApiResponse {
+  data: ProjectData;
+}
 
-export const getStaticProps: GetStaticProps = async ({ locale }) => {
-  return {
-    props: {
-      ...(await serverSideTranslations(locale || "vi", ["common"])),
-    },
-  };
+// Chi tiết 1 dự án cụ thể theo route param [id] — cần data mới nhất mỗi lần load,
+// không thể pre-render hết mọi id lúc build, nên dùng getServerSideProps (theo AGENTS.md).
+export const getServerSideProps: GetServerSideProps<{ project: ProjectData }> = async ({ params, locale }) => {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), API_SSR_TIMEOUT_MS);
+
+  try {
+    const [res, translations] = await Promise.all([
+      apiClient.get<ApiResponse>(`${API_PROJECTS}/${params?.id}`, { signal: controller.signal }),
+      serverSideTranslations(locale || "vi", ["common"]),
+    ]);
+    clearTimeout(timeout);
+
+    if (!res.data) {
+      return { notFound: true };
+    }
+
+    return {
+      props: {
+        project: res.data,
+        ...translations,
+      },
+    };
+  } catch (error) {
+    clearTimeout(timeout);
+    // 404 thật (project không tồn tại) -> not-found. Lỗi mạng/backend (timeout, 5xx, mất kết nối)
+    // KHÔNG được coi là not-found -> điều hướng sang trang lỗi server, giữ đúng phân loại như
+    // ApiException.handle() ở client (src/lib/exception/exception.ts).
+    if (error instanceof ApiException && error.statusCode === 404) {
+      return { notFound: true };
+    }
+    console.error("Failed to fetch project:", error);
+    return {
+      redirect: {
+        destination: "/error-pages?type=server-error",
+        permanent: false,
+      },
+    };
+  }
 };

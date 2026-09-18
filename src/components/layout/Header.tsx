@@ -382,6 +382,7 @@ function Header({ initialMenuData }: { initialMenuData?: MenuItem[] }) {
               <img
                 src="/images/vi_rec.webp"
                 alt="Tiếng Việt"
+                loading="lazy"
                 className="w-5 h-3.5 object-cover rounded shadow-sm"
               />
               TIẾNG VIỆT
@@ -398,6 +399,7 @@ function Header({ initialMenuData }: { initialMenuData?: MenuItem[] }) {
               <img
                 src="/images/en_rec.webp"
                 alt="English"
+                loading="lazy"
                 className="w-5 h-3.5 object-cover rounded shadow-sm"
               />
               ENGLISH

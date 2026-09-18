@@ -92,6 +92,50 @@ export const getStaticProps: GetStaticProps = async ({ locale }) => {
 - Default locale: `"vi"`
 - **`getStaticProps` (SSG) vs `getServerSideProps` (SSR)**: mặc định dùng `getStaticProps` cho các trang nội dung tĩnh/ít đổi (trang chủ, dịch vụ, giới thiệu...). Chỉ dùng `getServerSideProps` khi trang **phụ thuộc route param động cần data mới nhất mỗi lần load** (vd `pages/projects/[id].tsx` — chi tiết 1 dự án cụ thể theo `id`, không thể pre-render hết mọi id lúc build). Trang dùng `getServerSideProps` vẫn phải giữ `serverSideTranslations` như bình thường.
 
+### 3.1.1. Gọi API server-side (trong `getStaticProps`/`getServerSideProps`)
+
+> Rút ra từ lỗi thực tế khi chuyển `pages/projects/[id].tsx` từ client-fetch sang SSR — đọc kỹ trước khi thêm/sửa bất kỳ cuộc gọi `apiClient` nào bên trong các hàm này.
+
+```tsx
+interface ApiResponse {
+  data: ProjectData;
+}
+
+export const getServerSideProps: GetServerSideProps<{ project: ProjectData }> = async ({ params, locale }) => {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), API_SSR_TIMEOUT_MS);
+
+  try {
+    const [res, translations] = await Promise.all([
+      apiClient.get<ApiResponse>(`${API_PROJECTS}/${params?.id}`, { signal: controller.signal }),
+      serverSideTranslations(locale || "vi", ["common"]),
+    ]);
+    clearTimeout(timeout);
+
+    if (!res.data) return { notFound: true };
+
+    return { props: { project: res.data, ...translations } };
+  } catch (error) {
+    clearTimeout(timeout);
+    // 404 thật (tài nguyên không tồn tại) -> notFound. Lỗi khác (network/timeout/5xx)
+    // KHÔNG được coi là notFound -> điều hướng sang trang lỗi server.
+    if (error instanceof ApiException && error.statusCode === 404) {
+      return { notFound: true };
+    }
+    console.error("Failed to fetch:", error);
+    return { redirect: { destination: "/error-pages?type=server-error", permanent: false } };
+  }
+};
+```
+
+**Quy tắc BẮT BUỘC:**
+1. **Timeout**: mọi cuộc gọi `apiClient.get/post/...` bên trong `getStaticProps`/`getServerSideProps` PHẢI dùng `AbortController` + `API_SSR_TIMEOUT_MS` (từ `@/lib/utils/constants`). Không có timeout → backend treo (DB lock, query chậm) sẽ làm request SSR/SSG treo vô thời hạn, không fallback được.
+2. **Type response**: luôn type cụ thể qua generic — `apiClient.get<ApiResponse>(...)` với `interface ApiResponse { data: Xxx }` tự định nghĩa trong file. KHÔNG dùng `const res: any = ...` — che mất lỗi type khi backend đổi shape response.
+3. **Song song hoá**: nếu có nhiều lời gọi độc lập (fetch data + `serverSideTranslations`), chạy bằng `Promise.all`, KHÔNG `await` tuần tự — tránh cộng dồn latency không cần thiết vào mỗi request.
+4. **Phân loại lỗi trong `getServerSideProps`** (áp dụng cho trang chi tiết theo route param động, KHÔNG áp dụng cho `getStaticProps` — trang đó vẫn fallback về mảng/object rỗng như `pages/index.tsx`, `pages/menu/projects.tsx` để giữ trang trả 200):
+   - 404 thật (`error instanceof ApiException && error.statusCode === 404`) → `return { notFound: true }`.
+   - Mọi lỗi khác (network, timeout do AbortController, 5xx) → `return { redirect: { destination: "/error-pages?type=server-error", permanent: false } }`. **TUYỆT ĐỐI KHÔNG** gộp chung với `notFound: true` — làm vậy khiến 1 lần backend down tạm thời bị hiểu (và bị Google index) như tài nguyên đã bị xoá vĩnh viễn.
+
 ### 3.2. Section Component
 ```tsx
 import { useTranslation } from "next-i18next/pages";
@@ -204,6 +248,9 @@ const resolvedSrc = resolveImageUrl(project.image); // ghép API_URL nếu là p
 3. **`quality={n}`** dùng giá trị nào thì giá trị đó PHẢI có mặt trong `images.qualities` ở `next.config.ts` (hiện tại: `[50, 60, 75]`) — nếu thêm quality mới (vd `quality={90}`) phải thêm `90` vào mảng này, nếu không request ảnh sẽ lỗi (không phải chỉ warning).
 4. **Ảnh từ `localhost`/IP nội bộ (dev)**: Next.js 16 mặc định CHẶN tối ưu ảnh từ IP private/loopback (chống SSRF) — đã bật `dangerouslyAllowLocalIP: true` nhưng **chỉ khi `NODE_ENV !== 'production'`**. KHÔNG bật cờ này cho production (rủi ro bảo mật) — domain backend production phải là domain public thật (vd `tpcsolar.vn`) trong `remotePatterns`.
 5. Sau khi sửa `next.config.ts` (remotePatterns/qualities/bất kỳ field nào) → **phải restart lại dev server**, Next.js không hot-reload file config này.
+6. **`priority`/`loading="lazy"` phải đúng vị trí trong viewport** — rút ra từ lỗi thực tế đã gắn `loading="lazy"` nhầm cho icon luôn hiển thị ở header:
+   - Ảnh **luôn hiển thị ngay khi tải trang** (hero, header/nav, banner đầu trang...) → dùng `priority` (với `next/image`) hoặc để mặc định `eager` (với `<img>` thô). **KHÔNG** gắn `loading="lazy"` cho các ảnh này — lazy-load ảnh đã nằm trong viewport ban đầu không tiết kiệm được băng thông, chỉ thêm overhead intersection-observer và có thể làm chậm hiển thị.
+   - Ảnh **không nằm trong viewport ban đầu** (dưới fold, trong menu mobile chưa mở — vd `max-h-0 opacity-0` khi đóng, trong tab/accordion chưa active...) → dùng `loading="lazy"` (`<img>`) hoặc để `next/image` tự lazy-load (mặc định khi không có `priority`).
 
 ## 4. Quy tắc Styling
 
