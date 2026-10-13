@@ -20,6 +20,11 @@ function App({ Component, pageProps }: AppProps) {
     }
   }, [])
 
+  // Đánh dấu đã hydrate → fail-safe trong _document.tsx không gỡ class anim-ready nữa
+  useEffect(() => {
+    (window as Window & { __tsoHydrated?: boolean }).__tsoHydrated = true
+  }, [])
+
   useEffect(() => {
     const handleStart = () => {
       clearTimer()

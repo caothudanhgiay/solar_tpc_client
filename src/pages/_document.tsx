@@ -7,10 +7,19 @@ export default function Document() {
         <link rel="icon" href="/icon.png?v=2" type="image/png" />
 
         {/* DNS Prefetch & Preconnect — giảm latency khi gọi API và load resource bên ngoài */}
+        {/* Không preconnect Google Fonts: font Inter đã tự host qua next/font (Layout.tsx) */}
         <link rel="dns-prefetch" href="//maps.google.com" />
-        <link rel="dns-prefetch" href="//fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+
+        {/* Scroll animation chỉ ẩn nội dung (opacity:0) khi có class "anim-ready" trên <html>.
+            Fail-safe: nếu sau 3s React vẫn chưa hydrate (JS chunk tải chậm/lỗi 522...) thì gỡ class
+            → hiện toàn bộ nội dung SSR thay vì để người dùng thấy trang trống. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "document.documentElement.classList.add('anim-ready');" +
+              "setTimeout(function(){if(!window.__tsoHydrated)document.documentElement.classList.remove('anim-ready')},3000);",
+          }}
+        />
       </Head>
       <body className="antialiased">
         <Main />

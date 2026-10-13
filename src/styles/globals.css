@@ -110,12 +110,13 @@ input:-webkit-autofill:active {
 }
 
 /* --- Scroll-triggered animation base classes --- */
-/* Mặc định ẩn, khi IntersectionObserver thêm .is-visible → chạy animation */
-.anim-fade-up,
-.anim-fade-in,
-.anim-slide-left,
-.anim-slide-right,
-.anim-scale-in {
+/* Chỉ ẩn khi JS đã sẵn sàng (html.anim-ready — xem _document.tsx), khi IntersectionObserver thêm
+   .is-visible → chạy animation. Không có JS / JS lỗi → nội dung SSR vẫn hiện bình thường. */
+.anim-ready .anim-fade-up,
+.anim-ready .anim-fade-in,
+.anim-ready .anim-slide-left,
+.anim-ready .anim-slide-right,
+.anim-ready .anim-scale-in {
   opacity: 0;
   will-change: opacity, transform;
 }

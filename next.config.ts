@@ -17,6 +17,11 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
 
   images: {
+    // Tắt image optimizer (/_next/image): trên VPS production optimizer hay treo → 504/522, kéo chậm cả trang.
+    // Ảnh public/ đã nén sẵn (webp/avif ≤ 200KB), ảnh upload được backend nén khi lưu (TsoImageUtil)
+    // → trình duyệt tải thẳng file gốc là đủ nhanh, Cloudflare/Nginx cache được.
+    // Các option bên dưới chỉ có hiệu lực nếu bật lại optimizer (bỏ dòng này).
+    unoptimized: true,
     // Chỉ dùng WebP: mã hoá AVIF rất tốn CPU, khi cache lạnh nhiều ảnh cùng lúc (vd trang chi tiết dự án)
     // làm optimizer chậm quá timeout của proxy → 504/500.
     formats: ['image/webp'],
