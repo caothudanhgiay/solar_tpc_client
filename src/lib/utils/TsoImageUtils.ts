@@ -8,11 +8,12 @@ function getHostname(url: string): string | null {
   }
 }
 
-// Các host đã được whitelist trong `images.remotePatterns` của next.config.ts.
-// Phải giữ đồng bộ với danh sách đó để next/image không bị lỗi "hostname not configured".
+// Các host cho phép đi qua next/image optimizer (phải có trong `images.remotePatterns` của next.config.ts).
+// KHÔNG đưa host backend (API_URL) vào đây: optimizer chạy trong container frontend phải fetch ngược lại
+// domain công khai (vòng qua Cloudflare về chính VPS) → bị ETIMEDOUT trên production, gây 504 và nghẽn
+// các request khác. Ảnh /upload đã được backend nén sẵn khi upload (TsoImageUtil) nên trình duyệt tải thẳng
+// qua <img> (Cloudflare cache được) là đủ nhanh.
 const OPTIMIZABLE_HOSTS = ["images.unsplash.com"];
-const apiHost = getHostname(API_URL);
-if (apiHost) OPTIMIZABLE_HOSTS.push(apiHost);
 
 /**
  * Ghép đường dẫn ảnh trả về từ backend (vd: "/upload/...") thành URL đầy đủ.

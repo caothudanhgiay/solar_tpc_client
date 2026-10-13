@@ -173,7 +173,8 @@ export default function ProjectDetailsPage({ project }: InferGetServerSidePropsT
                   <img
                     src={featuredImg}
                     alt={project.projectName}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    fetchPriority="high"
+                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
                 )}
               </div>
@@ -204,7 +205,7 @@ export default function ProjectDetailsPage({ project }: InferGetServerSidePropsT
                         <img
                           src={detailImg}
                           alt={t('project_detail.imageAlt')}
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                          className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                           loading="lazy"
                         />
                       );

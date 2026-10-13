@@ -175,7 +175,7 @@ function ProjectCard({ project, idx, t }: { project: ProjectItem; idx: number; t
               <img
                 src={resolvedSrc}
                 alt={project.name}
-                className="object-cover transition-transform duration-1000 group-hover:scale-105 w-full h-full"
+                className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
                 loading={isFirst ? "eager" : "lazy"}
               />
             );

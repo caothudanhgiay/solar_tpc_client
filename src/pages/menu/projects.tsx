@@ -71,7 +71,7 @@ export default function ProjectsPage({ projects }: ProjectsPageProps) {
                       <img
                         src={resolvedSrc}
                         alt={project.name}
-                        className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
+                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         loading="lazy"
                       />
                     );
