@@ -67,7 +67,9 @@ export default function Footer() {
                     fill
                     sizes="(max-width: 768px) 192px, (max-width: 1024px) 256px, 288px"
                     className="object-contain p-1 object-left"
-                    loading="lazy"
+                    // Cùng file với logo header (đã tải sẵn) → eager không tốn thêm băng thông,
+                    // tránh cảnh báo LCP ở trang ngắn khi footer nằm trong viewport ban đầu
+                    loading="eager"
                   />
                 </div>
               </Link>

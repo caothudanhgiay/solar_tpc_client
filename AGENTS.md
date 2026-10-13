@@ -289,6 +289,76 @@ npm run lint     # ESLint check
 - Cách verify hiện tại: chạy `npm run dev`, dùng Browser Pane/trình duyệt thật để kiểm tra bằng mắt (đặc biệt với thay đổi UI/ảnh) + `npm run lint` + `npx tsc --noEmit` để bắt lỗi type/lint.
 - Nếu người dùng yêu cầu thêm test framework, hỏi rõ chọn Jest hay Vitest trước khi cài (ảnh hưởng cấu hình Next.js + cách mock `next/image`, `next/router`).
 
+## 9. Quy tắc Tránh Lỗi Hiệu Năng & Lỗi Thường Gặp (Performance & Common Pitfalls)
+
+### 9.1. Tránh Waterfall Request (tương đương N+1 ở Frontend)
+- **TUYỆT ĐỐI KHÔNG** gọi API riêng cho từng item trong 1 danh sách (vd gọi detail cho từng project trong `projects.map()`) — đây là N+1 ở phía frontend, làm chậm trang tỉ lệ thuận với số item.
+- **TUYỆT ĐỐI KHÔNG** `await` tuần tự nhiều API độc lập (không phụ thuộc kết quả của nhau) — dùng `Promise.all` (xem thêm rule 3.1.1 mục 3 đã có cho SSR).
+```tsx
+// ❌ SAI — N+1: gọi API riêng cho từng item + await tuần tự không cần thiết
+useEffect(() => {
+  const load = async () => {
+    for (const p of projects) {
+      const detail = await apiClient.get(`/api/projects/${p.id}/detail`); // N request riêng lẻ
+      setDetails((prev) => [...prev, detail.data]);
+    }
+  };
+  load();
+}, [projects]);
+
+// ✅ ĐÚNG — backend trả kèm data liên quan trong 1 API, hoặc song song hoá nếu bắt buộc gọi riêng
+const results = await Promise.all(
+  projects.map((p) => apiClient.get(`/api/projects/${p.id}/detail`))
+);
+```
+- Ưu tiên sửa API backend để trả kèm data liên quan (JOIN FETCH/DTO — xem `../solar_tpc_server/AGENTS.md` mục 7.1) thay vì N lần gọi từ frontend.
+
+### 9.2. `useEffect` — dependency & cleanup
+- Khai báo **đủ và đúng** dependency array — thiếu dependency gây bug logic dùng closure cũ (stale state), thừa dependency không cần thiết gây effect chạy lại/infinite loop.
+- **Mọi effect đăng ký listener/interval/subscription/abort-able fetch PHẢI cleanup trong return function** — không cleanup gây memory leak và lỗi "Can't perform a React state update on an unmounted component" khi component unmount trước khi async xong.
+```tsx
+// ❌ SAI — không cleanup, không abort fetch khi unmount
+useEffect(() => {
+  window.addEventListener("resize", handleResize);
+  fetchData().then((res) => setData(res)); // vẫn setState dù component đã unmount
+}, []);
+
+// ✅ ĐÚNG
+useEffect(() => {
+  const controller = new AbortController();
+  window.addEventListener("resize", handleResize);
+  fetchData(controller.signal).then((res) => setData(res)).catch(() => {});
+  return () => {
+    window.removeEventListener("resize", handleResize);
+    controller.abort();
+  };
+}, []);
+```
+- KHÔNG gọi `setState` trực tiếp trong thân component (ngoài effect/event handler) — gây infinite render loop.
+
+### 9.3. Danh sách lớn — Pagination thay vì render/fetch hết 1 lần
+- **TUYỆT ĐỐI KHÔNG** fetch toàn bộ data lớn về client rồi tự `filter`/`slice` để phân trang — để backend phân trang (`Pageable`/`Page<T>` — xem `../solar_tpc_server/AGENTS.md` mục 7.3), frontend chỉ gọi đúng trang cần.
+- Với danh sách phải hiển thị hết trong 1 lần cuộn (không phân trang được theo yêu cầu UX), cân nhắc virtualization (vd `react-window`) khi số item vượt vài trăm — tránh render hết DOM node cùng lúc làm giật lag.
+- Component nặng không cần hiển thị ngay (chart, rich text editor, modal ít dùng...) nên `dynamic import` (`next/dynamic`) để giảm bundle JS tải ban đầu.
+
+### 9.4. Memoization & re-render thừa
+- Truyền object/array/function literal **tạo mới mỗi lần render** làm prop cho component con hoặc làm dependency của `useEffect`/`useMemo` gây re-render/effect chạy lại không cần thiết dù giá trị logic không đổi.
+```tsx
+// ❌ SAI — object literal mới mỗi render → component con re-render dù data không đổi
+<TsoChart options={{ color: "blue", width: 400 }} />
+
+// ✅ ĐÚNG — memo hoá nếu component con dùng React.memo, hoặc khai báo ngoài render nếu là hằng số
+const CHART_OPTIONS = { color: "blue", width: 400 };
+<TsoChart options={CHART_OPTIONS} />
+```
+- Chỉ dùng `useMemo`/`useCallback` khi thực sự cần (tính toán nặng lặp lại, hoặc truyền xuống component con đã bọc `React.memo`) — không lạm dụng cho mọi biến/hàm, gây rối code không mang lại lợi ích.
+
+### 9.5. Các lỗi thường gặp khác
+- **`key` trong list**: PHẢI unique và ổn định (id thật từ data) — KHÔNG dùng `index` làm `key` khi list có thể sort/filter/thêm/xóa (gây bug UI: state của item bị lẫn sang item khác sau khi re-order).
+- **Mutate state trực tiếp**: KHÔNG `array.push(...)`/`obj.field = x` rồi gọi `setState` với cùng reference — React không detect được thay đổi. Luôn tạo array/object mới (`[...arr, x]`, `{...obj, field: x}`).
+- **Import cả thư viện lớn khi chỉ cần 1 hàm**: dùng named import hỗ trợ tree-shaking (`import { debounce } from "lodash-es"`), tránh `import _ from "lodash"` rồi dùng `_.debounce` (kéo cả bundle).
+- **Search input gọi API mỗi keystroke**: PHẢI debounce (vd `useDebouncedValue`/`lodash-es debounce`) trước khi gọi API, tránh spam request khi user gõ nhanh.
+
 ## 🚫 Quy tắc Tránh Hardcode Text / i18n (BẮT BUỘC — xem thêm `../AGENTS.md`)
 
 **KHÔNG bao giờ** viết text tiếng Việt/Anh trực tiếp trong JSX. Luôn dùng `t('key')` với `useTranslation("common")`.

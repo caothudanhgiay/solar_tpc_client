@@ -197,8 +197,8 @@ function Header({ initialMenuData }: { initialMenuData?: MenuItem[] }) {
               fill
               sizes="(max-width: 768px) 256px, (max-width: 1024px) 320px, 384px"
               className="object-contain object-left"
-              priority
               loading="eager"
+              fetchPriority="high"
             />
           </div>
         </Link>

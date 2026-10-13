@@ -17,8 +17,11 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
 
   images: {
-    // Ưu tiên AVIF (nhỏ nhất) → WebP → fallback
-    formats: ['image/avif', 'image/webp'],
+    // Chỉ dùng WebP: mã hoá AVIF rất tốn CPU, khi cache lạnh nhiều ảnh cùng lúc (vd trang chi tiết dự án)
+    // làm optimizer chậm quá timeout của proxy → 504/500.
+    formats: ['image/webp'],
+    // Cache ảnh đã tối ưu 30 ngày để tránh mã hoá lại (ảnh upload có tên kèm timestamp nên không bị cũ)
+    minimumCacheTTL: 60 * 60 * 24 * 30,
     // Tối ưu kích thước device
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],

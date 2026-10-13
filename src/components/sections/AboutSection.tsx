@@ -49,9 +49,7 @@ export default function AboutSection() {
       icon: Home,
       text: (
         <>
-          {t("about.service1_pre")}{" "}
-          <span className="text-orange-400 font-semibold">(Residential)</span> {t("about.service1_mid")}{" "}
-          <span className="text-orange-400 font-semibold">(Commercial)</span>
+          {t("about.service1_pre")} {t("about.service1_mid")}
         </>
       ),
     },

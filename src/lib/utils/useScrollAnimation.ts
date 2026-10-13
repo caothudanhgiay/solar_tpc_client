@@ -18,6 +18,15 @@ export function useScrollAnimation<T extends HTMLElement = HTMLDivElement>(
     const element = ref.current;
     if (!element) return;
 
+    // Tôn trọng cài đặt Reduce Motion của hệ điều hành/trình duyệt — hiện ngay,
+    // không chờ cuộn (tránh nội dung kẹt ở opacity:0 nếu animation bị tắt).
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setIsVisible(true);
+      return;
+    }
+
+    // rootMargin dương (thay vì âm) để vùng trigger rộng hơn viewport thực —
+    // hiệu ứng kích hoạt sớm hơn, giảm rủi ro bị bỏ lỡ khi cuộn nhanh/tự động.
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -25,7 +34,7 @@ export function useScrollAnimation<T extends HTMLElement = HTMLDivElement>(
           observer.unobserve(element);
         }
       },
-      { threshold, rootMargin: "0px 0px -50px 0px" }
+      { threshold, rootMargin: "0px 0px 150px 0px" }
     );
 
     observer.observe(element);
@@ -50,6 +59,11 @@ export function useScrollAnimationGroup<T extends HTMLElement = HTMLDivElement>(
     const element = ref.current;
     if (!element) return;
 
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setIsVisible(true);
+      return;
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -57,7 +71,7 @@ export function useScrollAnimationGroup<T extends HTMLElement = HTMLDivElement>(
           observer.unobserve(element);
         }
       },
-      { threshold, rootMargin: "0px 0px -30px 0px" }
+      { threshold, rootMargin: "0px 0px 150px 0px" }
     );
 
     observer.observe(element);

@@ -37,21 +37,7 @@
     "rights": "TPC Renewable Energy. All rights reserved."
   },
   "hero": {
-    "pioneer": "Pioneering Green Energy",
-    "titlePre": "Solar Energy ",
-    "titleSolar": "Solutions",
-    "titlePost": " for the Future",
-    "desc": "TPC Solar provides comprehensive clean energy solutions, helping you save costs, optimize profits, and join hands to protect the environment.",
-    "getAdvice": "Get advice now",
-    "viewProjects": "View projects",
-    "savingTitle": "Save 80%",
-    "savingDesc": "Cut down maximum monthly electricity bills for households and businesses.",
-    "warrantyTitle": "25-year warranty",
-    "warrantyDesc": "Commitment to solar panel performance and lifelong professional maintenance services.",
-    "statProjects": "Completed Projects",
-    "statProvinces": "Provinces",
-    "statYears": "Years of Experience",
-    "statCapacity": "MWp Installed"
+    "desc": "TPC Solar provides comprehensive clean energy solutions, helping you save costs, optimize profits, and join hands to protect the environment."
   },
   "about": {
     "highlight1_title": "Cleaner",

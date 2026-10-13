@@ -1,6 +1,5 @@
 import Head from "next/head";
 import dynamic from "next/dynamic";
-import HeroSection from "@/components/sections/HeroSection";
 import { serverSideTranslations } from "next-i18next/pages/serverSideTranslations";
 
 import { GetStaticProps } from "next";
@@ -8,7 +7,7 @@ import { useTranslation } from "next-i18next/pages";
 import { apiClient } from "@/lib/utils/apiClient";
 import { API_HOME, API_SSR_TIMEOUT_MS } from "@/lib/utils/constants";
 
-// Lazy load các sections below-the-fold — chỉ HeroSection cần tải ngay
+// Lazy load các sections trong trang chủ
 const AboutSection = dynamic(() => import("@/components/sections/AboutSection"));
 const ProjectsSection = dynamic(() => import("@/components/sections/ProjectsSection"));
 const ServicesSection = dynamic(() => import("@/components/sections/ServicesSection"));
@@ -28,7 +27,6 @@ export default function Home({ projects, services }: HomeProps) {
         <meta name="description" content={t("hero.desc")} />
       </Head>
       <div className="flex flex-col min-h-screen">
-        <HeroSection />
         <AboutSection />
         <ProjectsSection projects={projects} />
         <ServicesSection services={services} />
